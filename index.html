@@ -567,9 +567,35 @@
                 </div>
                 <button type="submit" class="btn btn-primary">💾 Guardar</button>
             </form>
-            <div style="margin-top:20px; padding:15px; background:#f7fafc; border-radius:8px;">
+                        <div style="margin-top:20px; padding:15px; background:#f7fafc; border-radius:8px;">
                 <p id="resumenDescuentos">Total descuentos: 0%</p>
             </div>
+            
+            <hr style="margin:30px 0;">
+            
+            <h3>🔐 Seguridad del Administrador</h3>
+            <p style="color:#4a5568; margin-bottom:15px; font-size:0.9rem;">Cambia la contraseña de acceso al panel de administrador. Se sincroniza en todos los dispositivos.</p>
+            
+            <form onsubmit="cambiarPasswordAdmin(event)" style="max-width:500px;">
+                <div class="form-group" style="margin-bottom:10px;">
+                    <label>Contraseña actual *</label>
+                    <input type="password" id="passActual" required placeholder="Ingresa la contraseña actual">
+                </div>
+                <div class="form-group" style="margin-bottom:10px;">
+                    <label>Nueva contraseña *</label>
+                    <input type="password" id="passNueva" required placeholder="Mínimo 4 caracteres" minlength="4">
+                </div>
+                <div class="form-group" style="margin-bottom:10px;">
+                    <label>Confirmar nueva contraseña *</label>
+                    <input type="password" id="passConfirmar" required placeholder="Repite la nueva contraseña" minlength="4">
+                </div>
+                <button type="submit" class="btn btn-warning">🔐 Cambiar Contraseña</button>
+            </form>
+            
+            <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;">
+                💡 <strong>Contraseña por defecto:</strong> <code>admin123</code> — Cámbiala en tu primer uso.
+            </div>
+            
             <hr style="margin:30px 0;">
             <h3>🗄️ Gestión de Datos</h3>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -663,7 +689,7 @@
     const DOC_ID = 'sistema_limpieza_datos';
 
     // Datos en memoria (se sincronizan con Firebase)
-    let datosGlobales = {
+        let datosGlobales = {
         empleados: [],
         clientes: [],
         jornadas: [],
@@ -672,7 +698,8 @@
         pagosClientes: [],
         adelantosEmpleados: [],
         pagosServicios: [],
-        cancelaciones: []
+        cancelaciones: [],
+        adminPassword: 'admin123'
     };
 
     // ============================================================
@@ -926,9 +953,10 @@
         if (confirm('¿Cerrar sesión?')) volverInicio();
     }
 
-    function loginAdmin() {
+       function loginAdmin() {
         const pass = document.getElementById('adminPass').value;
-        if (pass === 'admin123') {
+        const passGuardada = datosGlobales.adminPassword || 'admin123';
+        if (pass === passGuardada) {
             document.getElementById('loginAdmin').classList.add('hidden');
             document.getElementById('adminDashboard').classList.remove('hidden');
             document.getElementById('adminError').style.display = 'none';
@@ -2268,7 +2296,7 @@
     // ============================================================
     // CONFIG
     // ============================================================
-    function guardarConfig(e) {
+        function guardarConfig(e) {
         e.preventDefault();
         const config = {
             FICA: parseFloat(document.getElementById('cfgFICA').value) || 0,
@@ -2281,6 +2309,43 @@
         guardarEnFirebase();
         renderAll();
         alert('✅ Config guardada');
+    }
+
+    function cambiarPasswordAdmin(e) {
+        e.preventDefault();
+        const actual = document.getElementById('passActual').value;
+        const nueva = document.getElementById('passNueva').value;
+        const confirmar = document.getElementById('passConfirmar').value;
+        
+        const passGuardada = datosGlobales.adminPassword || 'admin123';
+        
+        if (actual !== passGuardada) {
+            alert('❌ La contraseña actual es incorrecta');
+            return;
+        }
+        
+        if (nueva !== confirmar) {
+            alert('❌ Las contraseñas nuevas no coinciden');
+            return;
+        }
+        
+        if (nueva.length < 4) {
+            alert('⚠️ La contraseña debe tener al menos 4 caracteres');
+            return;
+        }
+        
+        if (!confirm('⚠️ ¿Confirmas cambiar la contraseña del administrador?\n\nDeberás usarla la próxima vez que inicies sesión.')) {
+            return;
+        }
+        
+        datosGlobales.adminPassword = nueva;
+        guardarEnFirebase();
+        
+        document.getElementById('passActual').value = '';
+        document.getElementById('passNueva').value = '';
+        document.getElementById('passConfirmar').value = '';
+        
+        alert('✅ Contraseña actualizada correctamente.\n\nYa puedes usarla para iniciar sesión.');
     }
 
     // ============================================================
