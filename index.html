@@ -1053,6 +1053,7 @@
         renderResumenDescuentos(data);
         cargarDatosBoleta();
         cargarSelectsAdelantosPagos(data);
+        cargarSelectsJornadaManual();
         renderAgendaDiaria();
         renderSemana();
         renderMes();
@@ -1130,7 +1131,10 @@
                 <td>$${total.toFixed(2)}</td>
                 <td><span class="geo-badge">${geo}</span></td>
                 <td><span class="badge ${j.estado === 'completado' ? 'badge-success' : 'badge-warning'}">${j.estado}</span></td>
-                <td><button class="btn btn-danger btn-sm" onclick="eliminarJornada('${j.id}')">🗑️</button></td>
+                                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editarJornadaManual('${j.id}')" title="Editar">✏️</button>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarJornada('${j.id}')" title="Eliminar">🗑️</button>
+                </td>
             </tr>`;
         }).join('');
     }
@@ -1940,11 +1944,133 @@
         renderJornadas(data);
     }
 
-    function eliminarJornada(id) {
+        function eliminarJornada(id) {
         if (!confirm('¿Eliminar esta jornada?')) return;
         let data = getData();
         data.jornadas = data.jornadas.filter(j => j.id !== id);
         saveData('jornadas', data.jornadas);
+    }
+
+    function cargarSelectsJornadaManual() {
+        const data = getData();
+        const selEmp = document.getElementById('jmEmpleado');
+        const selCli = document.getElementById('jmCliente');
+        if (!selEmp || !selCli) return;
+        
+        selEmp.innerHTML = data.empleados.filter(e => e.estado === 'activo')
+            .map(e => `<option value="${e.id}">${e.nombre}</option>`).join('');
+        selCli.innerHTML = data.clientes
+            .map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+        
+        const fechaInput = document.getElementById('jmFecha');
+        if (fechaInput && !fechaInput.value) {
+            fechaInput.value = new Date().toISOString().slice(0,10);
+        }
+    }
+
+    function guardarJornadaManual(e) {
+        e.preventDefault();
+        const data = getData();
+        const editId = document.getElementById('jmEditId').value;
+        
+        const empleadoId = document.getElementById('jmEmpleado').value;
+        const clienteId = document.getElementById('jmCliente').value;
+        const fecha = document.getElementById('jmFecha').value;
+        const horaEntrada = document.getElementById('jmEntrada').value;
+        const horaSalida = document.getElementById('jmSalida').value;
+        const pago = document.getElementById('jmPago').value;
+        
+        if (!empleadoId || !clienteId || !fecha || !horaEntrada || !horaSalida) {
+            alert('⚠️ Completa todos los campos obligatorios');
+            return;
+        }
+        
+        if (horaSalida <= horaEntrada) {
+            alert('⚠️ La hora de salida debe ser mayor que la hora de entrada');
+            return;
+        }
+        
+        const cli = data.clientes.find(c => c.id === clienteId);
+        const direccion = cli ? cli.direccion : '';
+        
+        if (editId) {
+            // Editar jornada existente
+            const j = data.jornadas.find(j => j.id === editId);
+            if (j) {
+                j.empleadoId = empleadoId;
+                j.clienteId = clienteId;
+                j.fecha = fecha;
+                j.horaEntrada = horaEntrada;
+                j.horaSalida = horaSalida;
+                j.direccion = direccion;
+                j.pago = pago;
+                j.estado = 'completado';
+                j.registradoPorAdmin = true;
+                alert('✅ Jornada actualizada');
+            }
+        } else {
+            // Verificar que no exista ya una jornada del mismo empleado/cliente/fecha
+            const existe = data.jornadas.find(j => 
+                j.empleadoId === empleadoId && 
+                j.clienteId === clienteId && 
+                j.fecha === fecha
+            );
+            
+            if (existe) {
+                if (!confirm('⚠️ Ya existe una jornada de este empleado para este cliente en esta fecha. ¿Deseas crear una adicional?')) {
+                    return;
+                }
+            }
+            
+            const nuevaJornada = {
+                id: generateId(),
+                empleadoId,
+                clienteId,
+                fecha,
+                horaEntrada,
+                horaSalida,
+                direccion,
+                pago,
+                estado: 'completado',
+                lat: null,
+                lng: null,
+                registradoPorAdmin: true,
+                registroManual: new Date().toISOString()
+            };
+            
+            data.jornadas.push(nuevaJornada);
+            alert('✅ Jornada registrada manualmente');
+        }
+        
+        saveData('jornadas', data.jornadas);
+        limpiarFormJornadaManual();
+    }
+
+    function limpiarFormJornadaManual() {
+        document.getElementById('jmEditId').value = '';
+        document.getElementById('jmEntrada').value = '';
+        document.getElementById('jmSalida').value = '';
+        document.getElementById('jmFecha').value = new Date().toISOString().slice(0,10);
+        document.getElementById('jmPago').value = 'efectivo';
+        document.getElementById('btnGuardarJornadaManual').textContent = '💾 Guardar Jornada';
+    }
+
+    function editarJornadaManual(id) {
+        const data = getData();
+        const j = data.jornadas.find(j => j.id === id);
+        if (!j) return;
+        
+        document.getElementById('jmEditId').value = j.id;
+        document.getElementById('jmEmpleado').value = j.empleadoId;
+        document.getElementById('jmCliente').value = j.clienteId;
+        document.getElementById('jmFecha').value = j.fecha;
+        document.getElementById('jmEntrada').value = j.horaEntrada || '';
+        document.getElementById('jmSalida').value = j.horaSalida || '';
+        document.getElementById('jmPago').value = j.pago || 'efectivo';
+        document.getElementById('btnGuardarJornadaManual').textContent = '💾 Actualizar Jornada';
+        
+        document.querySelector('.tab-btn[data-tab="admin-jornadas"]').click();
+        document.getElementById('jmEmpleado').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     // ============================================================
