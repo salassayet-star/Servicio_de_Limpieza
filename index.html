@@ -12,7 +12,7 @@
         body { background: #f0f4f8; color: #1a202c; min-height: 100vh; }
         .header { background: linear-gradient(135deg, #0f2b4d, #1a4a7a); color: white; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
         .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; }
-        .header h1 span { background: #f6c445; color: #0f2b4d; font-size: 0.7rem; padding: 4px 12px; border-radius: 20px; margin-left: 10px; }
+        .header h1 span { color: white; }
         .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn { padding: 8px 18px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.25s; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
@@ -130,31 +130,9 @@
         .mes-dia.otro-mes .mes-dia-numero { color: #cbd5e0; }
         .mes-cliente { background: #e8f5e9; color: #0d7a3e; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 2px; font-weight: 600; cursor: pointer; }
         .mes-cliente.cancelado { background: #f8d7da; color: #b22234; text-decoration: line-through; }
-        /* Estado de carga */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 43, 77, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 9999;
-            color: white;
-            gap: 20px;
-        }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 43, 77, 0.95); display: flex; justify-content: center; align-items: center; flex-direction: column; z-index: 9999; color: white; gap: 20px; }
         .loading-overlay.hidden { display: none; }
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid rgba(255,255,255,0.3);
-            border-top-color: #f6c445;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
+        .spinner { width: 60px; height: 60px; border: 6px solid rgba(255,255,255,0.3); border-top-color: #f6c445; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .sync-badge { font-size: 0.7rem; color: #0d7a3e; background: #d4edda; padding: 2px 8px; border-radius: 12px; }
         .sync-badge.error { background: #f8d7da; color: #b22234; }
@@ -185,7 +163,7 @@
 </div>
 
 <header class="header">
-            <h1>🧹 <span id="nombreEmpresaHeader" style="background:transparent; color:white; font-size:1.6rem; padding:0; margin:0;">PERUVIAN CLEANINIG SERVICE INC.</span></h1>
+    <h1>🧹 <span id="nombreEmpresaHeader">Mi Empresa</span></h1>
     <div class="header-actions">
         <span class="sync-badge" id="syncStatus">☁️ Conectado</span>
         <button class="btn btn-outline" onclick="cambiarModo()">🌙 Modo</button>
@@ -509,7 +487,7 @@
             <button class="btn btn-warning" onclick="registrarPagoCliente()">💰 Registrar Pago Manual</button>
         </div>
 
-                <!-- TAB JORNADAS -->
+        <!-- TAB JORNADAS -->
         <div class="tab-content" id="tab-admin-jornadas">
             <h2>📋 Monitoreo de Jornadas</h2>
             <p style="color:#4a5568; margin-bottom:15px;">Los empleados marcan entrada/salida con <strong>geolocalización</strong>. Como administrador puedes <strong>crear jornadas manualmente</strong> o modificar las horas existentes.</p>
@@ -566,31 +544,45 @@
 
         <!-- TAB BOLETAS -->
         <div class="tab-content" id="tab-admin-boletas">
-            <h2>📄 Boletas de Pago</h2>
-            <p style="color:#4a5568; margin-bottom:15px;"><strong>Solo el administrador</strong> genera boletas. Descuentos <strong>solo</strong> con cheque.</p>
+            <h2>📄 Boletas de Pago (Quincenal)</h2>
+            <p style="color:#4a5568; margin-bottom:15px;"><strong>Solo el administrador</strong> genera boletas. Descuentos de ley: <strong>Social Security 6.2%</strong> + <strong>Medicare 1.45%</strong>.</p>
+            
             <div class="form-grid">
                 <div class="form-group"><label>Empleado</label><select id="boletaEmpleado" onchange="cargarDatosBoleta()"></select></div>
-                <div class="form-group"><label>Semana</label><input type="week" id="boletaSemana" onchange="cargarDatosBoleta()"></div>
-                <div class="form-group"><label>Tipo de Pago</label>
+                <div class="form-group">
+                    <label>Mes</label>
+                    <input type="month" id="boletaMes" onchange="cargarDatosBoleta()">
+                </div>
+                <div class="form-group">
+                    <label>Quincena</label>
+                    <select id="boletaQuincena" onchange="cargarDatosBoleta()">
+                        <option value="1">1ra Quincena (día 1 al 15)</option>
+                        <option value="2">2da Quincena (día 16 al último día)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Pago</label>
                     <select id="boletaTipoPago" onchange="cargarDatosBoleta()">
-                        <option value="efectivo">💵 Efectivo (sin descuentos)</option>
+                        <option value="efectivo">💵 Efectivo (con descuentos)</option>
                         <option value="cheque">📄 Cheque (con descuentos)</option>
                     </select>
                 </div>
             </div>
+            
             <div id="boletaPreview" class="boleta-box hidden">
                 <h3>🧾 Vista Previa</h3>
                 <div id="boletaContenido"></div>
                 <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
-                    <button class="btn btn-success" onclick="generarBoleta()">✅ Generar</button>
+                    <button class="btn btn-success" onclick="generarBoleta()">✅ Generar Boleta</button>
                     <button class="btn btn-info" onclick="exportarBoletaPDF()">📄 PDF</button>
                 </div>
             </div>
+            
             <hr style="margin:30px 0;">
             <h3>📋 Boletas Generadas</h3>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th>Empleado</th><th>Semana</th><th>Horas</th><th>Bruto</th><th>Descuentos</th><th>Neto</th><th>Pago</th></tr></thead>
+                    <thead><tr><th>Empleado</th><th>Período</th><th>Horas</th><th>Bruto</th><th>Social Security</th><th>Medicare</th><th>Neto</th><th>Acciones</th></tr></thead>
                     <tbody id="tablaBoletas"></tbody>
                 </table>
             </div>
@@ -601,15 +593,15 @@
             <h2>⚙️ Configuración</h2>
             <form onsubmit="guardarConfig(event)">
                 <div class="config-grid form-grid">
-                    <div class="form-group"><label>FICA %</label><input type="number" id="cfgFICA" step="0.01" value="6.2"></div>
-                    <div class="form-group"><label>Medicare %</label><input type="number" id="cfgMedicare" step="0.01" value="1.45"></div>
-                    <div class="form-group"><label>SUI %</label><input type="number" id="cfgSUI" step="0.01" value="2.95"></div>
-                    <div class="form-group"><label>FUTA %</label><input type="number" id="cfgFUTA" step="0.01" value="0.6"></div>
                     <div class="form-group"><label>Empresa</label><input type="text" id="cfgEmpresa" placeholder="Mi Empresa"></div>
+                    <div class="form-group"><label>Social Security %</label><input type="number" id="cfgFICA" step="0.01" value="6.2"></div>
+                    <div class="form-group"><label>Medicare %</label><input type="number" id="cfgMedicare" step="0.01" value="1.45"></div>
                 </div>
-                <button type="submit" class="btn btn-primary">💾 Guardar</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">💾 Guardar Configuración</button>
+                </div>
             </form>
-                        <div style="margin-top:20px; padding:15px; background:#f7fafc; border-radius:8px;">
+            <div style="margin-top:20px; padding:15px; background:#f7fafc; border-radius:8px;">
                 <p id="resumenDescuentos">Total descuentos: 0%</p>
             </div>
             
@@ -708,7 +700,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Exponer globalmente
     window.firebaseDB = db;
     window.firebaseDoc = doc;
     window.firebaseGetDoc = getDoc;
@@ -730,13 +721,12 @@
     const PAGOS_POR_PAGINA = 10;
     const DOC_ID = 'sistema_limpieza_datos';
 
-    // Datos en memoria (se sincronizan con Firebase)
-        let datosGlobales = {
+    let datosGlobales = {
         empleados: [],
         clientes: [],
         jornadas: [],
         boletas: [],
-        config: { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' },
+        config: { FICA: 6.2, Medicare: 1.45, empresa: 'Mi Empresa' },
         pagosClientes: [],
         adelantosEmpleados: [],
         pagosServicios: [],
@@ -762,6 +752,18 @@
             
             if (docSnap.exists()) {
                 const datos = docSnap.data();
+                
+                // BORRAR SOLO LAS BOLETAS ANTIGUAS
+                if (datos.boletas && datos.boletas.length > 0) {
+                    // Verificar si son boletas del formato viejo (semanal)
+                    const boletasViejas = datos.boletas.some(b => b.semana && !b.periodo);
+                    if (boletasViejas) {
+                        console.log('🗑️ Borrando boletas del formato anterior (semanal)...');
+                        datos.boletas = [];
+                        await window.firebaseSetDoc(docRef, { ...datos, boletas: [] });
+                    }
+                }
+                
                 datosGlobales = { ...datosGlobales, ...datos };
                 console.log('✅ Datos cargados desde Firebase');
             } else {
@@ -828,7 +830,7 @@
     }
 
     // ============================================================
-    // DATA LAYER (ahora usa datosGlobales + Firebase)
+    // DATA LAYER
     // ============================================================
     function getData() {
         return datosGlobales;
@@ -854,11 +856,12 @@
             clientes: [],
             jornadas: [],
             boletas: [],
-            config: { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' },
+            config: { FICA: 6.2, Medicare: 1.45, empresa: 'Mi Empresa' },
             pagosClientes: [],
             adelantosEmpleados: [],
             pagosServicios: [],
-            cancelaciones: []
+            cancelaciones: [],
+            adminPassword: 'admin123'
         };
         
         await guardarEnFirebase();
@@ -868,7 +871,10 @@
 
     function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
-    function calcularHoras(entrada, salida) {
+    // ============================================================
+    // CÁLCULO DE HORAS (formato HH:MM)
+    // ============================================================
+    function calcularHorasEnDecimal(entrada, salida) {
         if (!entrada || !salida) return 0;
         const [h1, m1] = entrada.split(':').map(Number);
         const [h2, m2] = salida.split(':').map(Number);
@@ -879,9 +885,26 @@
         return horas + mins / 60;
     }
 
+    function calcularHoras(entrada, salida) {
+        return calcularHorasEnDecimal(entrada, salida);
+    }
+
+    function formatoHorasHHMM(horasDecimal) {
+        const horas = Math.floor(horasDecimal);
+        const minutos = Math.round((horasDecimal - horas) * 60);
+        return `${horas}:${String(minutos).padStart(2, '0')}`;
+    }
+
     function calcularDescuentos(monto, config) {
-        const total = (config.FICA || 0) + (config.Medicare || 0) + (config.SUI || 0) + (config.FUTA || 0);
-        return (monto * total) / 100;
+        const fica = (config.FICA || 0);
+        const medicare = (config.Medicare || 0);
+        const montoFICA = (monto * fica) / 100;
+        const montoMedicare = (monto * medicare) / 100;
+        return {
+            fica: montoFICA,
+            medicare: montoMedicare,
+            total: montoFICA + montoMedicare
+        };
     }
 
     function etiquetaTipoCodigo(tipo) {
@@ -995,7 +1018,7 @@
         if (confirm('¿Cerrar sesión?')) volverInicio();
     }
 
-       function loginAdmin() {
+    function loginAdmin() {
         const pass = document.getElementById('adminPass').value;
         const passGuardada = datosGlobales.adminPassword || 'admin123';
         if (pass === passGuardada) {
@@ -1121,17 +1144,18 @@
             const horas = calcularHoras(j.horaEntrada, j.horaSalida);
             const total = horas * (emp ? emp.tarifa : 0);
             const geo = j.lat && j.lng ? `📍${j.lat.toFixed(4)}, ${j.lng.toFixed(4)}` : '—';
+            const horasHHMM = horas > 0 ? formatoHorasHHMM(horas) : '—';
             return `<tr>
                 <td>${emp ? emp.nombre : 'Eliminado'}</td>
                 <td>${cli ? cli.nombre : 'Eliminado'}</td>
                 <td>${formatoFecha(j.fecha)}</td>
-                <td><input type="time" class="input-hora" id="entrada_${j.id}" value="${j.horaEntrada || ''}" onchange="editarJornada('${j.id}')"></td>
-                <td><input type="time" class="input-hora" id="salida_${j.id}" value="${j.horaSalida || ''}" onchange="editarJornada('${j.id}')"></td>
-                <td>${horas.toFixed(2)}h</td>
+                <td>${j.horaEntrada || '--'}</td>
+                <td>${j.horaSalida || '--'}</td>
+                <td>${horasHHMM}</td>
                 <td>$${total.toFixed(2)}</td>
                 <td><span class="geo-badge">${geo}</span></td>
                 <td><span class="badge ${j.estado === 'completado' ? 'badge-success' : 'badge-warning'}">${j.estado}</span></td>
-                                <td>
+                <td>
                     <button class="btn btn-warning btn-sm" onclick="editarJornadaManual('${j.id}')" title="Editar">✏️</button>
                     <button class="btn btn-danger btn-sm" onclick="eliminarJornada('${j.id}')" title="Eliminar">🗑️</button>
                 </td>
@@ -1153,16 +1177,19 @@
         document.getElementById('totalIngresos').textContent = '$' + total.toFixed(2);
     }
 
-       function renderResumenDescuentos(data) {
+    function renderResumenDescuentos(data) {
         const el = document.getElementById('resumenDescuentos');
         if (!el) return;
         const cfg = data.config;
-        const total = (cfg.FICA || 0) + (cfg.Medicare || 0) + (cfg.SUI || 0) + (cfg.FUTA || 0);
-        el.innerHTML = `Total descuentos: ${total}%`;
+        const total = (cfg.FICA || 0) + (cfg.Medicare || 0);
+        el.innerHTML = `Social Security: ${cfg.FICA || 0}% | Medicare: ${cfg.Medicare || 0}%<br><strong>Total descuentos: ${total}%</strong>`;
         const empEl = document.getElementById('cfgEmpresa');
         if (empEl) empEl.value = cfg.empresa || 'Mi Empresa';
+        const ficaEl = document.getElementById('cfgFICA');
+        if (ficaEl) ficaEl.value = cfg.FICA || 6.2;
+        const medEl = document.getElementById('cfgMedicare');
+        if (medEl) medEl.value = cfg.Medicare || 1.45;
         
-        // Actualizar el nombre de la empresa en el header
         const headerEl = document.getElementById('nombreEmpresaHeader');
         if (headerEl) {
             headerEl.textContent = cfg.empresa || 'Mi Empresa';
@@ -1181,16 +1208,25 @@
         if (!tbody) return;
         tbody.innerHTML = data.boletas.map(b => {
             const emp = data.empleados.find(e => e.id === b.empleadoId);
+            const horasHHMM = b.totalHoras ? formatoHorasHHMM(b.totalHoras) : '—';
             return `<tr>
                 <td>${emp ? emp.nombre : 'Eliminado'}</td>
-                <td>${b.semana}</td>
-                <td>${b.totalHoras.toFixed(2)}h</td>
-                <td>$${b.totalBruto.toFixed(2)}</td>
-                <td>$${(b.descuento || 0).toFixed(2)}</td>
-                <td>$${b.totalNeto.toFixed(2)}</td>
-                <td><span class="badge badge-success">${b.tipoPago}</span></td>
+                <td>${b.periodo || '—'}</td>
+                <td>${horasHHMM}</td>
+                <td>$${(b.totalBruto || 0).toFixed(2)}</td>
+                <td>$${(b.descuentoFICA || 0).toFixed(2)}</td>
+                <td>$${(b.descuentoMedicare || 0).toFixed(2)}</td>
+                <td><strong>$${(b.totalNeto || 0).toFixed(2)}</strong></td>
+                <td><button class="btn btn-danger btn-sm" onclick="eliminarBoleta('${b.id}')">🗑️</button></td>
             </tr>`;
         }).join('');
+    }
+
+    function eliminarBoleta(id) {
+        if (!confirm('¿Eliminar esta boleta?')) return;
+        const data = getData();
+        data.boletas = data.boletas.filter(b => b.id !== id);
+        saveData('boletas', data.boletas);
     }
 
     function cargarSelectsAdelantosPagos(data) {
@@ -1210,8 +1246,6 @@
             filtro.innerHTML = '<option value="">-- Todos los clientes --</option>' + data.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
         }
     }
-
-    // [El resto de funciones es idéntico al v3.1, solo cambia la capa de datos]
 
     // ============================================================
     // AGENDA DIARIA
@@ -1935,28 +1969,8 @@
     }
 
     // ============================================================
-    // JORNADAS
+    // JORNADAS MANUALES
     // ============================================================
-    function editarJornada(id) {
-        const data = getData();
-        const j = data.jornadas.find(j => j.id === id);
-        if (!j) return;
-        const entrada = document.getElementById('entrada_' + id).value;
-        const salida = document.getElementById('salida_' + id).value;
-        j.horaEntrada = entrada || null;
-        j.horaSalida = salida || null;
-        j.estado = (entrada && salida) ? 'completado' : 'pendiente';
-        saveData('jornadas', data.jornadas);
-        renderJornadas(data);
-    }
-
-        function eliminarJornada(id) {
-        if (!confirm('¿Eliminar esta jornada?')) return;
-        let data = getData();
-        data.jornadas = data.jornadas.filter(j => j.id !== id);
-        saveData('jornadas', data.jornadas);
-    }
-
     function cargarSelectsJornadaManual() {
         const data = getData();
         const selEmp = document.getElementById('jmEmpleado');
@@ -2000,7 +2014,6 @@
         const direccion = cli ? cli.direccion : '';
         
         if (editId) {
-            // Editar jornada existente
             const j = data.jornadas.find(j => j.id === editId);
             if (j) {
                 j.empleadoId = empleadoId;
@@ -2015,7 +2028,6 @@
                 alert('✅ Jornada actualizada');
             }
         } else {
-            // Verificar que no exista ya una jornada del mismo empleado/cliente/fecha
             const existe = data.jornadas.find(j => 
                 j.empleadoId === empleadoId && 
                 j.clienteId === clienteId && 
@@ -2079,73 +2091,118 @@
         document.getElementById('jmEmpleado').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
+    function eliminarJornada(id) {
+        if (!confirm('¿Eliminar esta jornada?')) return;
+        let data = getData();
+        data.jornadas = data.jornadas.filter(j => j.id !== id);
+        saveData('jornadas', data.jornadas);
+    }
+
     // ============================================================
-    // BOLETAS
+    // BOLETAS QUINCENALES
     // ============================================================
-    function obtenerRangoSemana(semana) {
-        const [year, week] = semana.split('-W').map(Number);
-        const firstDay = new Date(year, 0, 1 + (week - 1) * 7);
-        const dayOffset = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-        const lunes = new Date(firstDay);
-        lunes.setDate(firstDay.getDate() - dayOffset);
-        const domingo = new Date(lunes);
-        domingo.setDate(lunes.getDate() + 6);
-        return { inicio: lunes.toISOString().slice(0,10), fin: domingo.toISOString().slice(0,10) };
+    function obtenerRangoQuincena(mes, quincena) {
+        // mes formato "YYYY-MM"
+        const [year, month] = mes.split('-').map(Number);
+        
+        if (quincena === '1') {
+            // Día 1 al 15
+            const inicio = `${year}-${String(month).padStart(2, '0')}-01`;
+            const fin = `${year}-${String(month).padStart(2, '0')}-15`;
+            return { inicio, fin, periodo: `${formatoFecha(inicio)} al ${formatoFecha(fin)}` };
+        } else {
+            // Día 16 al último día del mes
+            const ultimoDia = new Date(year, month, 0).getDate();
+            const inicio = `${year}-${String(month).padStart(2, '0')}-16`;
+            const fin = `${year}-${String(month).padStart(2, '0')}-${String(ultimoDia).padStart(2, '0')}`;
+            return { inicio, fin, periodo: `${formatoFecha(inicio)} al ${formatoFecha(fin)}` };
+        }
     }
 
     function cargarDatosBoleta() {
         const data = getData();
         const empId = document.getElementById('boletaEmpleado').value;
-        const semana = document.getElementById('boletaSemana').value;
+        const mes = document.getElementById('boletaMes').value;
+        const quincena = document.getElementById('boletaQuincena').value;
         const tipoPago = document.getElementById('boletaTipoPago').value;
-        if (!empId || !semana) {
+        
+        if (!empId || !mes || !quincena) {
             document.getElementById('boletaPreview').classList.add('hidden');
             return;
         }
-        const { inicio, fin } = obtenerRangoSemana(semana);
+        
+        const { inicio, fin, periodo } = obtenerRangoQuincena(mes, quincena);
         const emp = data.empleados.find(e => e.id === empId);
         if (!emp) return;
-        const jornadas = data.jornadas.filter(j => j.empleadoId === empId && j.estado === 'completado' && j.fecha >= inicio && j.fecha <= fin);
-        let totalHoras = 0;
-        jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
-        const bruto = totalHoras * emp.tarifa;
-        const aplicarDescuentos = tipoPago === 'cheque';
-        const descuento = aplicarDescuentos ? calcularDescuentos(bruto, data.config) : 0;
-        const neto = bruto - descuento;
-
-        let html = `<div class="boleta-pdf-preview">`;
-        html += `<h4 style="text-align:center;">${data.config.empresa || 'Mi Empresa'}</h4>`;
-        html += `<p style="text-align:center;"><strong>BOLETA DE PAGO</strong></p>`;
-        html += `<p><strong>Empleado:</strong> ${emp.nombre}</p>`;
-        html += `<p><strong>Semana:</strong> ${formatoFecha(inicio)} al ${formatoFecha(fin)}</p>`;
-        html += `<p><strong>Tipo de pago:</strong> ${tipoPago === 'efectivo' ? '💵 Efectivo (sin descuentos)' : '📄 Cheque (con descuentos)'}</p>`;
-        html += `<hr>`;
-        html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">`;
-        html += `<div><h5>📋 Detalle de Horas</h5><table>`;
-        html += `<tr><th>Fecha</th><th>Cliente</th><th>Horas</th><th>Monto</th></tr>`;
-        jornadas.forEach(j => {
-            const cli = data.clientes.find(c => c.id === j.clienteId);
-            const horas = calcularHoras(j.horaEntrada, j.horaSalida);
-            const monto = horas * emp.tarifa;
-            html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : 'N/A'}</td><td>${horas.toFixed(2)}h</td><td class="text-right">$${monto.toFixed(2)}</td></tr>`;
+        
+        const jornadas = data.jornadas.filter(j => 
+            j.empleadoId === empId && 
+            j.estado === 'completado' && 
+            j.fecha >= inicio && 
+            j.fecha <= fin
+        );
+        
+        let totalHorasDecimal = 0;
+        jornadas.forEach(j => { 
+            totalHorasDecimal += calcularHorasEnDecimal(j.horaEntrada, j.horaSalida); 
         });
-        html += `<tr><td colspan="3"><strong>Total Horas</strong></td><td class="text-right"><strong>${totalHoras.toFixed(2)}h</strong></td></tr>`;
-        html += `<tr><td colspan="3"><strong>Subtotal</strong></td><td class="text-right"><strong>$${bruto.toFixed(2)}</strong></td></tr>`;
-        html += `</table></div>`;
-        html += `<div><h5>📊 Descuentos</h5><table>`;
-        if (aplicarDescuentos) {
-            const cfg = data.config;
-            html += `<tr><th>Concepto</th><th>%</th><th>Monto</th></tr>`;
-            html += `<tr><td>FICA</td><td>${cfg.FICA || 0}%</td><td class="text-right">$${((bruto * (cfg.FICA || 0)) / 100).toFixed(2)}</td></tr>`;
-            html += `<tr><td>Medicare</td><td>${cfg.Medicare || 0}%</td><td class="text-right">$${((bruto * (cfg.Medicare || 0)) / 100).toFixed(2)}</td></tr>`;
-            html += `<tr><td>SUI</td><td>${cfg.SUI || 0}%</td><td class="text-right">$${((bruto * (cfg.SUI || 0)) / 100).toFixed(2)}</td></tr>`;
-            html += `<tr><td>FUTA</td><td>${cfg.FUTA || 0}%</td><td class="text-right">$${((bruto * (cfg.FUTA || 0)) / 100).toFixed(2)}</td></tr>`;
-            html += `<tr><td colspan="2"><strong>Total</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
+        
+        const totalHorasHHMM = formatoHorasHHMM(totalHorasDecimal);
+        const bruto = totalHorasDecimal * emp.tarifa;
+        const descuentos = calcularDescuentos(bruto, data.config);
+        const neto = bruto - descuentos.total;
+        
+        const empresa = data.config.empresa || 'Mi Empresa';
+        
+        let html = `<div class="boleta-pdf-preview">`;
+        html += `<h2 style="text-align:center; margin-bottom:5px;">${empresa}</h2>`;
+        html += `<p style="text-align:center; font-size:0.8rem; margin-bottom:15px;">BOLETA DE PAGO</p>`;
+        html += `<hr style="margin:15px 0;">`;
+        
+        html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:15px;">`;
+        html += `<div>`;
+        html += `<p><strong>Empleado:</strong> ${emp.nombre}</p>`;
+        html += `<p><strong>Cargo:</strong> ${emp.cargo || '—'}</p>`;
+        html += `<p><strong>Período:</strong> ${periodo}</p>`;
+        html += `<p><strong>Tipo de pago:</strong> ${tipoPago === 'efectivo' ? '💵 Efectivo' : '📄 Cheque'}</p>`;
+        html += `</div>`;
+        html += `<div>`;
+        html += `<p><strong>Horas trabajadas:</strong> ${totalHorasHHMM}</p>`;
+        html += `<p><strong>Tarifa por hora:</strong> $${emp.tarifa.toFixed(2)}</p>`;
+        html += `<p><strong>Total Bruto:</strong> <span style="color:#0d7a3e; font-size:1.1rem;">$${bruto.toFixed(2)}</span></p>`;
+        html += `</div>`;
+        html += `</div>`;
+        
+        html += `<hr style="margin:15px 0;">`;
+        html += `<h4 style="margin-bottom:10px;">DEDUCCIONES</h4>`;
+        html += `<table>`;
+        html += `<tr><th>Concepto</th><th>%</th><th style="text-align:right;">Monto</th></tr>`;
+        html += `<tr><td>Social Security</td><td>${data.config.FICA}%</td><td style="text-align:right;">$${descuentos.fica.toFixed(2)}</td></tr>`;
+        html += `<tr><td>Medicare</td><td>${data.config.Medicare}%</td><td style="text-align:right;">$${descuentos.medicare.toFixed(2)}</td></tr>`;
+        html += `<tr style="background:#f0f0f0;"><td colspan="2"><strong>Total Deducciones</strong></td><td style="text-align:right;"><strong>$${descuentos.total.toFixed(2)}</strong></td></tr>`;
+        html += `</table>`;
+        
+        html += `<hr style="margin:15px 0;">`;
+        html += `<div style="text-align:right; padding:15px; background:#e8f5e9; border-radius:8px;">`;
+        html += `<p style="font-size:0.9rem;">NET PAY</p>`;
+        html += `<p style="font-size:1.8rem; font-weight:700; color:#0d7a3e;">$${neto.toFixed(2)}</p>`;
+        html += `</div>`;
+        
+        html += `<hr style="margin:15px 0;">`;
+        html += `<h4 style="margin-bottom:10px;">DETALLE DE JORNADAS</h4>`;
+        if (jornadas.length === 0) {
+            html += `<p style="text-align:center; padding:15px; color:#4a5568;">No hay jornadas registradas en este período</p>`;
         } else {
-            html += `<tr><td colspan="3" style="text-align:center; color:#0d7a3e;">✅ Sin descuentos</td></tr>`;
+            html += `<table>`;
+            html += `<tr><th>Fecha</th><th>Cliente</th><th>Entrada</th><th>Salida</th><th>Horas</th></tr>`;
+            jornadas.sort((a, b) => a.fecha.localeCompare(b.fecha)).forEach(j => {
+                const cli = data.clientes.find(c => c.id === j.clienteId);
+                const horas = calcularHorasEnDecimal(j.horaEntrada, j.horaSalida);
+                html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : '—'}</td><td>${j.horaEntrada}</td><td>${j.horaSalida}</td><td>${formatoHorasHHMM(horas)}</td></tr>`;
+            });
+            html += `</table>`;
         }
-        html += `<tr><td colspan="2"><strong>Neto a Pagar</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
-        html += `</table></div></div></div>`;
+        html += `</div>`;
         
         document.getElementById('boletaContenido').innerHTML = html;
         document.getElementById('boletaPreview').classList.remove('hidden');
@@ -2154,20 +2211,54 @@
     function generarBoleta() {
         const data = getData();
         const empId = document.getElementById('boletaEmpleado').value;
-        const semana = document.getElementById('boletaSemana').value;
+        const mes = document.getElementById('boletaMes').value;
+        const quincena = document.getElementById('boletaQuincena').value;
         const tipoPago = document.getElementById('boletaTipoPago').value;
-        if (!empId || !semana) { alert('⚠️ Selecciona empleado y semana'); return; }
-        const { inicio, fin } = obtenerRangoSemana(semana);
+        
+        if (!empId || !mes || !quincena) { alert('⚠️ Selecciona empleado, mes y quincena'); return; }
+        
+        const { inicio, fin, periodo } = obtenerRangoQuincena(mes, quincena);
         const emp = data.empleados.find(e => e.id === empId);
         if (!emp) return;
-        const jornadas = data.jornadas.filter(j => j.empleadoId === empId && j.estado === 'completado' && j.fecha >= inicio && j.fecha <= fin);
-        let totalHoras = 0;
-        jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
-        const bruto = totalHoras * emp.tarifa;
-        const aplicarDescuentos = tipoPago === 'cheque';
-        const descuento = aplicarDescuentos ? calcularDescuentos(bruto, data.config) : 0;
-        const neto = bruto - descuento;
-        const boleta = { id: generateId(), empleadoId: empId, semana, semanaInicio: inicio, semanaFin: fin, totalHoras, totalBruto: bruto, descuento, totalNeto: neto, tipoPago, fechaGeneracion: new Date().toISOString().slice(0,10) };
+        
+        const jornadas = data.jornadas.filter(j => 
+            j.empleadoId === empId && 
+            j.estado === 'completado' && 
+            j.fecha >= inicio && 
+            j.fecha <= fin
+        );
+        
+        if (jornadas.length === 0) {
+            alert('⚠️ No hay jornadas registradas en este período');
+            return;
+        }
+        
+        let totalHorasDecimal = 0;
+        jornadas.forEach(j => { totalHorasDecimal += calcularHorasEnDecimal(j.horaEntrada, j.horaSalida); });
+        
+        const bruto = totalHorasDecimal * emp.tarifa;
+        const descuentos = calcularDescuentos(bruto, data.config);
+        const neto = bruto - descuentos.total;
+        
+        const boleta = {
+            id: generateId(),
+            empleadoId: empId,
+            mes: mes,
+            quincena: quincena,
+            periodo: periodo,
+            semanaInicio: inicio,
+            semanaFin: fin,
+            totalHoras: totalHorasDecimal,
+            totalHorasHHMM: formatoHorasHHMM(totalHorasDecimal),
+            totalBruto: bruto,
+            descuentoFICA: descuentos.fica,
+            descuentoMedicare: descuentos.medicare,
+            descuento: descuentos.total,
+            totalNeto: neto,
+            tipoPago: tipoPago,
+            fechaGeneracion: new Date().toISOString().slice(0,10)
+        };
+        
         data.boletas.push(boleta);
         saveData('boletas', data.boletas);
         alert('✅ Boleta generada');
@@ -2183,17 +2274,13 @@
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = contenido;
         const lines = tempDiv.innerText.split('\n').filter(l => l.trim());
-        doc.setFontSize(14);
-        doc.text('Boleta de Pago', 14, 18);
-        doc.setFontSize(9);
-        doc.text('Generado: ' + new Date().toLocaleString(), 14, 24);
-        let y = 34;
+        let y = 20;
         lines.forEach(line => {
             if (y > 275) { doc.addPage(); y = 20; }
             const parts = line.match(/.{1,70}/g) || [line];
             parts.forEach(p => { doc.text(p, 14, y); y += 5; });
         });
-        doc.save('boleta.pdf');
+        doc.save('boleta_' + Date.now() + '.pdf');
     }
 
     // ============================================================
@@ -2204,7 +2291,6 @@
         const hoy = new Date().toISOString().slice(0,10);
         
         const clientesHoy = data.clientes.filter(c => clienteTrabajaEnFecha(c, hoy));
-        
         const jornadasHoy = data.jornadas.filter(j => j.fecha === hoy);
         const clientesTomados = jornadasHoy.map(j => j.clienteId);
         const misJornadasHoy = jornadasHoy.filter(j => j.empleadoId === empleadoActual.id);
@@ -2411,11 +2497,11 @@
         let html = `<table><tr><th>Fecha</th><th>Cliente</th><th>Entrada</th><th>Salida</th><th>Horas</th></tr>`;
         misJornadas.sort((a, b) => b.fecha.localeCompare(a.fecha)).forEach(j => {
             const cli = data.clientes.find(c => c.id === j.clienteId);
-            const horas = calcularHoras(j.horaEntrada, j.horaSalida);
+            const horas = calcularHorasEnDecimal(j.horaEntrada, j.horaSalida);
             totalHoras += horas;
-            html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : ''}</td><td>${j.horaEntrada}</td><td>${j.horaSalida}</td><td>${horas.toFixed(2)}h</td></tr>`;
+            html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : ''}</td><td>${j.horaEntrada}</td><td>${j.horaSalida}</td><td>${formatoHorasHHMM(horas)}</td></tr>`;
         });
-        html += `<tr style="background:#f7fafc; font-weight:700;"><td colspan="4">Total Horas</td><td>${totalHoras.toFixed(2)}h</td></tr>`;
+        html += `<tr style="background:#f7fafc; font-weight:700;"><td colspan="4">Total Horas</td><td>${formatoHorasHHMM(totalHoras)}</td></tr>`;
         html += `</table>`;
         container.innerHTML = html;
     }
@@ -2428,7 +2514,17 @@
         const rows = data.jornadas.map(j => {
             const emp = data.empleados.find(e => e.id === j.empleadoId);
             const cli = data.clientes.find(c => c.id === j.clienteId);
-            return { Empleado: emp ? emp.nombre : '', Cliente: cli ? cli.nombre : '', Fecha: j.fecha, Entrada: j.horaEntrada || '', Salida: j.horaSalida || '', Latitud: j.lat || '', Longitud: j.lng || '' };
+            const horas = calcularHorasEnDecimal(j.horaEntrada, j.horaSalida);
+            return { 
+                Empleado: emp ? emp.nombre : '', 
+                Cliente: cli ? cli.nombre : '', 
+                Fecha: j.fecha, 
+                Entrada: j.horaEntrada || '', 
+                Salida: j.horaSalida || '', 
+                Horas: formatoHorasHHMM(horas),
+                Latitud: j.lat || '', 
+                Longitud: j.lng || '' 
+            };
         });
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(rows);
@@ -2470,13 +2566,11 @@
     // ============================================================
     // CONFIG
     // ============================================================
-        function guardarConfig(e) {
+    function guardarConfig(e) {
         e.preventDefault();
         const config = {
             FICA: parseFloat(document.getElementById('cfgFICA').value) || 0,
             Medicare: parseFloat(document.getElementById('cfgMedicare').value) || 0,
-            SUI: parseFloat(document.getElementById('cfgSUI').value) || 0,
-            FUTA: parseFloat(document.getElementById('cfgFUTA').value) || 0,
             empresa: document.getElementById('cfgEmpresa').value || 'Mi Empresa'
         };
         datosGlobales.config = config;
@@ -2508,7 +2602,7 @@
             return;
         }
         
-        if (!confirm('⚠️ ¿Confirmas cambiar la contraseña del administrador?\n\nDeberás usarla la próxima vez que inicies sesión.')) {
+        if (!confirm('⚠️ ¿Confirmas cambiar la contraseña del administrador?')) {
             return;
         }
         
@@ -2519,7 +2613,7 @@
         document.getElementById('passNueva').value = '';
         document.getElementById('passConfirmar').value = '';
         
-        alert('✅ Contraseña actualizada correctamente.\n\nYa puedes usarla para iniciar sesión.');
+        alert('✅ Contraseña actualizada correctamente.');
     }
 
     // ============================================================
@@ -2543,6 +2637,7 @@
                 if (contentId === 'admin-semana') renderSemana();
                 if (contentId === 'admin-mes') renderMes();
                 if (contentId === 'admin-clientes') renderPagosClientes();
+                if (contentId === 'admin-boletas') cargarDatosBoleta();
                 if (contentId === 'emp-trabajos-hoy') cargarTrabajosHoy();
             });
         });
@@ -2560,6 +2655,8 @@
     document.getElementById('semanaFecha').value = new Date().toISOString().slice(0,10);
     const hoyMes = new Date();
     document.getElementById('mesFecha').value = hoyMes.getFullYear() + '-' + String(hoyMes.getMonth() + 1).padStart(2, '0');
+    const boletaMesEl = document.getElementById('boletaMes');
+    if (boletaMesEl) boletaMesEl.value = hoyMes.getFullYear() + '-' + String(hoyMes.getMonth() + 1).padStart(2, '0');
     document.getElementById('cliFechaInicio').value = new Date().toISOString().slice(0,10);
     actualizarCamposFrecuencia();
 </script>
