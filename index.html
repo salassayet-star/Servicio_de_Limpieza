@@ -982,7 +982,12 @@
             'msg.cancelado': '❌ Cancelado',
             'msg.sinTomar': '⏳ Sin tomar',
             'msg.enProceso': '🔄 En proceso',
-            'msg.sinAsignar': 'Sin asignar'
+            'msg.sinAsignar': 'Sin asignar',
+            'emp.adelLabelEmp': 'Empleado',
+            'th.empleado': 'Empleado',
+            'th.cliente': 'Cliente',
+            'th.fecha': 'Fecha',
+            'th.direccion': 'Dirección'
         },
         en: {
             'loading.texto': '☁️ Syncing with the cloud...',
@@ -1202,7 +1207,12 @@
             'msg.cancelado': '❌ Cancelled',
             'msg.sinTomar': '⏳ Unassigned',
             'msg.enProceso': '🔄 In progress',
-            'msg.sinAsignar': 'Unassigned'
+            'msg.sinAsignar': 'Unassigned',
+            'emp.adelLabelEmp': 'Employee',
+            'th.empleado': 'Employee',
+            'th.cliente': 'Client',
+            'th.fecha': 'Date',
+            'th.direccion': 'Address'
         }
     };
 
@@ -1292,25 +1302,26 @@
     // ============================================================
     // APLICAR IDIOMA
     // ============================================================
-    function aplicarIdioma() {
+       function aplicarIdioma() {
         const idioma = datosGlobales.idioma || 'es';
+        const lang = idioma;
         
         const selector = document.getElementById('selectorIdioma');
         if (selector) selector.value = idioma;
         
-        // Función auxiliar para actualizar texto si el elemento existe
+        // Función auxiliar
         const setTxt = (id, clave) => {
             const el = document.getElementById(id);
             if (el) el.textContent = t(clave);
         };
         
-        // Header
+        // ==================== HEADER ====================
         setTxt('btnModoTexto', 'btn.modo');
         setTxt('btnSalirTexto', 'btn.salir');
         setTxt('loadingTexto', 'loading.texto');
         setTxt('loadingSubtexto', 'loading.subtexto');
         
-        // Login
+        // ==================== LOGIN ====================
         setTxt('loginTitulo', 'login.titulo');
         setTxt('loginSeleccionar', 'login.seleccionar');
         setTxt('btnRolAdmin', 'login.admin');
@@ -1327,13 +1338,13 @@
         setTxt('btnLoginEmpVolver', 'login.volver');
         setTxt('empleadoError', 'login.error.empleado');
         
-        // Stats
+        // ==================== STATS ====================
         setTxt('statLabelEmpleados', 'stats.empleados');
         setTxt('statLabelClientes', 'stats.clientes');
         setTxt('statLabelJornadas', 'stats.jornadas');
         setTxt('statLabelIngresos', 'stats.ingresos');
         
-        // Tabs admin
+        // ==================== TABS ====================
         setTxt('tabBtnAgenda', 'tab.agenda');
         setTxt('tabBtnSemana', 'tab.semana');
         setTxt('tabBtnMes', 'tab.mes');
@@ -1342,13 +1353,11 @@
         setTxt('tabBtnJornadas', 'tab.jornadas');
         setTxt('tabBtnBoletas', 'tab.boletas');
         setTxt('tabBtnConfig', 'tab.config');
-        
-        // Tabs empleado
         setTxt('tabEmpHoy', 'tab.emp.hoy');
         setTxt('tabEmpActivos', 'tab.emp.activos');
         setTxt('tabEmpHistorial', 'tab.emp.historial');
         
-        // Agenda
+        // ==================== AGENDA ====================
         setTxt('agendaTitulo', 'agenda.titulo');
         setTxt('agendaDesc', 'agenda.desc');
         setTxt('agendaFechaLabel', 'agenda.fecha');
@@ -1356,7 +1365,7 @@
         setTxt('btnAgendaHoy', 'btn.hoy');
         setTxt('btnAgendaSiguiente', 'btn.siguiente');
         
-        // Semana
+        // ==================== SEMANA ====================
         setTxt('semanaTitulo', 'semana.titulo');
         setTxt('semanaDesc', 'semana.desc');
         setTxt('semanaFechaLabel', 'semana.fecha');
@@ -1367,7 +1376,7 @@
         setTxt('semanaLeyendaCancelado', 'semana.cancelado');
         setTxt('semanaLeyendaNoProg', 'semana.noprogramado');
         
-        // Mes
+        // ==================== MES ====================
         setTxt('mesTitulo', 'mes.titulo');
         setTxt('mesDesc', 'mes.desc');
         setTxt('mesFechaLabel', 'mes.fecha');
@@ -1375,7 +1384,7 @@
         setTxt('btnMesActual', 'btn.actual');
         setTxt('btnMesSiguiente', 'btn.siguiente');
         
-        // Empleados
+        // ==================== EMPLEADOS ====================
         setTxt('empTitulo', 'emp.titulo');
         setTxt('empLabelNombre', 'emp.nombre');
         setTxt('empLabelTelefono', 'emp.telefono');
@@ -1390,7 +1399,7 @@
         setTxt('btnGuardarEmpleado', 'emp.guardar');
         setTxt('btnLimpiarEmpleado', 'emp.limpiar');
         setTxt('adelantosTitulo', 'emp.adelantos');
-        setTxt('adelLabelEmp', 'emp.titulo').replace;
+        setTxt('adelLabelEmp', 'emp.adelLabelEmp');
         setTxt('adelLabelMonto', 'emp.monto');
         setTxt('adelLabelFecha', 'emp.fecha');
         setTxt('btnRegistrarAdelanto', 'emp.registrarAdelanto');
@@ -1403,7 +1412,7 @@
         setTxt('thEmpAdelantos', 'th.adelantos');
         setTxt('thEmpAcciones', 'th.acciones');
         
-        // Clientes
+        // ==================== CLIENTES ====================
         setTxt('cliTitulo', 'cli.titulo');
         setTxt('cliDesc', 'cli.desc');
         setTxt('cliLabelNombre', 'cli.nombre');
@@ -1417,7 +1426,6 @@
         setTxt('cliOptEspecial', 'cli.especial');
         setTxt('cliLabelCosto', 'cli.costo');
         setTxt('cliLabelDias', 'cli.dias');
-        setTxt('diaLun', 'cli.lun');
         setTxt('cliLabelFrecuencia', 'cli.frecuencia');
         setTxt('cliOptSemanal', 'cli.semanal');
         setTxt('cliOptQuincenal', 'cli.quincenal');
@@ -1443,7 +1451,7 @@
         setTxt('btnLimpiarCliente', 'cli.limpiar');
         setTxt('cliListaTitulo', 'cli.lista');
         setTxt('thCliNombre', 'th.nombre');
-        setTxt('thCliDireccion', 'cli.direccion').replace(' *','');
+        setTxt('thCliDireccion', 'th.direccion');
         setTxt('thCliTelefono', 'th.telefono');
         setTxt('thCliServicio', 'th.servicio');
         setTxt('thCliCosto', 'th.costo');
@@ -1452,27 +1460,25 @@
         setTxt('thCliCodigo', 'th.codigo');
         setTxt('thCliAcciones', 'th.acciones');
         
-        // Traducir días de la semana
-        const diasTraduccion = {
-            es: { Lun: 'Lun', Mar: 'Mar', Mié: 'Mié', Jue: 'Jue', Vie: 'Vie', Sáb: 'Sáb', Dom: 'Dom' },
-            en: { Lun: 'Mon', Mar: 'Tue', Mié: 'Wed', Jue: 'Thu', Vie: 'Fri', Sáb: 'Sat', Dom: 'Sun' }
-        };
-        const diasMap = diasTraduccion[idioma] || diasTraduccion.es;
+        // ==================== DÍAS DE LA SEMANA ====================
+        const diasMap = lang === 'en' 
+            ? { Lun: 'Mon', Mar: 'Tue', Mié: 'Wed', Jue: 'Thu', Vie: 'Fri', Sáb: 'Sat', Dom: 'Sun' }
+            : { Mon: 'Lun', Tue: 'Mar', Wed: 'Mié', Thu: 'Jue', Fri: 'Vie', Sat: 'Sáb', Sun: 'Dom' };
         ['diaLun', 'diaMar', 'diaMie', 'diaJue', 'diaVie', 'diaSab', 'diaDom'].forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = diasMap[el.textContent] || el.textContent;
         });
         
-        // Pagos
+        // ==================== PAGOS ====================
         setTxt('pagosTitulo', 'pagos.titulo');
         setTxt('pagosDesc', 'pagos.desc');
         setTxt('pagosFiltroClienteLabel', 'pagos.filtroCli');
-        setTxt('pagosOptTodosCli', 'pagos.todosCli');
         setTxt('pagosFiltroEstadoLabel', 'pagos.filtroEst');
+        setTxt('pagosOptTodosCli', 'pagos.todosCli');
         setTxt('pagosOptTodosEst', 'pagos.todos');
         setTxt('pagosOptPendiente', 'pagos.pendientes');
         setTxt('pagosOptPagado', 'pagos.pagados');
-        setTxt('thPagoCliente', 'th.nombre');
+        setTxt('thPagoCliente', 'th.cliente');
         setTxt('thPagoServicio', 'th.servicio');
         setTxt('thPagoFechaProg', 'th.fechaProg');
         setTxt('thPagoMonto', 'th.monto');
@@ -1481,7 +1487,7 @@
         setTxt('thPagoMetodo', 'th.metodo');
         setTxt('thPagoAcciones', 'th.acciones');
         setTxt('pagosManualTitulo', 'pagos.manualTitulo');
-        setTxt('pagoManualCliLabel', 'th.nombre');
+        setTxt('pagoManualCliLabel', 'th.cliente');
         setTxt('pagoManualMontoLabel', 'th.monto');
         setTxt('pagoManualConceptoLabel', 'pagos.concepto');
         setTxt('pagoOptAdelanto', 'pagos.adelanto');
@@ -1491,7 +1497,7 @@
         setTxt('pagoManualNotasLabel', 'pagos.notas');
         setTxt('btnRegistrarPagoManual', 'pagos.registrar');
         
-        // Jornadas
+        // ==================== JORNADAS ====================
         setTxt('jorTitulo', 'jor.titulo');
         setTxt('jorDesc', 'jor.desc');
         setTxt('jorManualTitulo', 'jor.manualTitulo');
@@ -1507,9 +1513,9 @@
         setTxt('btnGuardarJornadaManual', 'jor.guardar');
         setTxt('btnLimpiarJornadaManual', 'jor.limpiar');
         setTxt('btnExportarExcel', 'jor.exportar');
-        setTxt('thJorEmp', 'th.nombre');
-        setTxt('thJorCli', 'th.nombre');
-        setTxt('thJorFecha', 'emp.fecha');
+        setTxt('thJorEmp', 'th.empleado');
+        setTxt('thJorCli', 'th.cliente');
+        setTxt('thJorFecha', 'th.fecha');
         setTxt('thJorEnt', 'th.entrada');
         setTxt('thJorSal', 'th.salida');
         setTxt('thJorHoras', 'th.horas');
@@ -1518,7 +1524,7 @@
         setTxt('thJorEstado', 'th.estado');
         setTxt('thJorAcciones', 'th.acciones');
         
-        // Boletas
+        // ==================== BOLETAS ====================
         setTxt('boletaTitulo', 'boleta.titulo');
         setTxt('boletaDesc', 'boleta.desc');
         setTxt('boletaEmpLabel', 'boleta.emp');
@@ -1533,7 +1539,7 @@
         setTxt('btnGenerarBoleta', 'boleta.generar');
         setTxt('btnBoletaPDF', 'boleta.pdf');
         setTxt('boletasGenLabel', 'boleta.generadas');
-        setTxt('thBolEmp', 'th.nombre');
+        setTxt('thBolEmp', 'th.empleado');
         setTxt('thBolPeriodo', 'th.periodo');
         setTxt('thBolHoras', 'th.horas');
         setTxt('thBolBruto', 'th.bruto');
@@ -1542,7 +1548,7 @@
         setTxt('thBolNeto', 'th.neto');
         setTxt('thBolAcciones', 'th.acciones');
         
-        // Config
+        // ==================== CONFIG ====================
         setTxt('configTitulo', 'config.titulo');
         setTxt('configEmpLabel', 'config.empresa');
         setTxt('configSSLabel', 'config.ss');
@@ -1566,7 +1572,7 @@
         const datosInfo = document.getElementById('datosInfo');
         if (datosInfo) datosInfo.innerHTML = t('datos.info');
         
-        // Empleado
+        // ==================== EMPLEADO ====================
         const empBienvenido = document.getElementById('empBienvenido');
         if (empBienvenido) empBienvenido.innerHTML = t('emp.bienvenido') + ' <span id="empNombreDisplay">' + (empleadoActual ? empleadoActual.nombre : '') + '</span>';
         
@@ -1575,10 +1581,29 @@
         setTxt('empTituloActivos', 'emp.tituloActivos');
         setTxt('empTituloHistorial', 'emp.tituloHistorial');
         
-        // Actualizar nombre de empresa en header
-        renderResumenDescuentos(getData());
+        // ==================== TH ADICIONALES ====================
+        setTxt('th.direccion', 'th.direccion');
+        
+        // ==================== RE-RENDERIZAR TODO ====================
+        renderEmpleados(datosGlobales);
+        renderClientes(datosGlobales);
+        renderJornadas(datosGlobales);
+        renderBoletas(datosGlobales);
+        renderPagosClientes();
+        renderAgendaDiaria();
+        renderSemana();
+        renderMes();
+        cargarDatosBoleta();
+        renderResumenDescuentos(datosGlobales);
+        cargarSelectsAdelantosPagos(datosGlobales);
+        cargarSelectsJornadaManual();
+        
+        if (empleadoActual) {
+            cargarTrabajosHoy();
+            cargarTrabajosEmpleado();
+            cargarHistorialEmpleado();
+        }
     }
-
     function cambiarIdioma(idioma) {
         datosGlobales.idioma = idioma;
         guardarEnFirebase();
