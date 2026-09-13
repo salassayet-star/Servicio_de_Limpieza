@@ -1045,48 +1045,54 @@
         aplicarIdioma();
     }
 
-    function aplicarIdioma() {
+       function aplicarIdioma() {
         const idioma = datosGlobales.idioma || 'es';
         
         // Selector
         const selector = document.getElementById('selectorIdioma');
         if (selector) selector.value = idioma;
         
-        // Botones header
+        // ========== HEADER ==========
         const btnModo = document.getElementById('btnModoTexto');
         if (btnModo) btnModo.textContent = t('btn.modo');
         const btnSalir = document.getElementById('btnSalirTexto');
         if (btnSalir) btnSalir.textContent = t('btn.salir');
         
-        // Sync badge
-        const syncBadge = document.getElementById('syncStatus');
-        if (syncBadge) {
-            if (syncBadge.classList.contains('syncing')) syncBadge.textContent = t('sync.syncing');
-            else if (syncBadge.classList.contains('error')) syncBadge.textContent = t('sync.error');
-            else syncBadge.textContent = t('sync.ok');
-        }
+        // ========== LOGIN ==========
+        const loginTitulo = document.querySelector('#modoSeleccion h2');
+        if (loginTitulo) loginTitulo.textContent = t('login.titulo');
+        const loginP = document.querySelector('#modoSeleccion p');
+        if (loginP) loginP.textContent = t('login.seleccionar');
+        const loginBtns = document.querySelectorAll('#modoSeleccion .selector-rol button');
+        if (loginBtns[0]) loginBtns[0].textContent = t('login.admin');
+        if (loginBtns[1]) loginBtns[1].textContent = t('login.empleado');
         
-        // Login
-        document.querySelector('#modoSeleccion h2').textContent = t('login.titulo');
-        document.querySelector('#modoSeleccion p').textContent = t('login.seleccionar');
-        document.querySelector('#modoSeleccion .selector-rol button:nth-child(1)').textContent = t('login.admin');
-        document.querySelector('#modoSeleccion .selector-rol button:nth-child(2)').textContent = t('login.empleado');
+        // Login Admin
+        const laH2 = document.querySelector('#loginAdmin h2');
+        if (laH2) laH2.textContent = t('login.admin.titulo');
+        const laLabel = document.querySelector('#loginAdmin label');
+        if (laLabel) laLabel.textContent = t('login.admin.pass');
+        const laBtn1 = document.querySelector('#loginAdmin button.btn-primary');
+        if (laBtn1) laBtn1.textContent = t('login.entrar');
+        const laBtn2 = document.querySelector('#loginAdmin button.btn-secondary');
+        if (laBtn2) laBtn2.textContent = t('login.volver');
+        const laErr = document.getElementById('adminError');
+        if (laErr) laErr.textContent = t('login.error.admin');
         
-        document.querySelector('#loginAdmin h2').textContent = t('login.admin.titulo');
-        document.querySelector('#loginAdmin label').textContent = t('login.admin.pass');
-        document.querySelector('#loginAdmin button.btn-primary').textContent = t('login.entrar');
-        document.querySelector('#loginAdmin button.btn-secondary').textContent = t('login.volver');
-        document.getElementById('adminError').textContent = t('login.error.admin');
+        // Login Empleado
+        const leH2 = document.querySelector('#loginEmpleado h2');
+        if (leH2) leH2.textContent = t('login.empleado.titulo');
+        const leLabels = document.querySelectorAll('#loginEmpleado label');
+        if (leLabels[0]) leLabels[0].textContent = t('login.usuario');
+        if (leLabels[1]) leLabels[1].textContent = t('login.admin.pass');
+        const leBtn1 = document.querySelector('#loginEmpleado button.btn-primary');
+        if (leBtn1) leBtn1.textContent = t('login.entrar');
+        const leBtn2 = document.querySelector('#loginEmpleado button.btn-secondary');
+        if (leBtn2) leBtn2.textContent = t('login.volver');
+        const leErr = document.getElementById('empleadoError');
+        if (leErr) leErr.textContent = t('login.error.empleado');
         
-        document.querySelector('#loginEmpleado h2').textContent = t('login.empleado.titulo');
-        const empLabels = document.querySelectorAll('#loginEmpleado label');
-        empLabels[0].textContent = t('login.usuario');
-        empLabels[1].textContent = t('login.admin.pass');
-        document.querySelector('#loginEmpleado button.btn-primary').textContent = t('login.entrar');
-        document.querySelector('#loginEmpleado button.btn-secondary').textContent = t('login.volver');
-        document.getElementById('empleadoError').textContent = t('login.error.empleado');
-        
-        // Admin tabs
+        // ========== TABS ADMIN ==========
         const tabBtns = document.querySelectorAll('#adminDashboard .tabs .tab-btn');
         if (tabBtns.length >= 8) {
             tabBtns[0].textContent = t('tab.agenda');
@@ -1099,7 +1105,15 @@
             tabBtns[7].textContent = t('tab.config');
         }
         
-        // Stats
+        // ========== TABS EMPLEADO ==========
+        const empTabBtns = document.querySelectorAll('#empleadoDashboard .tabs .tab-btn');
+        if (empTabBtns.length >= 3) {
+            empTabBtns[0].textContent = t('tab.emp.hoy');
+            empTabBtns[1].textContent = t('tab.emp.activos');
+            empTabBtns[2].textContent = t('tab.emp.historial');
+        }
+        
+        // ========== STATS ==========
         const statLabels = document.querySelectorAll('#adminDashboard .stats-grid .stat-card .label');
         if (statLabels.length >= 4) {
             statLabels[0].textContent = t('stats.empleados');
@@ -1108,30 +1122,265 @@
             statLabels[3].textContent = t('stats.ingresos');
         }
         
-        // Empleado tabs
-        const empTabBtns = document.querySelectorAll('#empleadoDashboard .tabs .tab-btn');
-        if (empTabBtns.length >= 3) {
-            empTabBtns[0].textContent = t('tab.emp.hoy');
-            empTabBtns[1].textContent = t('tab.emp.activos');
-            empTabBtns[2].textContent = t('tab.emp.historial');
-        }
+        // ========== TRADUCIR TODOS LOS LABELS, H3, P, BUTTONS, PLACEHOLDERS ==========
         
-        // Boletas
-        const boletaTitulo = document.querySelector('#tab-admin-boletas h2');
-        if (boletaTitulo) boletaTitulo.textContent = t('boleta.titulo');
-        const boletaDesc = document.querySelector('#tab-admin-boletas > p');
-        if (boletaDesc) boletaDesc.innerHTML = t('boleta.desc');
+        // Labels comunes por texto exacto
+        const traduccionesPorTexto = {
+            'es': {
+                'Nombre completo *': 'Nombre completo *',
+                'Teléfono *': 'Teléfono *',
+                'Email (opcional)': 'Email (opcional)',
+                'Tarifa/h ($) *': 'Tarifa/h ($) *',
+                'Cargo *': 'Cargo *',
+                'Usuario *': 'Usuario *',
+                'Contraseña *': 'Contraseña *',
+                'Estado': 'Estado',
+                'Nombre *': 'Nombre *',
+                'Dirección *': 'Dirección *',
+                'Email': 'Email',
+                'Tipo de Servicio Regular': 'Tipo de Servicio Regular',
+                'Costo del Servicio ($)': 'Costo del Servicio ($)',
+                'Días de servicio': 'Días de servicio',
+                'Frecuencia del servicio': 'Frecuencia del servicio',
+                'Fecha de inicio del servicio': 'Fecha de inicio del servicio',
+                '¿Qué semana le toca?': '¿Qué semana le toca?',
+                '¿Qué día del mes le toca?': '¿Qué día del mes le toca?',
+                'Tipo de Código de Acceso': 'Tipo de Código de Acceso',
+                'Código / Número': 'Código / Número',
+                'Instrucciones especiales de ingreso': 'Instrucciones especiales de ingreso',
+                'Empleado': 'Empleado',
+                'Cliente': 'Cliente',
+                'Fecha': 'Fecha',
+                'Hora Entrada *': 'Hora Entrada *',
+                'Hora Salida *': 'Hora Salida *',
+                'Tipo de Pago': 'Tipo de Pago',
+                'Monto ($)': 'Monto ($)',
+                'Notas': 'Notas',
+                'Filtrar por cliente': 'Filtrar por cliente',
+                'Filtrar por estado': 'Filtrar por estado',
+                'Mes': 'Mes',
+                'Quincena': 'Quincena',
+                'Semana de:': 'Semana de:',
+                'Fecha:': 'Fecha:',
+                'Mes:': 'Mes:',
+                'Empresa': 'Empresa',
+                'Social Security %': 'Social Security %',
+                'Medicare %': 'Medicare %',
+                'Contraseña actual *': 'Contraseña actual *',
+                'Nueva contraseña *': 'Nueva contraseña *',
+                'Confirmar nueva contraseña *': 'Confirmar nueva contraseña *',
+                'Adelantos a Empleados': 'Adelantos a Empleados',
+                'Pagos/Adelantos de Clientes': 'Pagos/Adelantos de Clientes',
+                'Registrar Pago/Adelanto': 'Registrar Pago/Adelanto',
+                'Registrar Pago Manual': 'Registrar Pago Manual',
+                'Registro de Pagos por Cliente': 'Registro de Pagos por Cliente',
+                'Clientes Registrados': 'Clientes Registrados',
+                'Boletas Generadas': 'Boletas Generadas',
+                'Exportar Excel': 'Exportar Excel',
+                'Vista Previa': 'Vista Previa',
+                'Resumen de Descuentos': 'Resumen de Descuentos',
+                'Seguridad del Administrador': 'Seguridad del Administrador',
+                'Gestión de Datos': 'Gestión de Datos',
+                'Backup local': 'Backup local',
+                'Restaurar local': 'Restaurar local',
+                'Borrar Todos los Datos': 'Borrar Todos los Datos',
+                'Guardar': 'Guardar',
+                'Limpiar': 'Limpiar',
+                'Limpiar / Nuevo': 'Limpiar / Nuevo',
+                'Anterior': 'Anterior',
+                'Siguiente': 'Siguiente',
+                'Hoy': 'Hoy',
+                'Actual': 'Actual',
+                'Cancelar': 'Cancelar',
+                'Reactivar': 'Reactivar',
+                'Maps': 'Maps',
+                'Completado': 'Completado',
+                'En proceso': 'En proceso',
+                'Sin tomar': 'Sin tomar',
+                'Tomado': 'Tomado',
+                'Activo': 'Activo',
+                'No programado': 'No programado',
+                'Total Pagado': 'Total Pagado',
+                'Total Pendiente': 'Total Pendiente',
+                'Vencido': 'Vencido',
+                'Efectivo': 'Efectivo',
+                'Cheque': 'Cheque',
+                'Transferencia': 'Transferencia',
+                'Tarjeta': 'Tarjeta',
+                'Pendiente': 'Pendiente',
+                'Pagado': 'Pagado',
+                'Regular': 'Regular',
+                'Profunda': 'Profunda',
+                'Construcción': 'Construcción',
+                'Especial': 'Especial',
+                'Activo': 'Activo',
+                'Inactivo': 'Inactivo',
+                'Semanal (todas las semanas)': 'Semanal (todas las semanas)',
+                'Quincenal (semana sí, semana no)': 'Quincenal (semana sí, semana no)',
+                'Mensual (una vez al mes)': 'Mensual (una vez al mes)',
+                'Semana IMPAR (1, 3, 5, 7...)': 'Semana IMPAR (1, 3, 5, 7...)',
+                'Semana PAR (2, 4, 6, 8...)': 'Semana PAR (2, 4, 6, 8...)',
+                'Alarma': 'Alarma',
+                'Cerradura con clave': 'Cerradura con clave',
+                'Lockbox (caja de llaves)': 'Lockbox (caja de llaves)',
+                'Llave física': 'Llave física',
+                'Portero/Recepción': 'Portero/Recepción',
+                'Otro': 'Otro',
+                'Sin código': 'Sin código',
+                'Efectivo (con descuentos)': 'Efectivo (con descuentos)',
+                'Cheque (con descuentos)': 'Cheque (con descuentos)',
+                'Adelanto': 'Adelanto',
+                'Pago directo': 'Pago directo',
+                'Servicio extra': 'Servicio extra'
+            },
+            'en': {
+                'Nombre completo *': 'Full name *',
+                'Teléfono *': 'Phone *',
+                'Email (opcional)': 'Email (optional)',
+                'Tarifa/h ($) *': 'Rate/hr ($) *',
+                'Cargo *': 'Position *',
+                'Usuario *': 'Username *',
+                'Contraseña *': 'Password *',
+                'Estado': 'Status',
+                'Nombre *': 'Name *',
+                'Dirección *': 'Address *',
+                'Email': 'Email',
+                'Tipo de Servicio Regular': 'Regular Service Type',
+                'Costo del Servicio ($)': 'Service Cost ($)',
+                'Días de servicio': 'Service days',
+                'Frecuencia del servicio': 'Service frequency',
+                'Fecha de inicio del servicio': 'Service start date',
+                '¿Qué semana le toca?': 'Which week applies?',
+                '¿Qué día del mes le toca?': 'What day of month applies?',
+                'Tipo de Código de Acceso': 'Access Code Type',
+                'Código / Número': 'Code / Number',
+                'Instrucciones especiales de ingreso': 'Special entry instructions',
+                'Empleado': 'Employee',
+                'Cliente': 'Client',
+                'Fecha': 'Date',
+                'Hora Entrada *': 'Clock In *',
+                'Hora Salida *': 'Clock Out *',
+                'Tipo de Pago': 'Payment Type',
+                'Monto ($)': 'Amount ($)',
+                'Notas': 'Notes',
+                'Filtrar por cliente': 'Filter by client',
+                'Filtrar por estado': 'Filter by status',
+                'Mes': 'Month',
+                'Quincena': 'Biweekly',
+                'Semana de:': 'Week of:',
+                'Fecha:': 'Date:',
+                'Mes:': 'Month:',
+                'Empresa': 'Company',
+                'Social Security %': 'Social Security %',
+                'Medicare %': 'Medicare %',
+                'Contraseña actual *': 'Current password *',
+                'Nueva contraseña *': 'New password *',
+                'Confirmar nueva contraseña *': 'Confirm new password *',
+                'Adelantos a Empleados': 'Employee Advances',
+                'Pagos/Adelantos de Clientes': 'Client Payments/Advances',
+                'Registrar Pago/Adelanto': 'Register Payment/Advance',
+                'Registrar Pago Manual': 'Register Manual Payment',
+                'Registro de Pagos por Cliente': 'Client Payment Record',
+                'Clientes Registrados': 'Registered Clients',
+                'Boletas Generadas': 'Generated Pay Stubs',
+                'Exportar Excel': 'Export Excel',
+                'Vista Previa': 'Preview',
+                'Resumen de Descuentos': 'Deductions Summary',
+                'Seguridad del Administrador': 'Admin Security',
+                'Gestión de Datos': 'Data Management',
+                'Backup local': 'Local Backup',
+                'Restaurar local': 'Restore Local',
+                'Borrar Todos los Datos': 'Delete All Data',
+                'Guardar': 'Save',
+                'Limpiar': 'Clear',
+                'Limpiar / Nuevo': 'Clear / New',
+                'Anterior': 'Previous',
+                'Siguiente': 'Next',
+                'Hoy': 'Today',
+                'Actual': 'Current',
+                'Cancelar': 'Cancel',
+                'Reactivar': 'Reactivate',
+                'Maps': 'Maps',
+                'Completado': 'Completed',
+                'En proceso': 'In progress',
+                'Sin tomar': 'Unassigned',
+                'Tomado': 'Taken',
+                'Activo': 'Active',
+                'No programado': 'Not scheduled',
+                'Total Pagado': 'Total Paid',
+                'Total Pendiente': 'Total Pending',
+                'Vencido': 'Overdue',
+                'Efectivo': 'Cash',
+                'Cheque': 'Check',
+                'Transferencia': 'Transfer',
+                'Tarjeta': 'Card',
+                'Pendiente': 'Pending',
+                'Pagado': 'Paid',
+                'Regular': 'Regular',
+                'Profunda': 'Deep',
+                'Construcción': 'Construction',
+                'Especial': 'Special',
+                'Activo': 'Active',
+                'Inactivo': 'Inactive',
+                'Semanal (todas las semanas)': 'Weekly (every week)',
+                'Quincenal (semana sí, semana no)': 'Biweekly (alternating weeks)',
+                'Mensual (una vez al mes)': 'Monthly (once a month)',
+                'Semana IMPAR (1, 3, 5, 7...)': 'ODD week (1, 3, 5, 7...)',
+                'Semana PAR (2, 4, 6, 8...)': 'EVEN week (2, 4, 6, 8...)',
+                'Alarma': 'Alarm',
+                'Cerradura con clave': 'Keypad lock',
+                'Lockbox (caja de llaves)': 'Lockbox',
+                'Llave física': 'Physical key',
+                'Portero/Recepción': 'Doorman/Reception',
+                'Otro': 'Other',
+                'Sin código': 'No code',
+                'Efectivo (con descuentos)': 'Cash (with deductions)',
+                'Cheque (con descuentos)': 'Check (with deductions)',
+                'Adelanto': 'Advance',
+                'Pago directo': 'Direct payment',
+                'Servicio extra': 'Extra service'
+            }
+        };
         
-        // Config
-        const configTitulo = document.querySelector('#tab-admin-config h2');
-        if (configTitulo) configTitulo.textContent = t('config.titulo');
+        const mapa = traduccionesPorTexto[idioma] || traduccionesPorTexto.es;
         
-        // Seguridad
-        const segTitulo = document.querySelector('#tab-admin-config h3');
-        // (Las demás etiquetas se actualizan al renderizar)
+        // Traducir labels
+        document.querySelectorAll('label').forEach(label => {
+            const texto = label.textContent.trim();
+            if (mapa[texto]) {
+                label.textContent = mapa[texto];
+            }
+        });
         
-        // Empresa nombre en header
+        // Traducir botones
+        document.querySelectorAll('button').forEach(btn => {
+            const texto = btn.textContent.trim();
+            if (mapa[texto]) {
+                btn.textContent = mapa[texto];
+            }
+        });
+        
+        // Traducir opciones de select
+        document.querySelectorAll('option').forEach(opt => {
+            const texto = opt.textContent.trim();
+            if (mapa[texto]) {
+                opt.textContent = mapa[texto];
+            }
+        });
+        
+        // Traducir headers h3 en config
+        document.querySelectorAll('h3').forEach(h3 => {
+            const texto = h3.textContent.trim();
+            if (mapa[texto]) {
+                h3.textContent = mapa[texto];
+            }
+        });
+        
+        // Actualizar el nombre de la empresa en el header
         renderResumenDescuentos(getData());
+        
+        // Re-renderizar vistas dinámicas con el idioma aplicado
+        renderAll();
     }
 
     // ============================================================
