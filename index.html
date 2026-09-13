@@ -509,10 +509,52 @@
             <button class="btn btn-warning" onclick="registrarPagoCliente()">💰 Registrar Pago Manual</button>
         </div>
 
-        <!-- TAB JORNADAS -->
+                <!-- TAB JORNADAS -->
         <div class="tab-content" id="tab-admin-jornadas">
             <h2>📋 Monitoreo de Jornadas</h2>
-            <p style="color:#4a5568; margin-bottom:15px;">Los empleados marcan entrada/salida con <strong>geolocalización</strong>. Puedes modificar las horas aquí.</p>
+            <p style="color:#4a5568; margin-bottom:15px;">Los empleados marcan entrada/salida con <strong>geolocalización</strong>. Como administrador puedes <strong>crear jornadas manualmente</strong> o modificar las horas existentes.</p>
+            
+            <div style="background:#e3f2fd; border-left:4px solid #1a4a7a; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <h3 style="color:#1a4a7a; margin-bottom:12px;">➕ Registrar Jornada Manualmente</h3>
+                <p style="color:#4a5568; font-size:0.85rem; margin-bottom:15px;">Usa esto cuando un empleado olvidó marcar su entrada o salida.</p>
+                <form onsubmit="guardarJornadaManual(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Empleado *</label>
+                            <select id="jmEmpleado" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cliente *</label>
+                            <select id="jmCliente" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha *</label>
+                            <input type="date" id="jmFecha" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hora Entrada *</label>
+                            <input type="time" id="jmEntrada" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hora Salida *</label>
+                            <input type="time" id="jmSalida" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Pago</label>
+                            <select id="jmPago">
+                                <option value="efectivo">💵 Efectivo</option>
+                                <option value="cheque">📄 Cheque</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="jmEditId">
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success" id="btnGuardarJornadaManual">💾 Guardar Jornada</button>
+                        <button type="button" class="btn btn-secondary" onclick="limpiarFormJornadaManual()">🔄 Limpiar</button>
+                    </div>
+                </form>
+            </div>
+            
             <button class="btn btn-success" onclick="exportarExcelJornadas()">📊 Exportar Excel</button>
             <div class="table-wrapper">
                 <table>
