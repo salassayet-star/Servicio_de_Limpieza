@@ -164,12 +164,15 @@
 
 <header class="header">
     <h1>🧹 <span id="nombreEmpresaHeader">Mi Empresa</span></h1>
-    <div class="header-actions">
+        <div class="header-actions">
         <span class="sync-badge" id="syncStatus">☁️ Conectado</span>
-        <button class="btn btn-outline" onclick="cambiarModo()">🌙 Modo</button>
-        <button class="btn btn-outline" onclick="cerrarSesion()">🚪 Salir</button>
+        <select id="selectorIdioma" onchange="cambiarIdioma(this.value)" style="padding:6px 12px; border-radius:6px; border:2px solid white; background:transparent; color:white; font-weight:600; cursor:pointer; font-size:0.85rem;">
+            <option value="es" style="color:black;">🇪🇸 Español</option>
+            <option value="en" style="color:black;">🇺🇸 English</option>
+        </select>
+        <button class="btn btn-outline" onclick="cambiarModo()">🌙 <span id="btnModoTexto">Modo</span></button>
+        <button class="btn btn-outline" onclick="cerrarSesion()">🚪 <span id="btnSalirTexto">Salir</span></button>
     </div>
-</header>
 
 <div class="container">
 
@@ -721,7 +724,7 @@
     const PAGOS_POR_PAGINA = 10;
     const DOC_ID = 'sistema_limpieza_datos';
 
-    let datosGlobales = {
+       let datosGlobales = {
         empleados: [],
         clientes: [],
         jornadas: [],
@@ -731,8 +734,405 @@
         adelantosEmpleados: [],
         pagosServicios: [],
         cancelaciones: [],
-        adminPassword: 'admin123'
+        adminPassword: 'admin123',
+        idioma: 'es'
     };
+
+    // ============================================================
+    // TRADUCCIONES
+    // ============================================================
+    const TRADUCCIONES = {
+        es: {
+            // Header
+            'btn.modo': 'Modo',
+            'btn.salir': 'Salir',
+            'sync.ok': '☁️ Sincronizado',
+            'sync.syncing': '⏳ Guardando...',
+            'sync.error': '⚠️ Sin conexión',
+            'sync.conectado': '☁️ Conectado',
+            
+            // Login
+            'login.titulo': '🔐 Acceso al Sistema',
+            'login.seleccionar': 'Selecciona tu rol',
+            'login.admin': '👤 Admin',
+            'login.empleado': '🧹 Empleado',
+            'login.admin.titulo': '👤 Acceso Admin',
+            'login.admin.pass': 'Contraseña',
+            'login.empleado.titulo': '🧹 Acceso Empleado',
+            'login.usuario': 'Usuario',
+            'login.entrar': '🔐 Entrar',
+            'login.volver': '⬅️ Volver',
+            'login.error.admin': '❌ Contraseña incorrecta',
+            'login.error.empleado': '❌ Usuario/contraseña incorrectos',
+            
+            // Tabs
+            'tab.agenda': '📅 Agenda Diaria',
+            'tab.semana': '🗓️ Vista Semanal',
+            'tab.mes': '📆 Vista Mensual',
+            'tab.empleados': '👤 Empleados',
+            'tab.clientes': '🏢 Clientes',
+            'tab.jornadas': '📋 Jornadas',
+            'tab.boletas': '📄 Boletas',
+            'tab.config': '⚙️ Config',
+            'tab.emp.hoy': '📅 Trabajos de Hoy',
+            'tab.emp.activos': '📋 Mis Trabajos Activos',
+            'tab.emp.historial': '📜 Historial',
+            
+            // Stats
+            'stats.empleados': '👤 Empleados',
+            'stats.clientes': '🏢 Clientes',
+            'stats.jornadas': '📋 Jornadas',
+            'stats.ingresos': '💰 Ingresos',
+            
+            // Boletas
+            'boleta.titulo': '📄 Boletas de Pago (Quincenal)',
+            'boleta.desc': 'Solo el administrador genera boletas. Descuentos de ley: Social Security 6.2% + Medicare 1.45%.',
+            'boleta.empleado': 'Empleado',
+            'boleta.mes': 'Mes',
+            'boleta.quincena': 'Quincena',
+            'boleta.q1': '1ra Quincena (día 1 al 15)',
+            'boleta.q2': '2da Quincena (día 16 al último día)',
+            'boleta.tipoPago': 'Tipo de Pago',
+            'boleta.efectivo': '💵 Efectivo (con descuentos)',
+            'boleta.cheque': '📄 Cheque (con descuentos)',
+            'boleta.vista': '🧾 Vista Previa',
+            'boleta.generar': '✅ Generar Boleta',
+            'boleta.pdf': '📄 PDF',
+            'boleta.generadas': '📋 Boletas Generadas',
+            
+            // Boletas generadas
+            'boleta.periodo': 'Período',
+            'boleta.horas': 'Horas',
+            'boleta.bruto': 'Bruto',
+            'boleta.ss': 'Social Security',
+            'boleta.medicare': 'Medicare',
+            'boleta.neto': 'Neto',
+            'boleta.acciones': 'Acciones',
+            
+            // Vista previa boleta
+            'pdf.titulo': 'BOLETA DE PAGO',
+            'pdf.empleado': 'Empleado',
+            'pdf.cargo': 'Cargo',
+            'pdf.periodo': 'Período',
+            'pdf.tipoPago': 'Tipo de pago',
+            'pdf.horas': 'Horas trabajadas',
+            'pdf.tarifa': 'Tarifa por hora',
+            'pdf.bruto': 'Total Bruto',
+            'pdf.deducciones': 'DEDUCCIONES',
+            'pdf.concepto': 'Concepto',
+            'pdf.monto': 'Monto',
+            'pdf.totalDed': 'Total Deducciones',
+            'pdf.netPay': 'NET PAY',
+            'pdf.detalle': 'DETALLE DE JORNADAS',
+            'pdf.fecha': 'Fecha',
+            'pdf.cliente': 'Cliente',
+            'pdf.entrada': 'Entrada',
+            'pdf.salida': 'Salida',
+            'pdf.sinJornadas': 'No hay jornadas registradas en este período',
+            
+            // Config
+            'config.titulo': '⚙️ Configuración',
+            'config.empresa': 'Empresa',
+            'config.ss': 'Social Security %',
+            'config.medicare': 'Medicare %',
+            'config.guardar': '💾 Guardar Configuración',
+            'config.resumen': 'Total descuentos',
+            
+            // Seguridad
+            'seg.titulo': '🔐 Seguridad del Administrador',
+            'seg.desc': 'Cambia la contraseña de acceso al panel de administrador.',
+            'seg.actual': 'Contraseña actual',
+            'seg.nueva': 'Nueva contraseña',
+            'seg.confirmar': 'Confirmar nueva contraseña',
+            'seg.cambiar': '🔐 Cambiar Contraseña',
+            
+            // Datos
+            'datos.titulo': '🗄️ Gestión de Datos',
+            'datos.backup': '💾 Backup local',
+            'datos.restaurar': '📂 Restaurar local',
+            'datos.borrar': '🗑️ Borrar Todos los Datos',
+            
+            // Empleado
+            'emp.bienvenido': 'Bienvenido',
+            'emp.clientesHoy': 'Clientes para hoy',
+            'emp.elegir': 'Elige un cliente para comenzar a trabajar',
+            'emp.comenzar': '🚀 Comenzar este trabajo',
+            'emp.entrada': '✅ Marcar Entrada + Geo',
+            'emp.salida': '⏹️ Marcar Salida + Geo',
+            'emp.completado': '✅ Completado',
+            'emp.tomado': '👤 Tomado por',
+            'emp.sinTrabajos': 'No tienes trabajos activos',
+            'emp.sinClientes': 'No hay clientes programados para hoy',
+            
+            // Botones generales
+            'btn.guardar': '💾 Guardar',
+            'btn.limpiar': '🔄 Limpiar',
+            'btn.editar': '✏️',
+            'btn.eliminar': '🗑️',
+            'btn.cancelar': '❌ Cancelar',
+            'btn.reactivar': '✅ Reactivar',
+            'btn.maps': '🗺️ Maps',
+            'btn.anterior': '◀️ Anterior',
+            'btn.hoy': '📌 Hoy',
+            'btn.siguiente': 'Siguiente ▶️',
+            
+            // Jornadas
+            'jor.titulo': '📋 Monitoreo de Jornadas',
+            'jor.manual': '➕ Registrar Jornada Manualmente',
+            'jor.manualDesc': 'Usa esto cuando un empleado olvidó marcar su entrada o salida.',
+            'jor.exportar': '📊 Exportar Excel',
+            
+            // Otros
+            'msg.guardado': '✅ Guardado correctamente',
+            'msg.error': '❌ Error',
+            'msg.confirmar': '¿Estás seguro?'
+        },
+        en: {
+            // Header
+            'btn.modo': 'Mode',
+            'btn.salir': 'Logout',
+            'sync.ok': '☁️ Synced',
+            'sync.syncing': '⏳ Saving...',
+            'sync.error': '⚠️ No connection',
+            'sync.conectado': '☁️ Connected',
+            
+            // Login
+            'login.titulo': '🔐 System Access',
+            'login.seleccionar': 'Select your role',
+            'login.admin': '👤 Admin',
+            'login.empleado': '🧹 Employee',
+            'login.admin.titulo': '👤 Admin Access',
+            'login.admin.pass': 'Password',
+            'login.empleado.titulo': '🧹 Employee Access',
+            'login.usuario': 'Username',
+            'login.entrar': '🔐 Enter',
+            'login.volver': '⬅️ Back',
+            'login.error.admin': '❌ Incorrect password',
+            'login.error.empleado': '❌ Incorrect username/password',
+            
+            // Tabs
+            'tab.agenda': '📅 Daily Schedule',
+            'tab.semana': '🗓️ Weekly View',
+            'tab.mes': '📆 Monthly View',
+            'tab.empleados': '👤 Employees',
+            'tab.clientes': '🏢 Clients',
+            'tab.jornadas': '📋 Work Logs',
+            'tab.boletas': '📄 Pay Stubs',
+            'tab.config': '⚙️ Settings',
+            'tab.emp.hoy': '📅 Today\'s Jobs',
+            'tab.emp.activos': '📋 My Active Jobs',
+            'tab.emp.historial': '📜 History',
+            
+            // Stats
+            'stats.empleados': '👤 Employees',
+            'stats.clientes': '🏢 Clients',
+            'stats.jornadas': '📋 Work Logs',
+            'stats.ingresos': '💰 Income',
+            
+            // Boletas
+            'boleta.titulo': '📄 Pay Stubs (Biweekly)',
+            'boleta.desc': 'Only admin generates pay stubs. Legal deductions: Social Security 6.2% + Medicare 1.45%.',
+            'boleta.empleado': 'Employee',
+            'boleta.mes': 'Month',
+            'boleta.quincena': 'Biweekly Period',
+            'boleta.q1': '1st Half (day 1 to 15)',
+            'boleta.q2': '2nd Half (day 16 to last day)',
+            'boleta.tipoPago': 'Payment Type',
+            'boleta.efectivo': '💵 Cash (with deductions)',
+            'boleta.cheque': '📄 Check (with deductions)',
+            'boleta.vista': '🧾 Preview',
+            'boleta.generar': '✅ Generate Pay Stub',
+            'boleta.pdf': '📄 PDF',
+            'boleta.generadas': '📋 Generated Pay Stubs',
+            
+            // Boletas generadas
+            'boleta.periodo': 'Period',
+            'boleta.horas': 'Hours',
+            'boleta.bruto': 'Gross',
+            'boleta.ss': 'Social Security',
+            'boleta.medicare': 'Medicare',
+            'boleta.neto': 'Net',
+            'boleta.acciones': 'Actions',
+            
+            // Vista previa boleta
+            'pdf.titulo': 'PAY STUB',
+            'pdf.empleado': 'Employee',
+            'pdf.cargo': 'Position',
+            'pdf.periodo': 'Period',
+            'pdf.tipoPago': 'Payment type',
+            'pdf.horas': 'Hours worked',
+            'pdf.tarifa': 'Hourly rate',
+            'pdf.bruto': 'Gross Pay',
+            'pdf.deducciones': 'DEDUCTIONS',
+            'pdf.concepto': 'Concept',
+            'pdf.monto': 'Amount',
+            'pdf.totalDed': 'Total Deductions',
+            'pdf.netPay': 'NET PAY',
+            'pdf.detalle': 'WORK LOG DETAIL',
+            'pdf.fecha': 'Date',
+            'pdf.cliente': 'Client',
+            'pdf.entrada': 'Clock In',
+            'pdf.salida': 'Clock Out',
+            'pdf.sinJornadas': 'No work logs recorded in this period',
+            
+            // Config
+            'config.titulo': '⚙️ Settings',
+            'config.empresa': 'Company',
+            'config.ss': 'Social Security %',
+            'config.medicare': 'Medicare %',
+            'config.guardar': '💾 Save Settings',
+            'config.resumen': 'Total deductions',
+            
+            // Seguridad
+            'seg.titulo': '🔐 Admin Security',
+            'seg.desc': 'Change admin panel access password.',
+            'seg.actual': 'Current password',
+            'seg.nueva': 'New password',
+            'seg.confirmar': 'Confirm new password',
+            'seg.cambiar': '🔐 Change Password',
+            
+            // Datos
+            'datos.titulo': '🗄️ Data Management',
+            'datos.backup': '💾 Local Backup',
+            'datos.restaurar': '📂 Restore Local',
+            'datos.borrar': '🗑️ Delete All Data',
+            
+            // Empleado
+            'emp.bienvenido': 'Welcome',
+            'emp.clientesHoy': 'Clients for today',
+            'emp.elegir': 'Choose a client to start working',
+            'emp.comenzar': '🚀 Start this job',
+            'emp.entrada': '✅ Clock In + Geo',
+            'emp.salida': '⏹️ Clock Out + Geo',
+            'emp.completado': '✅ Completed',
+            'emp.tomado': '👤 Taken by',
+            'emp.sinTrabajos': 'You have no active jobs',
+            'emp.sinClientes': 'No clients scheduled for today',
+            
+            // Botones generales
+            'btn.guardar': '💾 Save',
+            'btn.limpiar': '🔄 Clear',
+            'btn.editar': '✏️',
+            'btn.eliminar': '🗑️',
+            'btn.cancelar': '❌ Cancel',
+            'btn.reactivar': '✅ Reactivate',
+            'btn.maps': '🗺️ Maps',
+            'btn.anterior': '◀️ Previous',
+            'btn.hoy': '📌 Today',
+            'btn.siguiente': 'Next ▶️',
+            
+            // Jornadas
+            'jor.titulo': '📋 Work Log Monitoring',
+            'jor.manual': '➕ Register Work Log Manually',
+            'jor.manualDesc': 'Use this when an employee forgot to clock in or out.',
+            'jor.exportar': '📊 Export Excel',
+            
+            // Otros
+            'msg.guardado': '✅ Saved successfully',
+            'msg.error': '❌ Error',
+            'msg.confirmar': 'Are you sure?'
+        }
+    };
+
+    function t(clave) {
+        const idioma = datosGlobales.idioma || 'es';
+        return TRADUCCIONES[idioma][clave] || clave;
+    }
+
+    function cambiarIdioma(idioma) {
+        datosGlobales.idioma = idioma;
+        guardarEnFirebase();
+        aplicarIdioma();
+    }
+
+    function aplicarIdioma() {
+        const idioma = datosGlobales.idioma || 'es';
+        
+        // Selector
+        const selector = document.getElementById('selectorIdioma');
+        if (selector) selector.value = idioma;
+        
+        // Botones header
+        const btnModo = document.getElementById('btnModoTexto');
+        if (btnModo) btnModo.textContent = t('btn.modo');
+        const btnSalir = document.getElementById('btnSalirTexto');
+        if (btnSalir) btnSalir.textContent = t('btn.salir');
+        
+        // Sync badge
+        const syncBadge = document.getElementById('syncStatus');
+        if (syncBadge) {
+            if (syncBadge.classList.contains('syncing')) syncBadge.textContent = t('sync.syncing');
+            else if (syncBadge.classList.contains('error')) syncBadge.textContent = t('sync.error');
+            else syncBadge.textContent = t('sync.ok');
+        }
+        
+        // Login
+        document.querySelector('#modoSeleccion h2').textContent = t('login.titulo');
+        document.querySelector('#modoSeleccion p').textContent = t('login.seleccionar');
+        document.querySelector('#modoSeleccion .selector-rol button:nth-child(1)').textContent = t('login.admin');
+        document.querySelector('#modoSeleccion .selector-rol button:nth-child(2)').textContent = t('login.empleado');
+        
+        document.querySelector('#loginAdmin h2').textContent = t('login.admin.titulo');
+        document.querySelector('#loginAdmin label').textContent = t('login.admin.pass');
+        document.querySelector('#loginAdmin button.btn-primary').textContent = t('login.entrar');
+        document.querySelector('#loginAdmin button.btn-secondary').textContent = t('login.volver');
+        document.getElementById('adminError').textContent = t('login.error.admin');
+        
+        document.querySelector('#loginEmpleado h2').textContent = t('login.empleado.titulo');
+        const empLabels = document.querySelectorAll('#loginEmpleado label');
+        empLabels[0].textContent = t('login.usuario');
+        empLabels[1].textContent = t('login.admin.pass');
+        document.querySelector('#loginEmpleado button.btn-primary').textContent = t('login.entrar');
+        document.querySelector('#loginEmpleado button.btn-secondary').textContent = t('login.volver');
+        document.getElementById('empleadoError').textContent = t('login.error.empleado');
+        
+        // Admin tabs
+        const tabBtns = document.querySelectorAll('#adminDashboard .tabs .tab-btn');
+        if (tabBtns.length >= 8) {
+            tabBtns[0].textContent = t('tab.agenda');
+            tabBtns[1].textContent = t('tab.semana');
+            tabBtns[2].textContent = t('tab.mes');
+            tabBtns[3].textContent = t('tab.empleados');
+            tabBtns[4].textContent = t('tab.clientes');
+            tabBtns[5].textContent = t('tab.jornadas');
+            tabBtns[6].textContent = t('tab.boletas');
+            tabBtns[7].textContent = t('tab.config');
+        }
+        
+        // Stats
+        const statLabels = document.querySelectorAll('#adminDashboard .stats-grid .stat-card .label');
+        if (statLabels.length >= 4) {
+            statLabels[0].textContent = t('stats.empleados');
+            statLabels[1].textContent = t('stats.clientes');
+            statLabels[2].textContent = t('stats.jornadas');
+            statLabels[3].textContent = t('stats.ingresos');
+        }
+        
+        // Empleado tabs
+        const empTabBtns = document.querySelectorAll('#empleadoDashboard .tabs .tab-btn');
+        if (empTabBtns.length >= 3) {
+            empTabBtns[0].textContent = t('tab.emp.hoy');
+            empTabBtns[1].textContent = t('tab.emp.activos');
+            empTabBtns[2].textContent = t('tab.emp.historial');
+        }
+        
+        // Boletas
+        const boletaTitulo = document.querySelector('#tab-admin-boletas h2');
+        if (boletaTitulo) boletaTitulo.textContent = t('boleta.titulo');
+        const boletaDesc = document.querySelector('#tab-admin-boletas > p');
+        if (boletaDesc) boletaDesc.innerHTML = t('boleta.desc');
+        
+        // Config
+        const configTitulo = document.querySelector('#tab-admin-config h2');
+        if (configTitulo) configTitulo.textContent = t('config.titulo');
+        
+        // Seguridad
+        const segTitulo = document.querySelector('#tab-admin-config h3');
+        // (Las demás etiquetas se actualizan al renderizar)
+        
+        // Empresa nombre en header
+        renderResumenDescuentos(getData());
+    }
 
     // ============================================================
     // FIREBASE - SINCRONIZACIÓN
@@ -1273,11 +1673,10 @@
 
         const container = document.getElementById('agendaContenido');
 
-        if (clientesHoy.length === 0) {
+              if (clientesHoy.length === 0) {
             container.innerHTML = `<div class="sin-trabajos">
-                <h3>📭 No hay clientes programados para ${formatoFecha(fecha)}</h3>
+                <h3>📭 ${t('emp.sinClientes')} ${formatoFecha(fecha)}</h3>
                 <p>${nombreDia(fecha)}</p>
-                <p style="margin-top:10px;">Los clientes aparecen aquí según los días y frecuencia que tengan configurados.</p>
             </div>`;
             return;
         }
@@ -1384,7 +1783,7 @@
             dias.push(d.toISOString().slice(0,10));
         }
 
-        const container = document.getElementById('semanaContenido');
+        const container = ('semanaContenido');
 
         if (data.clientes.length === 0) {
             container.innerHTML = '<p style="color:#4a5568; padding:20px; text-align:center;">No hay clientes registrados.</p>';
@@ -1448,7 +1847,7 @@
     }
 
     function cambiarSemana(delta) {
-        const input = document.getElementById('semanaFecha');
+        const input = ('semanaFecha');
         const fecha = new Date(input.value + 'T00:00:00');
         fecha.setDate(fecha.getDate() + delta * 7);
         input.value = fecha.toISOString().slice(0,10);
@@ -1456,7 +1855,7 @@
     }
 
     function irSemanaActual() {
-        document.getElementById('semanaFecha').value = new Date().toISOString().slice(0,10);
+        ('semanaFecha').value = new Date().toISOString().slice(0,10);
         renderSemana();
     }
 
@@ -1465,7 +1864,7 @@
     // ============================================================
     function renderMes() {
         const data = getData();
-        const mesInput = document.getElementById('mesFecha');
+        const mesInput = ('mesFecha');
         if (!mesInput) return;
         if (!mesInput.value) {
             const hoy = new Date();
@@ -1483,7 +1882,7 @@
         const diasMesAnterior = diaSemanaInicio;
         const ultimoDiaMesAnterior = new Date(year, month - 1, 0).getDate();
         
-        const container = document.getElementById('mesContenido');
+        const container = ('mesContenido');
         
         let totalTrabajos = 0;
         let totalCancelados = 0;
@@ -1495,7 +1894,7 @@
             totalCancelados += canceladosDia;
         }
         
-        document.getElementById('mesResumen').innerHTML = `
+        ('mesResumen').innerHTML = `
             <div class="item">📅 Días: <strong>${diasEnMes}</strong></div>
             <div class="item">🏢 Trabajos: <strong>${totalTrabajos}</strong></div>
             <div class="item">❌ Cancelados: <strong>${totalCancelados}</strong></div>
@@ -1580,12 +1979,12 @@
             html += `<button class="btn btn-danger btn-sm" onclick="cancelarDia('${clienteId}', '${fecha}'); cerrarModal();">❌ Cancelar este día</button>`;
         }
         
-        document.getElementById('modalContent').innerHTML = html;
-        document.getElementById('modalOverlay').classList.add('active');
+        ('modalContent').innerHTML = html;
+        ('modalOverlay').classList.add('active');
     }
     
     function cambiarMes(delta) {
-        const input = document.getElementById('mesFecha');
+        const input = ('mesFecha');
         const [year, month] = input.value.split('-').map(Number);
         const nuevaFecha = new Date(year, month - 1 + delta, 1);
         input.value = nuevaFecha.getFullYear() + '-' + String(nuevaFecha.getMonth() + 1).padStart(2, '0');
@@ -1594,7 +1993,7 @@
     
     function irMesActual() {
         const hoy = new Date();
-        document.getElementById('mesFecha').value = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0');
+        ('mesFecha').value = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0');
         renderMes();
     }
 
@@ -1603,8 +2002,8 @@
     // ============================================================
     function renderPagosClientes() {
         const data = getData();
-        const filtroCli = document.getElementById('filtroClientePagos').value;
-        const filtroEstado = document.getElementById('filtroEstadoPagos').value;
+        const filtroCli = ('filtroClientePagos').value;
+        const filtroEstado = ('filtroEstadoPagos').value;
         
         let pagos = [...data.pagosServicios];
         
@@ -1645,7 +2044,7 @@
         const hoyStr = new Date().toISOString().slice(0,10);
         const totalVencido = pagos.filter(p => p.estado === 'pendiente' && p.fecha < hoyStr).reduce((s, p) => s + p.monto, 0);
         
-        document.getElementById('cuentasResumen').innerHTML = `
+        ('cuentasResumen').innerHTML = `
             <div class="cuenta-card pagado"><div class="monto">$${totalPagado.toFixed(2)}</div><div class="label">✅ Total Pagado</div></div>
             <div class="cuenta-card pendiente"><div class="monto">$${totalPendiente.toFixed(2)}</div><div class="label">⏳ Total Pendiente</div></div>
             <div class="cuenta-card vencido"><div class="monto">$${totalVencido.toFixed(2)}</div><div class="label">⚠️ Vencido</div></div>
@@ -1659,10 +2058,10 @@
         const fin = inicio + PAGOS_POR_PAGINA;
         const paginaPagos = filtrados.slice(inicio, fin);
         
-        const tbody = document.getElementById('tablaPagosClientes');
+        const tbody = ('tablaPagosClientes');
         if (filtrados.length === 0) {
             tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#4a5568;">No hay pagos registrados.</td></tr>';
-            document.getElementById('paginacionPagos').innerHTML = '';
+            ('paginacionPagos').innerHTML = '';
             return;
         }
         
@@ -1709,7 +2108,7 @@
         pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${totalPaginas})">Última »</button>`;
         pagHtml += `<span class="info">Página ${paginaPagosActual} de ${totalPaginas} · ${filtrados.length} registros</span>`;
         
-        document.getElementById('paginacionPagos').innerHTML = pagHtml;
+        ('paginacionPagos').innerHTML = pagHtml;
     }
     
     function cambiarPaginaPagos(pagina) {
@@ -1760,16 +2159,16 @@
     function guardarEmpleado(e) {
         e.preventDefault();
         const data = getData();
-        const id = document.getElementById('empEditId').value;
+        const id = ('empEditId').value;
         const emp = {
-            nombre: document.getElementById('empNombre').value,
-            telefono: document.getElementById('empTelefono').value,
-            email: document.getElementById('empEmail').value,
-            tarifa: parseFloat(document.getElementById('empTarifa').value),
-            cargo: document.getElementById('empCargo').value,
-            usuario: document.getElementById('empUsuario').value,
-            password: document.getElementById('empPassword').value,
-            estado: document.getElementById('empEstado').value
+            nombre: ('empNombre').value,
+            telefono: ('empTelefono').value,
+            email: ('empEmail').value,
+            tarifa: parseFloat(('empTarifa').value),
+            cargo: ('empCargo').value,
+            usuario: ('empUsuario').value,
+            password: ('empPassword').value,
+            estado: ('empEstado').value
         };
         if (id) {
             const idx = data.empleados.findIndex(e => e.id === id);
@@ -1787,15 +2186,15 @@
         const data = getData();
         const emp = data.empleados.find(e => e.id === id);
         if (!emp) return;
-        document.getElementById('empEditId').value = emp.id;
-        document.getElementById('empNombre').value = emp.nombre;
-        document.getElementById('empTelefono').value = emp.telefono;
-        document.getElementById('empEmail').value = emp.email || '';
-        document.getElementById('empTarifa').value = emp.tarifa;
-        document.getElementById('empCargo').value = emp.cargo;
-        document.getElementById('empUsuario').value = emp.usuario;
-        document.getElementById('empPassword').value = emp.password;
-        document.getElementById('empEstado').value = emp.estado;
+        ('empEditId').value = emp.id;
+        ('empNombre').value = emp.nombre;
+        ('empTelefono').value = emp.telefono;
+        ('empEmail').value = emp.email || '';
+        ('empTarifa').value = emp.tarifa;
+        ('empCargo').value = emp.cargo;
+        ('empUsuario').value = emp.usuario;
+        ('empPassword').value = emp.password;
+        ('empEstado').value = emp.estado;
     }
 
     function eliminarEmpleado(id) {
@@ -1806,8 +2205,8 @@
     }
 
     function limpiarFormEmpleado() {
-        document.getElementById('empEditId').value = '';
-        document.getElementById('formEmpleado').reset();
+        ('empEditId').value = '';
+        ('formEmpleado').reset();
     }
 
     // ============================================================
@@ -1815,7 +2214,7 @@
     // ============================================================
     function registrarAdelantoEmpleado() {
         const data = getData();
-        const empleadoId = document.getElementById('adelantoEmpleadoSelect').value;
+        const empleadoId = ('adelantoEmpleadoSelect').value;
         const monto = parseFloat(document.getElementById('adelantoEmpleadoMonto').value);
         const fecha = document.getElementById('adelantoEmpleadoFecha').value;
         if (!empleadoId || !monto || !fecha) { alert('⚠️ Completa todos los campos'); return; }
@@ -2659,6 +3058,7 @@
     if (boletaMesEl) boletaMesEl.value = hoyMes.getFullYear() + '-' + String(hoyMes.getMonth() + 1).padStart(2, '0');
     document.getElementById('cliFechaInicio').value = new Date().toISOString().slice(0,10);
     actualizarCamposFrecuencia();
+    aplicarIdioma();   
 </script>
 </body>
 </html>
