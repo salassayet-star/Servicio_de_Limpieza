@@ -12,8 +12,8 @@
         body { background: #f0f4f8; color: #1a202c; min-height: 100vh; }
         .header { background: linear-gradient(135deg, #0f2b4d, #1a4a7a); color: white; padding: 18px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
         .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: 1px; }
-        .header h1 span { color: white; }
-        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .header h1 span { background: #f6c445; color: #0f2b4d; font-size: 0.7rem; padding: 4px 12px; border-radius: 20px; margin-left: 10px; }
+        .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
         .btn { padding: 8px 18px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.25s; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         .btn-primary { background: #1a4a7a; color: white; }
@@ -35,31 +35,8 @@
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .form-group { display: flex; flex-direction: column; }
         .form-group label { font-weight: 600; margin-bottom: 4px; font-size: 0.85rem; color: #2d3748; }
-        .form-group input, .form-group select, .form-group textarea { 
-            padding: 8px 12px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 6px; 
-            font-size: 0.95rem; 
-            transition: all 0.25s; 
-            font-family: inherit; 
-            color: #1a202c !important;
-            background-color: #ffffff !important;
-        }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { 
-            border-color: #1a4a7a; 
-            outline: none; 
-            box-shadow: 0 0 0 3px rgba(26, 74, 122, 0.1);
-            color: #1a202c !important;
-            background-color: #ffffff !important;
-        }
-        input, select, textarea {
-            color: #1a202c !important;
-            background-color: #ffffff !important;
-        }
-        .input-fecha, .input-hora, .input-monto {
-            color: #1a202c !important;
-            background-color: #ffffff !important;
-        }
+        .form-group input, .form-group select, .form-group textarea { padding: 8px 12px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 0.95rem; transition: all 0.25s; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #1a4a7a; outline: none; box-shadow: 0 0 0 3px rgba(26, 74, 122, 0.1); }
         .form-group textarea { resize: vertical; min-height: 60px; }
         .form-group small { color: #4a5568; font-size: 0.75rem; margin-top: 2px; }
         .form-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
@@ -106,7 +83,7 @@
         .dia-check:hover { border-color: #1a4a7a; }
         .agenda-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .agenda-fecha { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .agenda-fecha input { padding: 10px 15px; border: 2px solid #1a4a7a; border-radius: 8px; font-size: 1rem; font-weight: 600; color: #1a4a7a !important; }
+        .agenda-fecha input { padding: 10px 15px; border: 2px solid #1a4a7a; border-radius: 8px; font-size: 1rem; font-weight: 600; color: #1a4a7a; }
         .agenda-resumen { display: flex; gap: 15px; flex-wrap: wrap; }
         .agenda-resumen .item { background: #f7fafc; padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; }
         .agenda-resumen .item strong { color: #1a4a7a; font-size: 1.1rem; }
@@ -181,20 +158,16 @@
 <!-- OVERLAY DE CARGA -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <h2 id="loadingTexto">☁️ Sincronizando con la nube...</h2>
-    <p style="color: #cbd5e0; font-size: 0.9rem;" id="loadingSubtexto">Cargando datos desde Firebase</p>
+    <h2>☁️ Sincronizando con la nube...</h2>
+    <p style="color: #cbd5e0; font-size: 0.9rem;">Cargando datos desde Firebase</p>
 </div>
 
 <header class="header">
-    <h1>🧹 <span id="nombreEmpresaHeader">Mi Empresa</span></h1>
+    <h1>🧹 CleanManager <span>v5.0</span></h1>
     <div class="header-actions">
         <span class="sync-badge" id="syncStatus">☁️ Conectado</span>
-        <select id="selectorIdioma" onchange="cambiarIdioma(this.value)" style="padding:6px 12px; border-radius:6px; border:2px solid white; background:transparent; color:white; font-weight:600; cursor:pointer; font-size:0.85rem;">
-            <option value="es" style="color:black;">🇪🇸 Español</option>
-            <option value="en" style="color:black;">🇺🇸 English</option>
-        </select>
-        <button class="btn btn-outline" onclick="cambiarModo()">🌙 <span id="btnModoTexto">Modo</span></button>
-        <button class="btn btn-outline" onclick="cerrarSesion()">🚪 <span id="btnSalirTexto">Salir</span></button>
+        <button class="btn btn-outline" onclick="cambiarModo()">🌙 Modo</button>
+        <button class="btn btn-outline" onclick="cerrarSesion()">🚪 Salir</button>
     </div>
 </header>
 
@@ -202,65 +175,65 @@
 
     <!-- SELECCIÓN DE ROL -->
     <div id="modoSeleccion" class="login-container">
-        <h2 id="loginTitulo">🔐 Acceso al Sistema</h2>
-        <p style="margin-bottom: 20px; color: #4a5568;" id="loginSeleccionar">Selecciona tu rol</p>
+        <h2>🔐 Acceso al Sistema</h2>
+        <p style="margin-bottom: 20px; color: #4a5568;">Selecciona tu rol</p>
         <div class="selector-rol">
-            <button class="btn btn-primary" onclick="seleccionarRol('admin')" id="btnRolAdmin">👤 Admin</button>
-            <button class="btn btn-success" onclick="seleccionarRol('empleado')" id="btnRolEmpleado">🧹 Empleado</button>
+            <button class="btn btn-primary" onclick="seleccionarRol('admin')">👤 Admin</button>
+            <button class="btn btn-success" onclick="seleccionarRol('empleado')">🧹 Empleado</button>
         </div>
     </div>
 
     <!-- LOGIN ADMIN -->
     <div id="loginAdmin" class="login-container hidden">
-        <h2 id="loginAdminTitulo">👤 Acceso Admin</h2>
-        <div class="form-group"><label id="loginAdminLabel">Contraseña</label><input type="password" id="adminPass" placeholder="admin123"></div>
-        <button class="btn btn-primary" onclick="loginAdmin()" id="btnLoginAdminEntrar">🔐 Entrar</button>
-        <button class="btn btn-secondary" onclick="volverInicio()" id="btnLoginAdminVolver">⬅️ Volver</button>
+        <h2>👤 Acceso Admin</h2>
+        <div class="form-group"><label>Contraseña</label><input type="password" id="adminPass" placeholder="admin123"></div>
+        <button class="btn btn-primary" onclick="loginAdmin()">🔐 Entrar</button>
+        <button class="btn btn-secondary" onclick="volverInicio()">⬅️ Volver</button>
         <div id="adminError" style="color:red; margin-top:10px; display:none;">❌ Contraseña incorrecta</div>
     </div>
 
     <!-- LOGIN EMPLEADO -->
     <div id="loginEmpleado" class="login-container hidden">
-        <h2 id="loginEmpTitulo">🧹 Acceso Empleado</h2>
-        <div class="form-group"><label id="loginEmpLabelUser">Usuario</label><input type="text" id="empLoginUser"></div>
-        <div class="form-group"><label id="loginEmpLabelPass">Contraseña</label><input type="password" id="empLoginPass"></div>
-        <button class="btn btn-primary" onclick="loginEmpleado()" id="btnLoginEmpEntrar">🔐 Entrar</button>
-        <button class="btn btn-secondary" onclick="volverInicio()" id="btnLoginEmpVolver">⬅️ Volver</button>
+        <h2>🧹 Acceso Empleado</h2>
+        <div class="form-group"><label>Usuario</label><input type="text" id="empLoginUser"></div>
+        <div class="form-group"><label>Contraseña</label><input type="password" id="empLoginPass"></div>
+        <button class="btn btn-primary" onclick="loginEmpleado()">🔐 Entrar</button>
+        <button class="btn btn-secondary" onclick="volverInicio()">⬅️ Volver</button>
         <div id="empleadoError" style="color:red; margin-top:10px; display:none;">❌ Usuario/contraseña incorrectos</div>
     </div>
 
     <!-- ========== DASHBOARD ADMIN ========== -->
     <div id="adminDashboard" class="admin-dashboard hidden">
         <div class="stats-grid" id="statsGrid">
-            <div class="stat-card"><div class="number" id="totalEmpleados">0</div><div class="label" id="statLabelEmpleados">👤 Empleados</div></div>
-            <div class="stat-card"><div class="number" id="totalClientes">0</div><div class="label" id="statLabelClientes">🏢 Clientes</div></div>
-            <div class="stat-card"><div class="number" id="totalJornadas">0</div><div class="label" id="statLabelJornadas">📋 Jornadas</div></div>
-            <div class="stat-card"><div class="number" id="totalIngresos">$0</div><div class="label" id="statLabelIngresos">💰 Ingresos</div></div>
+            <div class="stat-card"><div class="number" id="totalEmpleados">0</div><div class="label">👤 Empleados</div></div>
+            <div class="stat-card"><div class="number" id="totalClientes">0</div><div class="label">🏢 Clientes</div></div>
+            <div class="stat-card"><div class="number" id="totalJornadas">0</div><div class="label">📋 Jornadas</div></div>
+            <div class="stat-card"><div class="number" id="totalIngresos">$0</div><div class="label">💰 Ingresos</div></div>
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" data-tab="admin-agenda" id="tabBtnAgenda">📅 Agenda Diaria</button>
-            <button class="tab-btn" data-tab="admin-semana" id="tabBtnSemana">🗓️ Vista Semanal</button>
-            <button class="tab-btn" data-tab="admin-mes" id="tabBtnMes">📆 Vista Mensual</button>
-            <button class="tab-btn" data-tab="admin-empleados" id="tabBtnEmpleados">👤 Empleados</button>
-            <button class="tab-btn" data-tab="admin-clientes" id="tabBtnClientes">🏢 Clientes</button>
-            <button class="tab-btn" data-tab="admin-jornadas" id="tabBtnJornadas">📋 Jornadas</button>
-            <button class="tab-btn" data-tab="admin-boletas" id="tabBtnBoletas">📄 Boletas</button>
-            <button class="tab-btn" data-tab="admin-config" id="tabBtnConfig">⚙️ Config</button>
+            <button class="tab-btn active" data-tab="admin-agenda">📅 Agenda Diaria</button>
+            <button class="tab-btn" data-tab="admin-semana">🗓️ Vista Semanal</button>
+            <button class="tab-btn" data-tab="admin-mes">📆 Vista Mensual</button>
+            <button class="tab-btn" data-tab="admin-empleados">👤 Empleados</button>
+            <button class="tab-btn" data-tab="admin-clientes">🏢 Clientes</button>
+            <button class="tab-btn" data-tab="admin-jornadas">📋 Jornadas</button>
+            <button class="tab-btn" data-tab="admin-boletas">📄 Boletas</button>
+            <button class="tab-btn" data-tab="admin-config">⚙️ Config</button>
         </div>
 
         <!-- ===== TAB AGENDA DIARIA ===== -->
         <div class="tab-content active" id="tab-admin-agenda">
-            <h2 id="agendaTitulo">📅 Agenda Diaria</h2>
-            <p style="color:#4a5568; margin-bottom:15px;" id="agendaDesc">Clientes que tocan según sus días y frecuencia programados.</p>
+            <h2>📅 Agenda Diaria</h2>
+            <p style="color:#4a5568; margin-bottom:15px;">Clientes que tocan según sus días y frecuencia programados.</p>
             
             <div class="agenda-header">
                 <div class="agenda-fecha">
-                    <label style="font-weight:600;" id="agendaFechaLabel">📆 Fecha:</label>
+                    <label style="font-weight:600;">📆 Fecha:</label>
                     <input type="date" id="agendaFecha" onchange="renderAgendaDiaria()">
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(-1)" id="btnAgendaAnterior">◀️ Anterior</button>
-                    <button class="btn btn-primary btn-sm" onclick="irHoy()" id="btnAgendaHoy">📌 Hoy</button>
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(1)" id="btnAgendaSiguiente">Siguiente ▶️</button>
+                    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(-1)">◀️ Anterior</button>
+                    <button class="btn btn-primary btn-sm" onclick="irHoy()">📌 Hoy</button>
+                    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(1)">Siguiente ▶️</button>
                 </div>
                 <div class="agenda-resumen" id="agendaResumen"></div>
             </div>
@@ -270,31 +243,31 @@
 
         <!-- ===== TAB VISTA SEMANAL ===== -->
         <div class="tab-content" id="tab-admin-semana">
-            <h2 id="semanaTitulo">🗓️ Vista Semanal de Clientes</h2>
-            <p style="color:#4a5568; margin-bottom:15px;" id="semanaDesc">Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.</p>
+            <h2>🗓️ Vista Semanal de Clientes</h2>
+            <p style="color:#4a5568; margin-bottom:15px;">Días programados de cada cliente. Haz clic en cualquier día para <strong>activar/cancelar</strong>.</p>
             
             <div class="agenda-header">
                 <div class="agenda-fecha">
-                    <label style="font-weight:600;" id="semanaFechaLabel">📆 Semana de:</label>
+                    <label style="font-weight:600;">📆 Semana de:</label>
                     <input type="date" id="semanaFecha" onchange="renderSemana()">
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(-1)" id="btnSemanaAnterior">◀️ Anterior</button>
-                    <button class="btn btn-primary btn-sm" onclick="irSemanaActual()" id="btnSemanaActual">📌 Actual</button>
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(1)" id="btnSemanaSiguiente">Siguiente ▶️</button>
+                    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(-1)">◀️ Anterior</button>
+                    <button class="btn btn-primary btn-sm" onclick="irSemanaActual()">📌 Actual</button>
+                    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(1)">Siguiente ▶️</button>
                 </div>
             </div>
 
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
                 <div style="display:flex; align-items:center; gap:6px; font-size:0.85rem;">
                     <div style="width:20px; height:20px; background:#d4edda; border-radius:4px;"></div>
-                    <span id="semanaLeyendaActivo">Activo</span>
+                    <span>Activo</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:6px; font-size:0.85rem;">
                     <div style="width:20px; height:20px; background:#f8d7da; border-radius:4px;"></div>
-                    <span id="semanaLeyendaCancelado">Cancelado</span>
+                    <span>Cancelado</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:6px; font-size:0.85rem;">
                     <div style="width:20px; height:20px; background:#f7fafc; border:1px solid #e2e8f0; border-radius:4px;"></div>
-                    <span id="semanaLeyendaNoProg">No programado</span>
+                    <span>No programado</span>
                 </div>
             </div>
 
@@ -303,16 +276,16 @@
 
         <!-- ===== TAB VISTA MENSUAL ===== -->
         <div class="tab-content" id="tab-admin-mes">
-            <h2 id="mesTitulo">📆 Vista Mensual</h2>
-            <p style="color:#4a5568; margin-bottom:15px;" id="mesDesc">Calendario mensual con todos los clientes programados por día.</p>
+            <h2>📆 Vista Mensual</h2>
+            <p style="color:#4a5568; margin-bottom:15px;">Calendario mensual con todos los clientes programados por día.</p>
             
             <div class="agenda-header">
                 <div class="agenda-fecha">
-                    <label style="font-weight:600;" id="mesFechaLabel">📆 Mes:</label>
+                    <label style="font-weight:600;">📆 Mes:</label>
                     <input type="month" id="mesFecha" onchange="renderMes()">
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarMes(-1)" id="btnMesAnterior">◀️ Anterior</button>
-                    <button class="btn btn-primary btn-sm" onclick="irMesActual()" id="btnMesActual">📌 Actual</button>
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarMes(1)" id="btnMesSiguiente">Siguiente ▶️</button>
+                    <button class="btn btn-secondary btn-sm" onclick="cambiarMes(-1)">◀️ Anterior</button>
+                    <button class="btn btn-primary btn-sm" onclick="irMesActual()">📌 Actual</button>
+                    <button class="btn btn-secondary btn-sm" onclick="cambiarMes(1)">Siguiente ▶️</button>
                 </div>
                 <div class="agenda-resumen" id="mesResumen"></div>
             </div>
@@ -322,35 +295,35 @@
 
         <!-- TAB EMPLEADOS -->
         <div class="tab-content" id="tab-admin-empleados">
-            <h2 id="empTitulo">👤 Gestión de Empleados</h2>
+            <h2>👤 Gestión de Empleados</h2>
             <form id="formEmpleado" onsubmit="guardarEmpleado(event)">
                 <div class="form-grid">
-                    <div class="form-group"><label id="empLabelNombre">Nombre completo *</label><input type="text" id="empNombre" required></div>
-                    <div class="form-group"><label id="empLabelTelefono">Teléfono *</label><input type="tel" id="empTelefono" required></div>
-                    <div class="form-group"><label id="empLabelEmail">Email (opcional)</label><input type="email" id="empEmail"></div>
-                    <div class="form-group"><label id="empLabelTarifa">Tarifa/h ($) *</label><input type="number" id="empTarifa" step="0.01" required></div>
-                    <div class="form-group"><label id="empLabelCargo">Cargo *</label><input type="text" id="empCargo" required></div>
-                    <div class="form-group"><label id="empLabelUsuario">Usuario *</label><input type="text" id="empUsuario" required></div>
-                    <div class="form-group"><label id="empLabelPassword">Contraseña *</label><input type="text" id="empPassword" required></div>
-                    <div class="form-group"><label id="empLabelEstado">Estado</label><select id="empEstado"><option value="activo" id="empOptActivo">Activo</option><option value="inactivo" id="empOptInactivo">Inactivo</option></select></div>
+                    <div class="form-group"><label>Nombre *</label><input type="text" id="empNombre" required></div>
+                    <div class="form-group"><label>Teléfono *</label><input type="tel" id="empTelefono" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="empEmail"></div>
+                    <div class="form-group"><label>Tarifa/h ($) *</label><input type="number" id="empTarifa" step="0.01" required></div>
+                    <div class="form-group"><label>Cargo *</label><input type="text" id="empCargo" required></div>
+                    <div class="form-group"><label>Usuario *</label><input type="text" id="empUsuario" required></div>
+                    <div class="form-group"><label>Contraseña *</label><input type="text" id="empPassword" required></div>
+                    <div class="form-group"><label>Estado</label><select id="empEstado"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select></div>
                 </div>
                 <input type="hidden" id="empEditId">
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary" id="btnGuardarEmpleado">💾 Guardar</button>
-                    <button type="reset" class="btn btn-secondary" onclick="limpiarFormEmpleado()" id="btnLimpiarEmpleado">🔄 Limpiar</button>
+                    <button type="submit" class="btn btn-primary">💾 Guardar</button>
+                    <button type="reset" class="btn btn-secondary" onclick="limpiarFormEmpleado()">🔄 Limpiar</button>
                 </div>
             </form>
-            <div style="margin:15px 0;"><h4 id="adelantosTitulo">💰 Adelantos a Empleados</h4>
+            <div style="margin:15px 0;"><h4>💰 Adelantos a Empleados</h4>
                 <div class="form-grid">
-                    <div class="form-group"><label id="adelLabelEmp">Empleado</label><select id="adelantoEmpleadoSelect"></select></div>
-                    <div class="form-group"><label id="adelLabelMonto">Monto ($)</label><input type="number" id="adelantoEmpleadoMonto" step="0.01"></div>
-                    <div class="form-group"><label id="adelLabelFecha">Fecha</label><input type="date" id="adelantoEmpleadoFecha"></div>
+                    <div class="form-group"><label>Empleado</label><select id="adelantoEmpleadoSelect"></select></div>
+                    <div class="form-group"><label>Monto ($)</label><input type="number" id="adelantoEmpleadoMonto" step="0.01"></div>
+                    <div class="form-group"><label>Fecha</label><input type="date" id="adelantoEmpleadoFecha"></div>
                 </div>
-                <button class="btn btn-warning" onclick="registrarAdelantoEmpleado()" id="btnRegistrarAdelanto">💰 Registrar Adelanto</button>
+                <button class="btn btn-warning" onclick="registrarAdelantoEmpleado()">💰 Registrar Adelanto</button>
             </div>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th id="thEmpNombre">Nombre</th><th id="thEmpTel">Teléfono</th><th id="thEmpTarifa">Tarifa/h</th><th id="thEmpCargo">Cargo</th><th id="thEmpUsuario">Usuario</th><th id="thEmpEstado">Estado</th><th id="thEmpAdelantos">Adelantos</th><th id="thEmpAcciones">Acciones</th></tr></thead>
+                    <thead><tr><th>Nombre</th><th>Teléfono</th><th>Tarifa/h</th><th>Cargo</th><th>Usuario</th><th>Estado</th><th>Adelantos</th><th>Acciones</th></tr></thead>
                     <tbody id="tablaEmpleados"></tbody>
                 </table>
             </div>
@@ -358,8 +331,8 @@
 
         <!-- TAB CLIENTES -->
         <div class="tab-content" id="tab-admin-clientes">
-            <h2 id="cliTitulo">🏢 Gestión de Clientes</h2>
-            <p style="color:#4a5568; margin-bottom:15px;" id="cliDesc">Edita cualquier cliente con el botón ✏️ si solicitan cambios.</p>
+            <h2>🏢 Gestión de Clientes</h2>
+            <p style="color:#4a5568; margin-bottom:15px;">Edita cualquier cliente con el botón ✏️ si solicitan cambios.</p>
             
             <form id="formCliente" onsubmit="guardarCliente(event)">
                 <input type="hidden" id="cliEditId">
@@ -367,112 +340,113 @@
                     ➕ Nuevo Cliente
                 </div>
                 <div class="form-grid">
-                    <div class="form-group"><label id="cliLabelNombre">Nombre *</label><input type="text" id="cliNombre" required></div>
-                    <div class="form-group"><label id="cliLabelDireccion">Dirección *</label><input type="text" id="cliDireccion" required></div>
-                    <div class="form-group"><label id="cliLabelTelefono">Teléfono *</label><input type="tel" id="cliTelefono" required></div>
-                    <div class="form-group"><label id="cliLabelEmail">Email</label><input type="email" id="cliEmail"></div>
-                    <div class="form-group"><label id="cliLabelServicio">Tipo de Servicio Regular</label>
-                        <select id="cliServicio"><option value="regular" id="cliOptRegular">Regular</option><option value="profunda" id="cliOptProfunda">Profunda</option><option value="construccion" id="cliOptConstruccion">Construcción</option><option value="especial" id="cliOptEspecial">Especial</option></select>
+                    <div class="form-group"><label>Nombre *</label><input type="text" id="cliNombre" required></div>
+                    <div class="form-group"><label>Dirección *</label><input type="text" id="cliDireccion" required></div>
+                    <div class="form-group"><label>Teléfono *</label><input type="tel" id="cliTelefono" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="cliEmail"></div>
+                    <div class="form-group"><label>Tipo de Servicio Regular</label>
+                        <select id="cliServicio"><option value="regular">Regular</option><option value="profunda">Profunda</option><option value="construccion">Construcción</option><option value="especial">Especial</option></select>
                     </div>
-                    <div class="form-group"><label id="cliLabelCosto">Costo del Servicio ($)</label><input type="number" id="cliCosto" step="0.01"></div>
+                    <div class="form-group"><label>Costo del Servicio ($)</label><input type="number" id="cliCosto" step="0.01"></div>
                 </div>
                 <div style="margin:15px 0;">
-                    <label style="font-weight:600; display:block; margin-bottom:8px;" id="cliLabelDias">📆 Días de servicio</label>
+                    <label style="font-weight:600; display:block; margin-bottom:8px;">📆 Días de servicio</label>
                     <div class="dias-grid" id="diasGrid">
-                        <label class="dia-check" data-dia="lunes"><input type="checkbox" value="lunes"><span id="diaLun">Lun</span></label>
-                        <label class="dia-check" data-dia="martes"><input type="checkbox" value="martes"><span id="diaMar">Mar</span></label>
-                        <label class="dia-check" data-dia="miercoles"><input type="checkbox" value="miercoles"><span id="diaMie">Mié</span></label>
-                        <label class="dia-check" data-dia="jueves"><input type="checkbox" value="jueves"><span id="diaJue">Jue</span></label>
-                        <label class="dia-check" data-dia="viernes"><input type="checkbox" value="viernes"><span id="diaVie">Vie</span></label>
-                        <label class="dia-check" data-dia="sabado"><input type="checkbox" value="sabado"><span id="diaSab">Sáb</span></label>
-                        <label class="dia-check" data-dia="domingo"><input type="checkbox" value="domingo"><span id="diaDom">Dom</span></label>
+                        <label class="dia-check" data-dia="lunes"><input type="checkbox" value="lunes">Lun</label>
+                        <label class="dia-check" data-dia="martes"><input type="checkbox" value="martes">Mar</label>
+                        <label class="dia-check" data-dia="miercoles"><input type="checkbox" value="miercoles">Mié</label>
+                        <label class="dia-check" data-dia="jueves"><input type="checkbox" value="jueves">Jue</label>
+                        <label class="dia-check" data-dia="viernes"><input type="checkbox" value="viernes">Vie</label>
+                        <label class="dia-check" data-dia="sabado"><input type="checkbox" value="sabado">Sáb</label>
+                        <label class="dia-check" data-dia="domingo"><input type="checkbox" value="domingo">Dom</label>
                     </div>
                 </div>
 
                 <div class="form-grid" style="background:#f7fafc; padding:15px; border-radius:10px; margin-bottom:15px;">
                     <div class="form-group">
-                        <label id="cliLabelFrecuencia">🔄 Frecuencia del servicio</label>
+                        <label>🔄 Frecuencia del servicio</label>
                         <select id="cliFrecuencia" onchange="actualizarCamposFrecuencia()">
-                            <option value="semanal" id="cliOptSemanal">📅 Semanal (todas las semanas)</option>
-                            <option value="quincenal" id="cliOptQuincenal">📅 Quincenal (semana sí, semana no)</option>
-                            <option value="mensual" id="cliOptMensual">📅 Mensual (una vez al mes)</option>
+                            <option value="semanal">📅 Semanal (todas las semanas)</option>
+                            <option value="quincenal">📅 Quincenal (semana sí, semana no)</option>
+                            <option value="mensual">📅 Mensual (una vez al mes)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label id="cliLabelFechaInicio">📆 Fecha de inicio del servicio</label>
+                        <label>📆 Fecha de inicio del servicio</label>
                         <input type="date" id="cliFechaInicio">
-                        <small id="cliSmallFechaInicio">Desde cuándo se cuenta el ciclo</small>
+                        <small>Desde cuándo se cuenta el ciclo</small>
                     </div>
                     <div class="form-group" id="grupoSemanaQuincenal" style="display:none;">
-                        <label id="cliLabelSemana">📌 ¿Qué semana le toca?</label>
+                        <label>📌 ¿Qué semana le toca?</label>
                         <select id="cliSemanaQuincenal">
-                            <option value="impar" id="cliOptImpar">Semana IMPAR (1, 3, 5, 7...)</option>
-                            <option value="par" id="cliOptPar">Semana PAR (2, 4, 6, 8...)</option>
+                            <option value="impar">Semana IMPAR (1, 3, 5, 7...)</option>
+                            <option value="par">Semana PAR (2, 4, 6, 8...)</option>
                         </select>
-                        <small id="cliSmallSemana">Para frecuencias quincenales</small>
+                        <small>Para frecuencias quincenales</small>
                     </div>
                     <div class="form-group" id="grupoDiaMes" style="display:none;">
-                        <label id="cliLabelInfoMes">📌 Información</label>
-                        <div style="background:#e8f5e9; padding:10px; border-radius:6px; font-size:0.85rem; color:#0d7a3e; border-left:3px solid #0d7a3e;" id="cliInfoMes">
-                            Se limpiará el <strong>primer día del mes</strong> que coincida con los días marcados arriba.
+                        <label>📌 Información</label>
+                        <div style="background:#e8f5e9; padding:10px; border-radius:6px; font-size:0.85rem; color:#0d7a3e; border-left:3px solid #0d7a3e;">
+                            Se limpiará el <strong>primer día del mes</strong> que coincida con los días marcados arriba.<br>
+                            <small>Ej: Si marcaste "Martes", se limpiará el primer martes de cada mes.</small>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label id="cliLabelTipoCodigo">🔑 Tipo de Código de Acceso</label>
+                        <label>🔑 Tipo de Código de Acceso</label>
                         <select id="cliTipoCodigo">
-                            <option value="" id="cliOptSinCodigo">-- Sin código --</option>
-                            <option value="alarma" id="cliOptAlarma">Alarma</option>
-                            <option value="cerradura" id="cliOptCerradura">Cerradura con clave</option>
-                            <option value="lockbox" id="cliOptLockbox">Lockbox (caja de llaves)</option>
-                            <option value="llave" id="cliOptLlave">Llave física</option>
-                            <option value="portero" id="cliOptPortero">Portero/Recepción</option>
-                            <option value="otro" id="cliOptOtro">Otro</option>
+                            <option value="">-- Sin código --</option>
+                            <option value="alarma">Alarma</option>
+                            <option value="cerradura">Cerradura con clave</option>
+                            <option value="lockbox">Lockbox (caja de llaves)</option>
+                            <option value="llave">Llave física</option>
+                            <option value="portero">Portero/Recepción</option>
+                            <option value="otro">Otro</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label id="cliLabelCodigo">🔢 Código / Número</label>
+                        <label>🔢 Código / Número</label>
                         <input type="text" id="cliCodigoAcceso" placeholder="Ej: 1234#, #5678, Caja 5">
                     </div>
                     <div class="form-group" style="grid-column: span 2;">
-                        <label id="cliLabelInstrucciones">📝 Instrucciones especiales de ingreso</label>
+                        <label>📝 Instrucciones especiales de ingreso</label>
                         <textarea id="cliInstrucciones" placeholder="Ej: Tocar timbre 2 veces, la llave está debajo del macetero..."></textarea>
                     </div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary" id="btnGuardarCliente">💾 Guardar</button>
-                    <button type="button" class="btn btn-secondary" onclick="limpiarFormCliente()" id="btnLimpiarCliente">🔄 Limpiar / Nuevo</button>
+                    <button type="button" class="btn btn-secondary" onclick="limpiarFormCliente()">🔄 Limpiar / Nuevo</button>
                 </div>
             </form>
 
-            <h3 style="margin-top:25px;" id="cliListaTitulo">📋 Clientes Registrados</h3>
+            <h3 style="margin-top:25px;">📋 Clientes Registrados</h3>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th id="thCliNombre">Nombre</th><th id="thCliDireccion">Dirección</th><th id="thCliTelefono">Teléfono</th><th id="thCliServicio">Servicio</th><th id="thCliCosto">Costo</th><th id="thCliDias">Días</th><th id="thCliFrecuencia">Frecuencia</th><th id="thCliCodigo">Código</th><th id="thCliAcciones">Acciones</th></tr></thead>
+                    <thead><tr><th>Nombre</th><th>Dirección</th><th>Teléfono</th><th>Servicio</th><th>Costo</th><th>Días</th><th>Frecuencia</th><th>Código</th><th>Acciones</th></tr></thead>
                     <tbody id="tablaClientes"></tbody>
                 </table>
             </div>
 
             <hr style="margin:25px 0;">
             
-            <h3 id="pagosTitulo">💰 Registro de Pagos por Cliente</h3>
-            <p style="color:#4a5568; margin-bottom:15px; font-size:0.9rem;" id="pagosDesc">Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.</p>
+            <h3>💰 Registro de Pagos por Cliente</h3>
+            <p style="color:#4a5568; margin-bottom:15px; font-size:0.9rem;">Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.</p>
             
             <div class="form-grid" style="margin-bottom:15px;">
                 <div class="form-group">
-                    <label id="pagosFiltroClienteLabel">Filtrar por cliente</label>
+                    <label>Filtrar por cliente</label>
                     <select id="filtroClientePagos" onchange="paginaPagosActual = 1; renderPagosClientes()">
-                        <option value="" id="pagosOptTodosCli">-- Todos los clientes --</option>
+                        <option value="">-- Todos los clientes --</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label id="pagosFiltroEstadoLabel">Filtrar por estado</label>
+                    <label>Filtrar por estado</label>
                     <select id="filtroEstadoPagos" onchange="paginaPagosActual = 1; renderPagosClientes()">
-                        <option value="" id="pagosOptTodosEst">-- Todos --</option>
-                        <option value="pendiente" id="pagosOptPendiente">Pendientes</option>
-                        <option value="pagado" id="pagosOptPagado">Pagados</option>
+                        <option value="">-- Todos --</option>
+                        <option value="pendiente">Pendientes</option>
+                        <option value="pagado">Pagados</option>
                     </select>
                 </div>
             </div>
@@ -483,14 +457,14 @@
                 <table>
                     <thead>
                         <tr>
-                            <th id="thPagoCliente">Cliente</th>
-                            <th id="thPagoServicio">Servicio</th>
-                            <th id="thPagoFechaProg">Fecha Programada</th>
-                            <th id="thPagoMonto">Monto</th>
-                            <th id="thPagoEstado">Estado</th>
-                            <th id="thPagoFechaPago">Fecha Pago</th>
-                            <th id="thPagoMetodo">Método</th>
-                            <th id="thPagoAcciones">Acciones</th>
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Fecha Programada</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th>Fecha Pago</th>
+                            <th>Método</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tablaPagosClientes"></tbody>
@@ -500,69 +474,27 @@
 
             <hr style="margin:25px 0;">
 
-            <h3 id="pagosManualTitulo">💰 Pagos/Adelantos Manuales</h3>
+            <h3>💰 Pagos/Adelantos Manuales</h3>
             <div class="form-grid">
-                <div class="form-group"><label id="pagoManualCliLabel">Cliente</label><select id="pagoClienteSelect"></select></div>
-                <div class="form-group"><label id="pagoManualMontoLabel">Monto ($)</label><input type="number" id="pagoClienteMonto" step="0.01"></div>
-                <div class="form-group"><label id="pagoManualConceptoLabel">Concepto</label>
-                    <select id="pagoClienteConcepto"><option value="adelanto" id="pagoOptAdelanto">Adelanto</option><option value="pago" id="pagoOptPago">Pago directo</option><option value="extra" id="pagoOptExtra">Servicio extra</option></select>
+                <div class="form-group"><label>Cliente</label><select id="pagoClienteSelect"></select></div>
+                <div class="form-group"><label>Monto ($)</label><input type="number" id="pagoClienteMonto" step="0.01"></div>
+                <div class="form-group"><label>Concepto</label>
+                    <select id="pagoClienteConcepto"><option value="adelanto">Adelanto</option><option value="pago">Pago directo</option><option value="extra">Servicio extra</option></select>
                 </div>
-                <div class="form-group"><label id="pagoManualFechaLabel">Fecha</label><input type="date" id="pagoClienteFecha"></div>
-                <div class="form-group"><label id="pagoManualNotasLabel">Notas</label><input type="text" id="pagoClienteNotas" placeholder="Opcional"></div>
+                <div class="form-group"><label>Fecha</label><input type="date" id="pagoClienteFecha"></div>
+                <div class="form-group"><label>Notas</label><input type="text" id="pagoClienteNotas" placeholder="Opcional"></div>
             </div>
-            <button class="btn btn-warning" onclick="registrarPagoCliente()" id="btnRegistrarPagoManual">💰 Registrar Pago Manual</button>
+            <button class="btn btn-warning" onclick="registrarPagoCliente()">💰 Registrar Pago Manual</button>
         </div>
 
         <!-- TAB JORNADAS -->
         <div class="tab-content" id="tab-admin-jornadas">
-            <h2 id="jorTitulo">📋 Monitoreo de Jornadas</h2>
-            <p style="color:#4a5568; margin-bottom:15px;" id="jorDesc">Los empleados marcan entrada/salida con geolocalización. Como administrador puedes crear jornadas manualmente o modificar las horas existentes.</p>
-            
-            <div style="background:#e3f2fd; border-left:4px solid #1a4a7a; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h3 style="color:#1a4a7a; margin-bottom:12px;" id="jorManualTitulo">➕ Registrar Jornada Manualmente</h3>
-                <p style="color:#4a5568; font-size:0.85rem; margin-bottom:15px;" id="jorManualDesc">Usa esto cuando un empleado olvidó marcar su entrada o salida.</p>
-                <form onsubmit="guardarJornadaManual(event)">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label id="jorManualEmpLabel">Empleado *</label>
-                            <select id="jmEmpleado" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label id="jorManualCliLabel">Cliente *</label>
-                            <select id="jmCliente" required></select>
-                        </div>
-                        <div class="form-group">
-                            <label id="jorManualFechaLabel">Fecha *</label>
-                            <input type="date" id="jmFecha" required>
-                        </div>
-                        <div class="form-group">
-                            <label id="jorManualEntLabel">Hora Entrada *</label>
-                            <input type="time" id="jmEntrada" required>
-                        </div>
-                        <div class="form-group">
-                            <label id="jorManualSalLabel">Hora Salida *</label>
-                            <input type="time" id="jmSalida" required>
-                        </div>
-                        <div class="form-group">
-                            <label id="jorManualPagoLabel">Tipo de Pago</label>
-                            <select id="jmPago">
-                                <option value="efectivo" id="jorOptEfectivo">💵 Efectivo</option>
-                                <option value="cheque" id="jorOptCheque">📄 Cheque</option>
-                            </select>
-                        </div>
-                    </div>
-                    <input type="hidden" id="jmEditId">
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-success" id="btnGuardarJornadaManual">💾 Guardar Jornada</button>
-                        <button type="button" class="btn btn-secondary" onclick="limpiarFormJornadaManual()" id="btnLimpiarJornadaManual">🔄 Limpiar</button>
-                    </div>
-                </form>
-            </div>
-            
-            <button class="btn btn-success" onclick="exportarExcelJornadas()" id="btnExportarExcel">📊 Exportar Excel</button>
+            <h2>📋 Monitoreo de Jornadas</h2>
+            <p style="color:#4a5568; margin-bottom:15px;">Los empleados marcan entrada/salida con <strong>geolocalización</strong>. Puedes modificar las horas aquí.</p>
+            <button class="btn btn-success" onclick="exportarExcelJornadas()">📊 Exportar Excel</button>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th id="thJorEmp">Empleado</th><th id="thJorCli">Cliente</th><th id="thJorFecha">Fecha</th><th id="thJorEnt">Entrada</th><th id="thJorSal">Salida</th><th id="thJorHoras">Horas</th><th id="thJorTotal">Total</th><th id="thJorGeo">Geo</th><th id="thJorEstado">Estado</th><th id="thJorAcciones">Acciones</th></tr></thead>
+                    <thead><tr><th>Empleado</th><th>Cliente</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Horas</th><th>Total</th><th>Geo</th><th>Estado</th><th>Acciones</th></tr></thead>
                     <tbody id="tablaJornadas"></tbody>
                 </table>
             </div>
@@ -570,45 +502,31 @@
 
         <!-- TAB BOLETAS -->
         <div class="tab-content" id="tab-admin-boletas">
-            <h2 id="boletaTitulo">📄 Boletas de Pago (Quincenal)</h2>
-            <p style="color:#4a5568; margin-bottom:15px;" id="boletaDesc">Solo el administrador genera boletas. Descuentos de ley: Social Security 6.2% + Medicare 1.45%.</p>
-            
+            <h2>📄 Boletas de Pago</h2>
+            <p style="color:#4a5568; margin-bottom:15px;"><strong>Solo el administrador</strong> genera boletas. Descuentos <strong>solo</strong> cuando el pago es con cheque.</p>
             <div class="form-grid">
-                <div class="form-group"><label id="boletaEmpLabel">Empleado</label><select id="boletaEmpleado" onchange="cargarDatosBoleta()"></select></div>
-                <div class="form-group">
-                    <label id="boletaMesLabel">Mes</label>
-                    <input type="month" id="boletaMes" onchange="cargarDatosBoleta()">
-                </div>
-                <div class="form-group">
-                    <label id="boletaQuincenaLabel">Quincena</label>
-                    <select id="boletaQuincena" onchange="cargarDatosBoleta()">
-                        <option value="1" id="boletaOptQ1">1ra Quincena (día 1 al 15)</option>
-                        <option value="2" id="boletaOptQ2">2da Quincena (día 16 al último día)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label id="boletaTipoLabel">Tipo de Pago</label>
+                <div class="form-group"><label>Empleado</label><select id="boletaEmpleado" onchange="cargarDatosBoleta()"></select></div>
+                <div class="form-group"><label>Semana</label><input type="week" id="boletaSemana" onchange="cargarDatosBoleta()"></div>
+                <div class="form-group"><label>Tipo de Pago</label>
                     <select id="boletaTipoPago" onchange="cargarDatosBoleta()">
-                        <option value="efectivo" id="boletaOptEfec">💵 Efectivo (con descuentos)</option>
-                        <option value="cheque" id="boletaOptCheq">📄 Cheque (con descuentos)</option>
+                        <option value="efectivo">💵 Efectivo (sin descuentos)</option>
+                        <option value="cheque">📄 Cheque (con descuentos)</option>
                     </select>
                 </div>
             </div>
-            
             <div id="boletaPreview" class="boleta-box hidden">
-                <h3 id="boletaVistaLabel">🧾 Vista Previa</h3>
+                <h3>🧾 Vista Previa</h3>
                 <div id="boletaContenido"></div>
                 <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
-                    <button class="btn btn-success" onclick="generarBoleta()" id="btnGenerarBoleta">✅ Generar Boleta</button>
-                    <button class="btn btn-info" onclick="exportarBoletaPDF()" id="btnBoletaPDF">📄 PDF</button>
+                    <button class="btn btn-success" onclick="generarBoleta()">✅ Generar</button>
+                    <button class="btn btn-info" onclick="exportarBoletaPDF()">📄 PDF</button>
                 </div>
             </div>
-            
             <hr style="margin:30px 0;">
-            <h3 id="boletasGenLabel">📋 Boletas Generadas</h3>
+            <h3>📋 Boletas Generadas</h3>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th id="thBolEmp">Empleado</th><th id="thBolPeriodo">Período</th><th id="thBolHoras">Horas</th><th id="thBolBruto">Bruto</th><th id="thBolSS">Social Security</th><th id="thBolMed">Medicare</th><th id="thBolNeto">Neto</th><th id="thBolAcciones">Acciones</th></tr></thead>
+                    <thead><tr><th>Empleado</th><th>Semana</th><th>Horas</th><th>Bruto</th><th>Descuentos</th><th>Neto</th><th>Pago</th></tr></thead>
                     <tbody id="tablaBoletas"></tbody>
                 </table>
             </div>
@@ -616,89 +534,69 @@
 
         <!-- TAB CONFIG -->
         <div class="tab-content" id="tab-admin-config">
-            <h2 id="configTitulo">⚙️ Configuración</h2>
+            <h2>⚙️ Configuración</h2>
             <form onsubmit="guardarConfig(event)">
                 <div class="config-grid form-grid">
-                    <div class="form-group"><label id="configEmpLabel">Empresa</label><input type="text" id="cfgEmpresa" placeholder="Mi Empresa"></div>
-                    <div class="form-group"><label id="configSSLabel">Social Security %</label><input type="number" id="cfgFICA" step="0.01" value="6.2"></div>
-                    <div class="form-group"><label id="configMedLabel">Medicare %</label><input type="number" id="cfgMedicare" step="0.01" value="1.45"></div>
+                    <div class="form-group"><label>FICA %</label><input type="number" id="cfgFICA" step="0.01" value="6.2"></div>
+                    <div class="form-group"><label>Medicare %</label><input type="number" id="cfgMedicare" step="0.01" value="1.45"></div>
+                    <div class="form-group"><label>SUI %</label><input type="number" id="cfgSUI" step="0.01" value="2.95"></div>
+                    <div class="form-group"><label>FUTA %</label><input type="number" id="cfgFUTA" step="0.01" value="0.6"></div>
+                    <div class="form-group"><label>Empresa</label><input type="text" id="cfgEmpresa" placeholder="Mi Empresa"></div>
                 </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary" id="btnGuardarConfig">💾 Guardar Configuración</button>
-                </div>
+                <button type="submit" class="btn btn-primary">💾 Guardar</button>
             </form>
             <div style="margin-top:20px; padding:15px; background:#f7fafc; border-radius:8px;">
                 <p id="resumenDescuentos">Total descuentos: 0%</p>
             </div>
-            
-            <hr style="margin:30px 0;">
-            
-            <h3 id="segTitulo">🔐 Seguridad del Administrador</h3>
-            <p style="color:#4a5568; margin-bottom:15px; font-size:0.9rem;" id="segDesc">Cambia la contraseña de acceso al panel de administrador. Se sincroniza en todos los dispositivos.</p>
-            
-            <form onsubmit="cambiarPasswordAdmin(event)" style="max-width:500px;">
-                <div class="form-group" style="margin-bottom:10px;">
-                    <label id="segActualLabel">Contraseña actual *</label>
-                    <input type="password" id="passActual" required placeholder="Ingresa la contraseña actual">
-                </div>
-                <div class="form-group" style="margin-bottom:10px;">
-                    <label id="segNuevaLabel">Nueva contraseña *</label>
-                    <input type="password" id="passNueva" required placeholder="Mínimo 4 caracteres" minlength="4">
-                </div>
-                <div class="form-group" style="margin-bottom:10px;">
-                    <label id="segConfLabel">Confirmar nueva contraseña *</label>
-                    <input type="password" id="passConfirmar" required placeholder="Repite la nueva contraseña" minlength="4">
-                </div>
-                <button type="submit" class="btn btn-warning" id="btnCambiarPass">🔐 Cambiar Contraseña</button>
-            </form>
-            
-            <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;" id="segInfo">
-                💡 <strong>Contraseña por defecto:</strong> <code>admin123</code> — Cámbiala en tu primer uso.
-            </div>
-            
             <hr style="margin:30px 0;">
             <h3>🗄️ Gestión de Datos</h3>
-<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
-    <button class="btn btn-danger" onclick="exportarBackup()">💾 Backup local</button>
-    <button class="btn btn-success" onclick="importarBackup()">📂 Restaurar local</button>
-</div>
-
-<div style="background:#fff3cd; border-left:4px solid #e6a800; padding:15px; border-radius:8px; margin-top:20px;">
-    <h4 style="color:#856404; margin-bottom:10px;">⚠️ Zona de Peligro</h4>
-    <p style="font-size:0.85rem; color:#856404; margin-bottom:12px;">
-        Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) <strong>se conserva</strong>.
-    </p>
-    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn btn-warning" onclick="borrarBoletas()">🗑️ Borrar solo Boletas</button>
-        <button class="btn btn-warning" onclick="borrarJornadas()">🗑️ Borrar solo Jornadas</button>
-        <button class="btn btn-danger" onclick="borrarTodosLosDatos()">🚨 Borrar TODOS los Datos</button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+                <button class="btn btn-danger" onclick="exportarBackup()">💾 Backup local</button>
+                <button class="btn btn-success" onclick="importarBackup()">📂 Restaurar local</button>
+            </div>
+            <div style="background:#fff3cd; border-left:4px solid #e6a800; padding:15px; border-radius:8px; margin-top:20px;">
+                <h4 style="color:#856404; margin-bottom:10px;">⚠️ Zona de Peligro</h4>
+                <p style="font-size:0.85rem; color:#856404; margin-bottom:12px;">
+                    Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) <strong>se conserva</strong>.
+                </p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button class="btn btn-warning" onclick="borrarBoletas()">🗑️ Borrar solo Boletas</button>
+                    <button class="btn btn-warning" onclick="borrarJornadas()">🗑️ Borrar solo Jornadas</button>
+                    <button class="btn btn-danger" onclick="borrarTodosLosDatos()">🚨 Borrar TODOS los Datos</button>
+                </div>
+            </div>
+            <input type="file" id="backupInput" accept=".json" style="display:none;" onchange="cargarBackup(event)">
+            <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;">
+                ☁️ <strong>Sincronización activa:</strong> Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.
+            </div>
+        </div>
     </div>
-</div>
+
     <!-- ========== DASHBOARD EMPLEADO ========== -->
     <div id="empleadoDashboard" class="empleado-dashboard hidden">
         <div style="margin-bottom:20px;">
-            <h2 id="empBienvenido">🧹 Bienvenido, <span id="empNombreDisplay"></span></h2>
+            <h2>🧹 Bienvenido, <span id="empNombreDisplay"></span></h2>
         </div>
 
         <div class="tabs">
-            <button class="tab-btn active" data-tab="emp-trabajos-hoy" id="tabEmpHoy">📅 Trabajos de Hoy</button>
-            <button class="tab-btn" data-tab="emp-mis-trabajos" id="tabEmpActivos">📋 Mis Trabajos Activos</button>
-            <button class="tab-btn" data-tab="emp-historial" id="tabEmpHistorial">📜 Historial</button>
+            <button class="tab-btn active" data-tab="emp-trabajos-hoy">📅 Trabajos de Hoy</button>
+            <button class="tab-btn" data-tab="emp-mis-trabajos">📋 Mis Trabajos Activos</button>
+            <button class="tab-btn" data-tab="emp-historial">📜 Historial</button>
         </div>
 
         <div class="tab-content active" id="tab-emp-trabajos-hoy">
-            <h3 id="empClientesHoy">📅 Clientes para hoy <span id="fechaHoyDisplay" style="color:#4a5568; font-weight:400; font-size:0.9rem;"></span></h3>
-            <p style="color:#4a5568; margin-bottom:15px;" id="empElegirCli">Elige un cliente para comenzar a trabajar.</p>
+            <h3>📅 Clientes para hoy <span id="fechaHoyDisplay" style="color:#4a5568; font-weight:400; font-size:0.9rem;"></span></h3>
+            <p style="color:#4a5568; margin-bottom:15px;">Elige un cliente para comenzar a trabajar.</p>
             <div id="trabajosDisponiblesHoy"></div>
         </div>
 
         <div class="tab-content" id="tab-emp-mis-trabajos">
-            <h3 id="empTituloActivos">📋 Mis trabajos activos</h3>
+            <h3>📋 Mis trabajos activos</h3>
             <div id="misTrabajosActivos"></div>
         </div>
 
         <div class="tab-content" id="tab-emp-historial">
-            <h3 id="empTituloHistorial">📜 Mi Historial</h3>
+            <h3>📜 Mi Historial</h3>
             <div id="historialEmpleado"></div>
         </div>
     </div>
@@ -755,485 +653,21 @@
         clientes: [],
         jornadas: [],
         boletas: [],
-        config: { FICA: 6.2, Medicare: 1.45, empresa: 'Mi Empresa' },
+        config: { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' },
         pagosClientes: [],
         adelantosEmpleados: [],
         pagosServicios: [],
-        cancelaciones: [],
-        adminPassword: 'admin123',
-        idioma: 'es'
+        cancelaciones: []
     };
 
     // ============================================================
-    // TRADUCCIONES
-    // ============================================================
-    const TRADUCCIONES = {
-        es: {
-            'loading.texto': '☁️ Sincronizando con la nube...',
-            'loading.subtexto': 'Cargando datos desde Firebase',
-            'btn.modo': 'Modo',
-            'btn.salir': 'Salir',
-            'sync.conectado': '☁️ Conectado',
-            'sync.ok': '☁️ Sincronizado',
-            'sync.syncing': '⏳ Guardando...',
-            'sync.error': '⚠️ Sin conexión',
-            'login.titulo': '🔐 Acceso al Sistema',
-            'login.seleccionar': 'Selecciona tu rol',
-            'login.admin': '👤 Admin',
-            'login.empleado': '🧹 Empleado',
-            'login.admin.titulo': '👤 Acceso Admin',
-            'login.pass': 'Contraseña',
-            'login.empleado.titulo': '🧹 Acceso Empleado',
-            'login.usuario': 'Usuario',
-            'login.entrar': '🔐 Entrar',
-            'login.volver': '⬅️ Volver',
-            'login.error.admin': '❌ Contraseña incorrecta',
-            'login.error.empleado': '❌ Usuario/contraseña incorrectos',
-            'stats.empleados': '👤 Empleados',
-            'stats.clientes': '🏢 Clientes',
-            'stats.jornadas': '📋 Jornadas',
-            'stats.ingresos': '💰 Ingresos',
-            'tab.agenda': '📅 Agenda Diaria',
-            'tab.semana': '🗓️ Vista Semanal',
-            'tab.mes': '📆 Vista Mensual',
-            'tab.empleados': '👤 Empleados',
-            'tab.clientes': '🏢 Clientes',
-            'tab.jornadas': '📋 Jornadas',
-            'tab.boletas': '📄 Boletas',
-            'tab.config': '⚙️ Config',
-            'tab.emp.hoy': '📅 Trabajos de Hoy',
-            'tab.emp.activos': '📋 Mis Trabajos Activos',
-            'tab.emp.historial': '📜 Historial',
-            'agenda.titulo': '📅 Agenda Diaria',
-            'agenda.desc': 'Clientes que tocan según sus días y frecuencia programados.',
-            'agenda.fecha': '📆 Fecha:',
-            'btn.anterior': '◀️ Anterior',
-            'btn.hoy': '📌 Hoy',
-            'btn.siguiente': 'Siguiente ▶️',
-            'semana.titulo': '🗓️ Vista Semanal de Clientes',
-            'semana.desc': 'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.',
-            'semana.fecha': '📆 Semana de:',
-            'btn.actual': '📌 Actual',
-            'semana.activo': 'Activo',
-            'semana.cancelado': 'Cancelado',
-            'semana.noprogramado': 'No programado',
-            'mes.titulo': '📆 Vista Mensual',
-            'mes.desc': 'Calendario mensual con todos los clientes programados por día.',
-            'mes.fecha': '📆 Mes:',
-            'emp.titulo': '👤 Gestión de Empleados',
-            'emp.nombre': 'Nombre completo *',
-            'emp.telefono': 'Teléfono *',
-            'emp.email': 'Email (opcional)',
-            'emp.tarifa': 'Tarifa/h ($) *',
-            'emp.cargo': 'Cargo *',
-            'emp.usuario': 'Usuario *',
-            'emp.password': 'Contraseña *',
-            'emp.estado': 'Estado',
-            'emp.activo': 'Activo',
-            'emp.inactivo': 'Inactivo',
-            'emp.guardar': '💾 Guardar',
-            'emp.limpiar': '🔄 Limpiar',
-            'emp.adelantos': '💰 Adelantos a Empleados',
-            'emp.monto': 'Monto ($)',
-            'emp.fecha': 'Fecha',
-            'emp.registrarAdelanto': '💰 Registrar Adelanto',
-            'th.nombre': 'Nombre',
-            'th.telefono': 'Teléfono',
-            'th.tarifa': 'Tarifa/h',
-            'th.cargo': 'Cargo',
-            'th.usuario': 'Usuario',
-            'th.estado': 'Estado',
-            'th.adelantos': 'Adelantos',
-            'th.acciones': 'Acciones',
-            'cli.titulo': '🏢 Gestión de Clientes',
-            'cli.desc': 'Edita cualquier cliente con el botón ✏️ si solicitan cambios.',
-            'cli.nuevo': '➕ Nuevo Cliente',
-            'cli.nombre': 'Nombre *',
-            'cli.direccion': 'Dirección *',
-            'cli.telefono': 'Teléfono *',
-            'cli.email': 'Email',
-            'cli.servicio': 'Tipo de Servicio Regular',
-            'cli.regular': 'Regular',
-            'cli.profunda': 'Profunda',
-            'cli.construccion': 'Construcción',
-            'cli.especial': 'Especial',
-            'cli.costo': 'Costo del Servicio ($)',
-            'cli.dias': '📆 Días de servicio',
-            'cli.frecuencia': '🔄 Frecuencia del servicio',
-            'cli.semanal': '📅 Semanal (todas las semanas)',
-            'cli.quincenal': '📅 Quincenal (semana sí, semana no)',
-            'cli.mensual': '📅 Mensual (una vez al mes)',
-            'cli.fechaInicio': '📆 Fecha de inicio del servicio',
-            'cli.fechaInicioSmall': 'Desde cuándo se cuenta el ciclo',
-            'cli.semanaToca': '📌 ¿Qué semana le toca?',
-            'cli.impar': 'Semana IMPAR (1, 3, 5, 7...)',
-            'cli.par': 'Semana PAR (2, 4, 6, 8...)',
-            'cli.semanaSmall': 'Para frecuencias quincenales',
-            'cli.infoMes': '📌 Información',
-            'cli.infoMesTexto': 'Se limpiará el <strong>primer día del mes</strong> que coincida con los días marcados arriba.',
-            'cli.tipoCodigo': '🔑 Tipo de Código de Acceso',
-            'cli.sinCodigo': '-- Sin código --',
-            'cli.alarma': 'Alarma',
-            'cli.cerradura': 'Cerradura con clave',
-            'cli.lockbox': 'Lockbox (caja de llaves)',
-            'cli.llave': 'Llave física',
-            'cli.portero': 'Portero/Recepción',
-            'cli.otro': 'Otro',
-            'cli.codigo': '🔢 Código / Número',
-            'cli.instrucciones': '📝 Instrucciones especiales de ingreso',
-            'cli.guardar': '💾 Guardar',
-            'cli.limpiar': '🔄 Limpiar / Nuevo',
-            'cli.lista': '📋 Clientes Registrados',
-            'th.servicio': 'Servicio',
-            'th.costo': 'Costo',
-            'th.dias': 'Días',
-            'th.frecuencia': 'Frecuencia',
-            'th.codigo': 'Código',
-            'pagos.titulo': '💰 Registro de Pagos por Cliente',
-            'pagos.desc': 'Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.',
-            'pagos.filtroCli': 'Filtrar por cliente',
-            'pagos.todosCli': '-- Todos los clientes --',
-            'pagos.filtroEst': 'Filtrar por estado',
-            'pagos.todos': '-- Todos --',
-            'pagos.pendientes': 'Pendientes',
-            'pagos.pagados': 'Pagados',
-            'th.fechaProg': 'Fecha Programada',
-            'th.monto': 'Monto',
-            'th.fechaPago': 'Fecha Pago',
-            'th.metodo': 'Método',
-            'pagos.manualTitulo': '💰 Pagos/Adelantos Manuales',
-            'pagos.concepto': 'Concepto',
-            'pagos.adelanto': 'Adelanto',
-            'pagos.pagoDirecto': 'Pago directo',
-            'pagos.extra': 'Servicio extra',
-            'pagos.notas': 'Notas',
-            'pagos.registrar': '💰 Registrar Pago Manual',
-            'jor.titulo': '📋 Monitoreo de Jornadas',
-            'jor.desc': 'Los empleados marcan entrada/salida con geolocalización. Como administrador puedes crear jornadas manualmente o modificar las horas existentes.',
-            'jor.manualTitulo': '➕ Registrar Jornada Manualmente',
-            'jor.manualDesc': 'Usa esto cuando un empleado olvidó marcar su entrada o salida.',
-            'jor.emp': 'Empleado *',
-            'jor.cli': 'Cliente *',
-            'jor.fecha': 'Fecha *',
-            'jor.entrada': 'Hora Entrada *',
-            'jor.salida': 'Hora Salida *',
-            'jor.tipoPago': 'Tipo de Pago',
-            'jor.efectivo': '💵 Efectivo',
-            'jor.cheque': '📄 Cheque',
-            'jor.guardar': '💾 Guardar Jornada',
-            'jor.limpiar': '🔄 Limpiar',
-            'jor.exportar': '📊 Exportar Excel',
-            'th.entrada': 'Entrada',
-            'th.salida': 'Salida',
-            'th.horas': 'Horas',
-            'th.total': 'Total',
-            'th.geo': 'Geo',
-            'boleta.titulo': '📄 Boletas de Pago (Quincenal)',
-            'boleta.desc': 'Solo el administrador genera boletas. Descuentos de ley: Social Security 6.2% + Medicare 1.45%.',
-            'boleta.emp': 'Empleado',
-            'boleta.mes': 'Mes',
-            'boleta.quincena': 'Quincena',
-            'boleta.q1': '1ra Quincena (día 1 al 15)',
-            'boleta.q2': '2da Quincena (día 16 al último día)',
-            'boleta.tipo': 'Tipo de Pago',
-            'boleta.efectivo': '💵 Efectivo (con descuentos)',
-            'boleta.cheque': '📄 Cheque (con descuentos)',
-            'boleta.vista': '🧾 Vista Previa',
-            'boleta.generar': '✅ Generar Boleta',
-            'boleta.pdf': '📄 PDF',
-            'boleta.generadas': '📋 Boletas Generadas',
-            'th.periodo': 'Período',
-            'th.bruto': 'Bruto',
-            'th.ss': 'Social Security',
-            'th.medicare': 'Medicare',
-            'th.neto': 'Neto',
-            'config.titulo': '⚙️ Configuración',
-            'config.empresa': 'Empresa',
-            'config.ss': 'Social Security %',
-            'config.medicare': 'Medicare %',
-            'config.guardar': '💾 Guardar Configuración',
-            'config.resumen': 'Total descuentos',
-            'seg.titulo': '🔐 Seguridad del Administrador',
-            'seg.desc': 'Cambia la contraseña de acceso al panel de administrador. Se sincroniza en todos los dispositivos.',
-            'seg.actual': 'Contraseña actual *',
-            'seg.nueva': 'Nueva contraseña *',
-            'seg.confirmar': 'Confirmar nueva contraseña *',
-            'seg.cambiar': '🔐 Cambiar Contraseña',
-            'seg.info': '💡 <strong>Contraseña por defecto:</strong> <code>admin123</code> — Cámbiala en tu primer uso.',
-            'datos.titulo': '🗄️ Gestión de Datos',
-            'datos.backup': '💾 Backup local',
-            'datos.restaurar': '📂 Restaurar local',
-            'datos.borrar': '🗑️ Borrar Todos los Datos',
-            'datos.info': '☁️ <strong>Sincronización activa:</strong> Todos los cambios se guardan automáticamente en la nube (Firebase).',
-            'emp.bienvenido': '🧹 Bienvenido,',
-            'emp.clientesHoy': '📅 Clientes para hoy',
-            'emp.elegirCli': 'Elige un cliente para comenzar a trabajar.',
-            'emp.tituloActivos': '📋 Mis trabajos activos',
-            'emp.tituloHistorial': '📜 Mi Historial',
-            'msg.comenzar': '🚀 Comenzar este trabajo',
-            'msg.marcarEntrada': '✅ Marcar Entrada + Geo',
-            'msg.marcarSalida': '⏹️ Marcar Salida + Geo',
-            'msg.completado': '✅ Completado',
-            'msg.tomadoPor': '👤 Tomado por',
-            'msg.maps': '🗺️ Maps',
-            'msg.cancelar': '❌ Cancelar',
-            'msg.reactivar': '✅ Reactivar',
-            'msg.guardar': '💾 Guardar',
-            'msg.limpiar': '🔄 Limpiar',
-            'msg.pendiente': '⏳ Pendiente',
-            'msg.pagado': '✅ Pagado',
-            'msg.activo': '✅ Activo',
-            'msg.cancelado': '❌ Cancelado',
-            'msg.sinTomar': '⏳ Sin tomar',
-            'msg.enProceso': '🔄 En proceso',
-            'msg.sinAsignar': 'Sin asignar',
-            'emp.adelLabelEmp': 'Empleado',
-            'th.empleado': 'Empleado',
-            'th.cliente': 'Cliente',
-            'th.fecha': 'Fecha',
-            'th.direccion': 'Dirección'
-        },
-        en: {
-            'loading.texto': '☁️ Syncing with the cloud...',
-            'loading.subtexto': 'Loading data from Firebase',
-            'btn.modo': 'Mode',
-            'btn.salir': 'Logout',
-            'sync.conectado': '☁️ Connected',
-            'sync.ok': '☁️ Synced',
-            'sync.syncing': '⏳ Saving...',
-            'sync.error': '⚠️ No connection',
-            'login.titulo': '🔐 System Access',
-            'login.seleccionar': 'Select your role',
-            'login.admin': '👤 Admin',
-            'login.empleado': '🧹 Employee',
-            'login.admin.titulo': '👤 Admin Access',
-            'login.pass': 'Password',
-            'login.empleado.titulo': '🧹 Employee Access',
-            'login.usuario': 'Username',
-            'login.entrar': '🔐 Enter',
-            'login.volver': '⬅️ Back',
-            'login.error.admin': '❌ Incorrect password',
-            'login.error.empleado': '❌ Incorrect username/password',
-            'stats.empleados': '👤 Employees',
-            'stats.clientes': '🏢 Clients',
-            'stats.jornadas': '📋 Work Logs',
-            'stats.ingresos': '💰 Income',
-            'tab.agenda': '📅 Daily Schedule',
-            'tab.semana': '🗓️ Weekly View',
-            'tab.mes': '📆 Monthly View',
-            'tab.empleados': '👤 Employees',
-            'tab.clientes': '🏢 Clients',
-            'tab.jornadas': '📋 Work Logs',
-            'tab.boletas': '📄 Pay Stubs',
-            'tab.config': '⚙️ Settings',
-            'tab.emp.hoy': '📅 Today\'s Jobs',
-            'tab.emp.activos': '📋 My Active Jobs',
-            'tab.emp.historial': '📜 History',
-            'agenda.titulo': '📅 Daily Schedule',
-            'agenda.desc': 'Clients scheduled according to their days and frequency.',
-            'agenda.fecha': '📆 Date:',
-            'btn.anterior': '◀️ Previous',
-            'btn.hoy': '📌 Today',
-            'btn.siguiente': 'Next ▶️',
-            'semana.titulo': '🗓️ Weekly Client View',
-            'semana.desc': 'Scheduled days for each client. Click any day to activate/cancel.',
-            'semana.fecha': '📆 Week of:',
-            'btn.actual': '📌 Current',
-            'semana.activo': 'Active',
-            'semana.cancelado': 'Cancelled',
-            'semana.noprogramado': 'Not scheduled',
-            'mes.titulo': '📆 Monthly View',
-            'mes.desc': 'Monthly calendar with all clients scheduled per day.',
-            'mes.fecha': '📆 Month:',
-            'emp.titulo': '👤 Employee Management',
-            'emp.nombre': 'Full name *',
-            'emp.telefono': 'Phone *',
-            'emp.email': 'Email (optional)',
-            'emp.tarifa': 'Rate/hr ($) *',
-            'emp.cargo': 'Position *',
-            'emp.usuario': 'Username *',
-            'emp.password': 'Password *',
-            'emp.estado': 'Status',
-            'emp.activo': 'Active',
-            'emp.inactivo': 'Inactive',
-            'emp.guardar': '💾 Save',
-            'emp.limpiar': '🔄 Clear',
-            'emp.adelantos': '💰 Employee Advances',
-            'emp.monto': 'Amount ($)',
-            'emp.fecha': 'Date',
-            'emp.registrarAdelanto': '💰 Register Advance',
-            'th.nombre': 'Name',
-            'th.telefono': 'Phone',
-            'th.tarifa': 'Rate/hr',
-            'th.cargo': 'Position',
-            'th.usuario': 'Username',
-            'th.estado': 'Status',
-            'th.adelantos': 'Advances',
-            'th.acciones': 'Actions',
-            'cli.titulo': '🏢 Client Management',
-            'cli.desc': 'Edit any client with the ✏️ button if they request changes.',
-            'cli.nuevo': '➕ New Client',
-            'cli.nombre': 'Name *',
-            'cli.direccion': 'Address *',
-            'cli.telefono': 'Phone *',
-            'cli.email': 'Email',
-            'cli.servicio': 'Regular Service Type',
-            'cli.regular': 'Regular',
-            'cli.profunda': 'Deep',
-            'cli.construccion': 'Construction',
-            'cli.especial': 'Special',
-            'cli.costo': 'Service Cost ($)',
-            'cli.dias': '📆 Service days',
-            'cli.frecuencia': '🔄 Service frequency',
-            'cli.semanal': '📅 Weekly (every week)',
-            'cli.quincenal': '📅 Biweekly (alternating weeks)',
-            'cli.mensual': '📅 Monthly (once a month)',
-            'cli.fechaInicio': '📆 Service start date',
-            'cli.fechaInicioSmall': 'When the cycle starts counting',
-            'cli.semanaToca': '📌 Which week applies?',
-            'cli.impar': 'ODD week (1, 3, 5, 7...)',
-            'cli.par': 'EVEN week (2, 4, 6, 8...)',
-            'cli.semanaSmall': 'For biweekly frequencies',
-            'cli.infoMes': '📌 Information',
-            'cli.infoMesTexto': 'The <strong>first day of the month</strong> matching the days selected above will be cleaned.',
-            'cli.tipoCodigo': '🔑 Access Code Type',
-            'cli.sinCodigo': '-- No code --',
-            'cli.alarma': 'Alarm',
-            'cli.cerradura': 'Keypad lock',
-            'cli.lockbox': 'Lockbox',
-            'cli.llave': 'Physical key',
-            'cli.portero': 'Doorman/Reception',
-            'cli.otro': 'Other',
-            'cli.codigo': '🔢 Code / Number',
-            'cli.instrucciones': '📝 Special entry instructions',
-            'cli.guardar': '💾 Save',
-            'cli.limpiar': '🔄 Clear / New',
-            'cli.lista': '📋 Registered Clients',
-            'th.servicio': 'Service',
-            'th.costo': 'Cost',
-            'th.dias': 'Days',
-            'th.frecuencia': 'Frequency',
-            'th.codigo': 'Code',
-            'pagos.titulo': '💰 Client Payment Record',
-            'pagos.desc': 'Edit dates, amounts and mark payments as completed. Pagination of 10 per page.',
-            'pagos.filtroCli': 'Filter by client',
-            'pagos.todosCli': '-- All clients --',
-            'pagos.filtroEst': 'Filter by status',
-            'pagos.todos': '-- All --',
-            'pagos.pendientes': 'Pending',
-            'pagos.pagados': 'Paid',
-            'th.fechaProg': 'Scheduled Date',
-            'th.monto': 'Amount',
-            'th.fechaPago': 'Payment Date',
-            'th.metodo': 'Method',
-            'pagos.manualTitulo': '💰 Manual Payments/Advances',
-            'pagos.concepto': 'Concept',
-            'pagos.adelanto': 'Advance',
-            'pagos.pagoDirecto': 'Direct payment',
-            'pagos.extra': 'Extra service',
-            'pagos.notas': 'Notes',
-            'pagos.registrar': '💰 Register Manual Payment',
-            'jor.titulo': '📋 Work Log Monitoring',
-            'jor.desc': 'Employees clock in/out with geolocation. As admin you can create work logs manually or modify existing hours.',
-            'jor.manualTitulo': '➕ Register Work Log Manually',
-            'jor.manualDesc': 'Use this when an employee forgot to clock in or out.',
-            'jor.emp': 'Employee *',
-            'jor.cli': 'Client *',
-            'jor.fecha': 'Date *',
-            'jor.entrada': 'Clock In *',
-            'jor.salida': 'Clock Out *',
-            'jor.tipoPago': 'Payment Type',
-            'jor.efectivo': '💵 Cash',
-            'jor.cheque': '📄 Check',
-            'jor.guardar': '💾 Save Work Log',
-            'jor.limpiar': '🔄 Clear',
-            'jor.exportar': '📊 Export Excel',
-            'th.entrada': 'Clock In',
-            'th.salida': 'Clock Out',
-            'th.horas': 'Hours',
-            'th.total': 'Total',
-            'th.geo': 'Geo',
-            'boleta.titulo': '📄 Pay Stubs (Biweekly)',
-            'boleta.desc': 'Only admin generates pay stubs. Legal deductions: Social Security 6.2% + Medicare 1.45%.',
-            'boleta.emp': 'Employee',
-            'boleta.mes': 'Month',
-            'boleta.quincena': 'Biweekly Period',
-            'boleta.q1': '1st Half (day 1 to 15)',
-            'boleta.q2': '2nd Half (day 16 to last day)',
-            'boleta.tipo': 'Payment Type',
-            'boleta.efectivo': '💵 Cash (with deductions)',
-            'boleta.cheque': '📄 Check (with deductions)',
-            'boleta.vista': '🧾 Preview',
-            'boleta.generar': '✅ Generate Pay Stub',
-            'boleta.pdf': '📄 PDF',
-            'boleta.generadas': '📋 Generated Pay Stubs',
-            'th.periodo': 'Period',
-            'th.bruto': 'Gross',
-            'th.ss': 'Social Security',
-            'th.medicare': 'Medicare',
-            'th.neto': 'Net',
-            'config.titulo': '⚙️ Settings',
-            'config.empresa': 'Company',
-            'config.ss': 'Social Security %',
-            'config.medicare': 'Medicare %',
-            'config.guardar': '💾 Save Settings',
-            'config.resumen': 'Total deductions',
-            'seg.titulo': '🔐 Admin Security',
-            'seg.desc': 'Change admin panel access password. Syncs across all devices.',
-            'seg.actual': 'Current password *',
-            'seg.nueva': 'New password *',
-            'seg.confirmar': 'Confirm new password *',
-            'seg.cambiar': '🔐 Change Password',
-            'seg.info': '💡 <strong>Default password:</strong> <code>admin123</code> — Change it on first use.',
-            'datos.titulo': '🗄️ Data Management',
-            'datos.backup': '💾 Local Backup',
-            'datos.restaurar': '📂 Restore Local',
-            'datos.borrar': '🗑️ Delete All Data',
-            'datos.info': '☁️ <strong>Active sync:</strong> All changes are automatically saved to the cloud (Firebase).',
-            'emp.bienvenido': '🧹 Welcome,',
-            'emp.clientesHoy': '📅 Clients for today',
-            'emp.elegirCli': 'Choose a client to start working.',
-            'emp.tituloActivos': '📋 My active jobs',
-            'emp.tituloHistorial': '📜 My History',
-            'msg.comenzar': '🚀 Start this job',
-            'msg.marcarEntrada': '✅ Clock In + Geo',
-            'msg.marcarSalida': '⏹️ Clock Out + Geo',
-            'msg.completado': '✅ Completed',
-            'msg.tomadoPor': '👤 Taken by',
-            'msg.maps': '🗺️ Maps',
-            'msg.cancelar': '❌ Cancel',
-            'msg.reactivar': '✅ Reactivate',
-            'msg.guardar': '💾 Save',
-            'msg.limpiar': '🔄 Clear',
-            'msg.pendiente': '⏳ Pending',
-            'msg.pagado': '✅ Paid',
-            'msg.activo': '✅ Active',
-            'msg.cancelado': '❌ Cancelled',
-            'msg.sinTomar': '⏳ Unassigned',
-            'msg.enProceso': '🔄 In progress',
-            'msg.sinAsignar': 'Unassigned',
-            'emp.adelLabelEmp': 'Employee',
-            'th.empleado': 'Employee',
-            'th.cliente': 'Client',
-            'th.fecha': 'Date',
-            'th.direccion': 'Address'
-        }
-    };
-
-    function t(clave) {
-        const idioma = datosGlobales.idioma || 'es';
-        return (TRADUCCIONES[idioma] && TRADUCCIONES[idioma][clave]) || (TRADUCCIONES['es'][clave]) || clave;
-    }
-
-    // ============================================================
-    // FIREBASE
+    // FIREBASE - SINCRONIZACIÓN
     // ============================================================
     window.addEventListener('firebaseReady', async () => {
         console.log('🔥 Iniciando sincronización con Firebase...');
         await cargarDatosDesdeFirebase();
         firebaseListo = true;
         document.getElementById('loadingOverlay').classList.add('hidden');
-        aplicarIdioma();
         renderAll();
     });
 
@@ -1270,7 +704,7 @@
             
         } catch (error) {
             console.error('❌ Error al cargar datos:', error);
-            alert('Error al conectar con Firebase.');
+            alert('Error al conectar con Firebase. Verifica tu conexión a internet.');
             document.getElementById('loadingOverlay').classList.add('hidden');
         }
     }
@@ -1282,6 +716,7 @@
             const docRef = window.firebaseDoc(window.firebaseDB, 'sistema', DOC_ID);
             await window.firebaseSetDoc(docRef, datosGlobales);
             actualizarSyncBadge('ok');
+            console.log('☁️ Datos guardados en Firebase');
         } catch (error) {
             console.error('❌ Error al guardar:', error);
             actualizarSyncBadge('error');
@@ -1292,327 +727,15 @@
         const badge = document.getElementById('syncStatus');
         if (!badge) return;
         if (estado === 'ok') {
-            badge.textContent = t('sync.ok');
+            badge.textContent = '☁️ Sincronizado';
             badge.className = 'sync-badge';
         } else if (estado === 'syncing') {
-            badge.textContent = t('sync.syncing');
+            badge.textContent = '⏳ Guardando...';
             badge.className = 'sync-badge syncing';
         } else if (estado === 'error') {
-            badge.textContent = t('sync.error');
+            badge.textContent = '⚠️ Sin conexión';
             badge.className = 'sync-badge error';
         }
-    }
-
-    // ============================================================
-    // APLICAR IDIOMA
-    // ============================================================
-       function aplicarIdioma() {
-        const idioma = datosGlobales.idioma || 'es';
-        const lang = idioma;
-        
-        const selector = document.getElementById('selectorIdioma');
-        if (selector) selector.value = idioma;
-        
-        // Función auxiliar
-        const setTxt = (id, clave) => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = t(clave);
-        };
-        
-        // ==================== HEADER ====================
-        setTxt('btnModoTexto', 'btn.modo');
-        setTxt('btnSalirTexto', 'btn.salir');
-        setTxt('loadingTexto', 'loading.texto');
-        setTxt('loadingSubtexto', 'loading.subtexto');
-        
-        // ==================== LOGIN ====================
-        setTxt('loginTitulo', 'login.titulo');
-        setTxt('loginSeleccionar', 'login.seleccionar');
-        setTxt('btnRolAdmin', 'login.admin');
-        setTxt('btnRolEmpleado', 'login.empleado');
-        setTxt('loginAdminTitulo', 'login.admin.titulo');
-        setTxt('loginAdminLabel', 'login.pass');
-        setTxt('btnLoginAdminEntrar', 'login.entrar');
-        setTxt('btnLoginAdminVolver', 'login.volver');
-        setTxt('adminError', 'login.error.admin');
-        setTxt('loginEmpTitulo', 'login.empleado.titulo');
-        setTxt('loginEmpLabelUser', 'login.usuario');
-        setTxt('loginEmpLabelPass', 'login.pass');
-        setTxt('btnLoginEmpEntrar', 'login.entrar');
-        setTxt('btnLoginEmpVolver', 'login.volver');
-        setTxt('empleadoError', 'login.error.empleado');
-        
-        // ==================== STATS ====================
-        setTxt('statLabelEmpleados', 'stats.empleados');
-        setTxt('statLabelClientes', 'stats.clientes');
-        setTxt('statLabelJornadas', 'stats.jornadas');
-        setTxt('statLabelIngresos', 'stats.ingresos');
-        
-        // ==================== TABS ====================
-        setTxt('tabBtnAgenda', 'tab.agenda');
-        setTxt('tabBtnSemana', 'tab.semana');
-        setTxt('tabBtnMes', 'tab.mes');
-        setTxt('tabBtnEmpleados', 'tab.empleados');
-        setTxt('tabBtnClientes', 'tab.clientes');
-        setTxt('tabBtnJornadas', 'tab.jornadas');
-        setTxt('tabBtnBoletas', 'tab.boletas');
-        setTxt('tabBtnConfig', 'tab.config');
-        setTxt('tabEmpHoy', 'tab.emp.hoy');
-        setTxt('tabEmpActivos', 'tab.emp.activos');
-        setTxt('tabEmpHistorial', 'tab.emp.historial');
-        
-        // ==================== AGENDA ====================
-        setTxt('agendaTitulo', 'agenda.titulo');
-        setTxt('agendaDesc', 'agenda.desc');
-        setTxt('agendaFechaLabel', 'agenda.fecha');
-        setTxt('btnAgendaAnterior', 'btn.anterior');
-        setTxt('btnAgendaHoy', 'btn.hoy');
-        setTxt('btnAgendaSiguiente', 'btn.siguiente');
-        
-        // ==================== SEMANA ====================
-        setTxt('semanaTitulo', 'semana.titulo');
-        setTxt('semanaDesc', 'semana.desc');
-        setTxt('semanaFechaLabel', 'semana.fecha');
-        setTxt('btnSemanaAnterior', 'btn.anterior');
-        setTxt('btnSemanaActual', 'btn.actual');
-        setTxt('btnSemanaSiguiente', 'btn.siguiente');
-        setTxt('semanaLeyendaActivo', 'semana.activo');
-        setTxt('semanaLeyendaCancelado', 'semana.cancelado');
-        setTxt('semanaLeyendaNoProg', 'semana.noprogramado');
-        
-        // ==================== MES ====================
-        setTxt('mesTitulo', 'mes.titulo');
-        setTxt('mesDesc', 'mes.desc');
-        setTxt('mesFechaLabel', 'mes.fecha');
-        setTxt('btnMesAnterior', 'btn.anterior');
-        setTxt('btnMesActual', 'btn.actual');
-        setTxt('btnMesSiguiente', 'btn.siguiente');
-        
-        // ==================== EMPLEADOS ====================
-        setTxt('empTitulo', 'emp.titulo');
-        setTxt('empLabelNombre', 'emp.nombre');
-        setTxt('empLabelTelefono', 'emp.telefono');
-        setTxt('empLabelEmail', 'emp.email');
-        setTxt('empLabelTarifa', 'emp.tarifa');
-        setTxt('empLabelCargo', 'emp.cargo');
-        setTxt('empLabelUsuario', 'emp.usuario');
-        setTxt('empLabelPassword', 'emp.password');
-        setTxt('empLabelEstado', 'emp.estado');
-        setTxt('empOptActivo', 'emp.activo');
-        setTxt('empOptInactivo', 'emp.inactivo');
-        setTxt('btnGuardarEmpleado', 'emp.guardar');
-        setTxt('btnLimpiarEmpleado', 'emp.limpiar');
-        setTxt('adelantosTitulo', 'emp.adelantos');
-        setTxt('adelLabelEmp', 'emp.adelLabelEmp');
-        setTxt('adelLabelMonto', 'emp.monto');
-        setTxt('adelLabelFecha', 'emp.fecha');
-        setTxt('btnRegistrarAdelanto', 'emp.registrarAdelanto');
-        setTxt('thEmpNombre', 'th.nombre');
-        setTxt('thEmpTel', 'th.telefono');
-        setTxt('thEmpTarifa', 'th.tarifa');
-        setTxt('thEmpCargo', 'th.cargo');
-        setTxt('thEmpUsuario', 'th.usuario');
-        setTxt('thEmpEstado', 'th.estado');
-        setTxt('thEmpAdelantos', 'th.adelantos');
-        setTxt('thEmpAcciones', 'th.acciones');
-        
-        // ==================== CLIENTES ====================
-        setTxt('cliTitulo', 'cli.titulo');
-        setTxt('cliDesc', 'cli.desc');
-        setTxt('cliLabelNombre', 'cli.nombre');
-        setTxt('cliLabelDireccion', 'cli.direccion');
-        setTxt('cliLabelTelefono', 'cli.telefono');
-        setTxt('cliLabelEmail', 'cli.email');
-        setTxt('cliLabelServicio', 'cli.servicio');
-        setTxt('cliOptRegular', 'cli.regular');
-        setTxt('cliOptProfunda', 'cli.profunda');
-        setTxt('cliOptConstruccion', 'cli.construccion');
-        setTxt('cliOptEspecial', 'cli.especial');
-        setTxt('cliLabelCosto', 'cli.costo');
-        setTxt('cliLabelDias', 'cli.dias');
-        setTxt('cliLabelFrecuencia', 'cli.frecuencia');
-        setTxt('cliOptSemanal', 'cli.semanal');
-        setTxt('cliOptQuincenal', 'cli.quincenal');
-        setTxt('cliOptMensual', 'cli.mensual');
-        setTxt('cliLabelFechaInicio', 'cli.fechaInicio');
-        setTxt('cliSmallFechaInicio', 'cli.fechaInicioSmall');
-        setTxt('cliLabelSemana', 'cli.semanaToca');
-        setTxt('cliOptImpar', 'cli.impar');
-        setTxt('cliOptPar', 'cli.par');
-        setTxt('cliSmallSemana', 'cli.semanaSmall');
-        setTxt('cliLabelInfoMes', 'cli.infoMes');
-        setTxt('cliLabelTipoCodigo', 'cli.tipoCodigo');
-        setTxt('cliOptSinCodigo', 'cli.sinCodigo');
-        setTxt('cliOptAlarma', 'cli.alarma');
-        setTxt('cliOptCerradura', 'cli.cerradura');
-        setTxt('cliOptLockbox', 'cli.lockbox');
-        setTxt('cliOptLlave', 'cli.llave');
-        setTxt('cliOptPortero', 'cli.portero');
-        setTxt('cliOptOtro', 'cli.otro');
-        setTxt('cliLabelCodigo', 'cli.codigo');
-        setTxt('cliLabelInstrucciones', 'cli.instrucciones');
-        setTxt('btnGuardarCliente', 'cli.guardar');
-        setTxt('btnLimpiarCliente', 'cli.limpiar');
-        setTxt('cliListaTitulo', 'cli.lista');
-        setTxt('thCliNombre', 'th.nombre');
-        setTxt('thCliDireccion', 'th.direccion');
-        setTxt('thCliTelefono', 'th.telefono');
-        setTxt('thCliServicio', 'th.servicio');
-        setTxt('thCliCosto', 'th.costo');
-        setTxt('thCliDias', 'th.dias');
-        setTxt('thCliFrecuencia', 'th.frecuencia');
-        setTxt('thCliCodigo', 'th.codigo');
-        setTxt('thCliAcciones', 'th.acciones');
-        
-        // ==================== DÍAS DE LA SEMANA ====================
-        const diasMap = lang === 'en' 
-            ? { Lun: 'Mon', Mar: 'Tue', Mié: 'Wed', Jue: 'Thu', Vie: 'Fri', Sáb: 'Sat', Dom: 'Sun' }
-            : { Mon: 'Lun', Tue: 'Mar', Wed: 'Mié', Thu: 'Jue', Fri: 'Vie', Sat: 'Sáb', Sun: 'Dom' };
-        ['diaLun', 'diaMar', 'diaMie', 'diaJue', 'diaVie', 'diaSab', 'diaDom'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = diasMap[el.textContent] || el.textContent;
-        });
-        
-        // ==================== PAGOS ====================
-        setTxt('pagosTitulo', 'pagos.titulo');
-        setTxt('pagosDesc', 'pagos.desc');
-        setTxt('pagosFiltroClienteLabel', 'pagos.filtroCli');
-        setTxt('pagosFiltroEstadoLabel', 'pagos.filtroEst');
-        setTxt('pagosOptTodosCli', 'pagos.todosCli');
-        setTxt('pagosOptTodosEst', 'pagos.todos');
-        setTxt('pagosOptPendiente', 'pagos.pendientes');
-        setTxt('pagosOptPagado', 'pagos.pagados');
-        setTxt('thPagoCliente', 'th.cliente');
-        setTxt('thPagoServicio', 'th.servicio');
-        setTxt('thPagoFechaProg', 'th.fechaProg');
-        setTxt('thPagoMonto', 'th.monto');
-        setTxt('thPagoEstado', 'th.estado');
-        setTxt('thPagoFechaPago', 'th.fechaPago');
-        setTxt('thPagoMetodo', 'th.metodo');
-        setTxt('thPagoAcciones', 'th.acciones');
-        setTxt('pagosManualTitulo', 'pagos.manualTitulo');
-        setTxt('pagoManualCliLabel', 'th.cliente');
-        setTxt('pagoManualMontoLabel', 'th.monto');
-        setTxt('pagoManualConceptoLabel', 'pagos.concepto');
-        setTxt('pagoOptAdelanto', 'pagos.adelanto');
-        setTxt('pagoOptPago', 'pagos.pagoDirecto');
-        setTxt('pagoOptExtra', 'pagos.extra');
-        setTxt('pagoManualFechaLabel', 'emp.fecha');
-        setTxt('pagoManualNotasLabel', 'pagos.notas');
-        setTxt('btnRegistrarPagoManual', 'pagos.registrar');
-        
-        // ==================== JORNADAS ====================
-        setTxt('jorTitulo', 'jor.titulo');
-        setTxt('jorDesc', 'jor.desc');
-        setTxt('jorManualTitulo', 'jor.manualTitulo');
-        setTxt('jorManualDesc', 'jor.manualDesc');
-        setTxt('jorManualEmpLabel', 'jor.emp');
-        setTxt('jorManualCliLabel', 'jor.cli');
-        setTxt('jorManualFechaLabel', 'jor.fecha');
-        setTxt('jorManualEntLabel', 'jor.entrada');
-        setTxt('jorManualSalLabel', 'jor.salida');
-        setTxt('jorManualPagoLabel', 'jor.tipoPago');
-        setTxt('jorOptEfectivo', 'jor.efectivo');
-        setTxt('jorOptCheque', 'jor.cheque');
-        setTxt('btnGuardarJornadaManual', 'jor.guardar');
-        setTxt('btnLimpiarJornadaManual', 'jor.limpiar');
-        setTxt('btnExportarExcel', 'jor.exportar');
-        setTxt('thJorEmp', 'th.empleado');
-        setTxt('thJorCli', 'th.cliente');
-        setTxt('thJorFecha', 'th.fecha');
-        setTxt('thJorEnt', 'th.entrada');
-        setTxt('thJorSal', 'th.salida');
-        setTxt('thJorHoras', 'th.horas');
-        setTxt('thJorTotal', 'th.total');
-        setTxt('thJorGeo', 'th.geo');
-        setTxt('thJorEstado', 'th.estado');
-        setTxt('thJorAcciones', 'th.acciones');
-        
-        // ==================== BOLETAS ====================
-        setTxt('boletaTitulo', 'boleta.titulo');
-        setTxt('boletaDesc', 'boleta.desc');
-        setTxt('boletaEmpLabel', 'boleta.emp');
-        setTxt('boletaMesLabel', 'boleta.mes');
-        setTxt('boletaQuincenaLabel', 'boleta.quincena');
-        setTxt('boletaOptQ1', 'boleta.q1');
-        setTxt('boletaOptQ2', 'boleta.q2');
-        setTxt('boletaTipoLabel', 'boleta.tipo');
-        setTxt('boletaOptEfec', 'boleta.efectivo');
-        setTxt('boletaOptCheq', 'boleta.cheque');
-        setTxt('boletaVistaLabel', 'boleta.vista');
-        setTxt('btnGenerarBoleta', 'boleta.generar');
-        setTxt('btnBoletaPDF', 'boleta.pdf');
-        setTxt('boletasGenLabel', 'boleta.generadas');
-        setTxt('thBolEmp', 'th.empleado');
-        setTxt('thBolPeriodo', 'th.periodo');
-        setTxt('thBolHoras', 'th.horas');
-        setTxt('thBolBruto', 'th.bruto');
-        setTxt('thBolSS', 'th.ss');
-        setTxt('thBolMed', 'th.medicare');
-        setTxt('thBolNeto', 'th.neto');
-        setTxt('thBolAcciones', 'th.acciones');
-        
-        // ==================== CONFIG ====================
-        setTxt('configTitulo', 'config.titulo');
-        setTxt('configEmpLabel', 'config.empresa');
-        setTxt('configSSLabel', 'config.ss');
-        setTxt('configMedLabel', 'config.medicare');
-        setTxt('btnGuardarConfig', 'config.guardar');
-        setTxt('segTitulo', 'seg.titulo');
-        setTxt('segDesc', 'seg.desc');
-        setTxt('segActualLabel', 'seg.actual');
-        setTxt('segNuevaLabel', 'seg.nueva');
-        setTxt('segConfLabel', 'seg.confirmar');
-        setTxt('btnCambiarPass', 'seg.cambiar');
-        
-        const segInfo = document.getElementById('segInfo');
-        if (segInfo) segInfo.innerHTML = t('seg.info');
-        
-        setTxt('datosTitulo', 'datos.titulo');
-        setTxt('btnBackup', 'datos.backup');
-        setTxt('btnRestaurar', 'datos.restaurar');
-        setTxt('btnBorrarTodo', 'datos.borrar');
-        
-        const datosInfo = document.getElementById('datosInfo');
-        if (datosInfo) datosInfo.innerHTML = t('datos.info');
-        
-        // ==================== EMPLEADO ====================
-        const empBienvenido = document.getElementById('empBienvenido');
-        if (empBienvenido) empBienvenido.innerHTML = t('emp.bienvenido') + ' <span id="empNombreDisplay">' + (empleadoActual ? empleadoActual.nombre : '') + '</span>';
-        
-        setTxt('empClientesHoy', 'emp.clientesHoy');
-        setTxt('empElegirCli', 'emp.elegirCli');
-        setTxt('empTituloActivos', 'emp.tituloActivos');
-        setTxt('empTituloHistorial', 'emp.tituloHistorial');
-        
-        // ==================== TH ADICIONALES ====================
-        setTxt('th.direccion', 'th.direccion');
-        
-        // ==================== RE-RENDERIZAR TODO ====================
-        renderEmpleados(datosGlobales);
-        renderClientes(datosGlobales);
-        renderJornadas(datosGlobales);
-        renderBoletas(datosGlobales);
-        renderPagosClientes();
-        renderAgendaDiaria();
-        renderSemana();
-        renderMes();
-        cargarDatosBoleta();
-        renderResumenDescuentos(datosGlobales);
-        cargarSelectsAdelantosPagos(datosGlobales);
-        cargarSelectsJornadaManual();
-        
-        if (empleadoActual) {
-            cargarTrabajosHoy();
-            cargarTrabajosEmpleado();
-            cargarHistorialEmpleado();
-        }
-    }
-    function cambiarIdioma(idioma) {
-        datosGlobales.idioma = idioma;
-        guardarEnFirebase();
-        aplicarIdioma();
-        renderAll();
     }
 
     // ============================================================
@@ -1633,51 +756,49 @@
         }
     }
 
- async function borrarTodosLosDatos() {
-    if (!confirm('⚠️ ¿Borrar TODOS los datos (empleados, clientes, jornadas, boletas)?\n\n✅ La configuración (nombre empresa y % descuentos) SE CONSERVARÁ.\n\nEsta acción no se puede deshacer.')) return;
-    if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN: ¿Estás seguro de borrar todo?')) return;
-    
-    // ⚠️ CONSERVAR la configuración actual
-    const configActual = datosGlobales.config || { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' };
-    
-    datosGlobales = {
-        empleados: [],
-        clientes: [],
-        jornadas: [],
-        boletas: [],
-        config: configActual,  // ← Se conserva
-        pagosClientes: [],
-        adelantosEmpleados: [],
-        pagosServicios: [],
-        cancelaciones: []
-    };
-    
-    await guardarEnFirebase();
-    alert('✅ Todos los datos han sido eliminados.\n\n⚙️ La configuración se conservó.');
-    location.reload();
-}
     async function borrarBoletas() {
-    if (!confirm('⚠️ ¿Borrar TODAS las boletas generadas?\n\nSe conservan empleados, clientes, jornadas y configuración.')) return;
-    datosGlobales.boletas = [];
-    await guardarEnFirebase();
-    alert('✅ Boletas eliminadas. Todo lo demás se conservó.');
-    renderAll();
-}
+        if (!confirm('⚠️ ¿Borrar TODAS las boletas generadas?\n\nSe conservan empleados, clientes, jornadas y configuración.')) return;
+        datosGlobales.boletas = [];
+        await guardarEnFirebase();
+        alert('✅ Boletas eliminadas. Todo lo demás se conservó.');
+        renderAll();
+    }
 
-async function borrarJornadas() {
-    if (!confirm('⚠️ ¿Borrar TODAS las jornadas (registros de entrada/salida)?\n\nSe conservan empleados, clientes, boletas y configuración.')) return;
-    if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN: ¿Seguro? Las horas trabajadas se perderán.')) return;
-    datosGlobales.jornadas = [];
-    await guardarEnFirebase();
-    alert('✅ Jornadas eliminadas. Todo lo demás se conservó.');
-    renderAll();
-}
+    async function borrarJornadas() {
+        if (!confirm('⚠️ ¿Borrar TODAS las jornadas (registros de entrada/salida)?\n\nSe conservan empleados, clientes, boletas y configuración.')) return;
+        if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN: ¿Seguro? Las horas trabajadas se perderán.')) return;
+        datosGlobales.jornadas = [];
+        await guardarEnFirebase();
+        alert('✅ Jornadas eliminadas. Todo lo demás se conservó.');
+        renderAll();
+    }
+
+    async function borrarTodosLosDatos() {
+        if (!confirm('⚠️ ¿Borrar TODOS los datos (empleados, clientes, jornadas, boletas)?\n\n✅ La configuración (nombre empresa y % descuentos) SE CONSERVARÁ.\n\nEsta acción no se puede deshacer.')) return;
+        if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN: ¿Estás seguro de borrar todo?')) return;
+        
+        const configActual = datosGlobales.config || { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' };
+        
+        datosGlobales = {
+            empleados: [],
+            clientes: [],
+            jornadas: [],
+            boletas: [],
+            config: configActual,
+            pagosClientes: [],
+            adelantosEmpleados: [],
+            pagosServicios: [],
+            cancelaciones: []
+        };
+        
+        await guardarEnFirebase();
+        alert('✅ Todos los datos han sido eliminados.\n\n⚙️ La configuración se conservó.');
+        location.reload();
+    }
+
     function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
-    // ============================================================
-    // CÁLCULOS DE HORAS
-    // ============================================================
-    function calcularHorasEnDecimal(entrada, salida) {
+    function calcularHoras(entrada, salida) {
         if (!entrada || !salida) return 0;
         const [h1, m1] = entrada.split(':').map(Number);
         const [h2, m2] = salida.split(':').map(Number);
@@ -1688,37 +809,13 @@ async function borrarJornadas() {
         return horas + mins / 60;
     }
 
-    function calcularHoras(entrada, salida) {
-        return calcularHorasEnDecimal(entrada, salida);
-    }
-
-    function formatoHorasHHMM(horasDecimal) {
-        const horas = Math.floor(horasDecimal);
-        const minutos = Math.round((horasDecimal - horas) * 60);
-        return `${horas}:${String(minutos).padStart(2, '0')}`;
-    }
-
     function calcularDescuentos(monto, config) {
-        const fica = (config.FICA || 0);
-        const medicare = (config.Medicare || 0);
-        const montoFICA = (monto * fica) / 100;
-        const montoMedicare = (monto * medicare) / 100;
-        return {
-            fica: montoFICA,
-            medicare: montoMedicare,
-            total: montoFICA + montoMedicare
-        };
+        const total = (config.FICA || 0) + (config.Medicare || 0) + (config.SUI || 0) + (config.FUTA || 0);
+        return (monto * total) / 100;
     }
 
     function etiquetaTipoCodigo(tipo) {
-        const map = { 
-            alarma: t('cli.alarma'), 
-            cerradura: t('cli.cerradura'), 
-            lockbox: t('cli.lockbox'), 
-            llave: t('cli.llave'), 
-            portero: t('cli.portero'), 
-            otro: t('cli.otro') 
-        };
+        const map = { alarma: '🚨 Alarma', cerradura: '🔐 Cerradura', lockbox: '📦 Lockbox', llave: '🔑 Llave física', portero: '🛎️ Portero', otro: '📌 Otro' };
         return map[tipo] || tipo || '—';
     }
 
@@ -1730,9 +827,8 @@ async function borrarJornadas() {
 
     function nombreDia(fechaStr) {
         const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        const diasEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const fecha = new Date(fechaStr + 'T00:00:00');
-        return datosGlobales.idioma === 'en' ? diasEn[fecha.getDay()] : dias[fecha.getDay()];
+        return dias[fecha.getDay()];
     }
 
     function nombreDiaKey(fechaStr) {
@@ -1831,8 +927,7 @@ async function borrarJornadas() {
 
     function loginAdmin() {
         const pass = document.getElementById('adminPass').value;
-        const passGuardada = datosGlobales.adminPassword || 'admin123';
-        if (pass === passGuardada) {
+        if (pass === 'admin123') {
             document.getElementById('loginAdmin').classList.add('hidden');
             document.getElementById('adminDashboard').classList.remove('hidden');
             document.getElementById('adminError').style.display = 'none';
@@ -1843,62 +938,38 @@ async function borrarJornadas() {
     }
 
     function loginEmpleado() {
-    const user = document.getElementById('empLoginUser').value.trim();
-    const pass = document.getElementById('empLoginPass').value.trim();
-    const data = getData();
-    
-    console.log('🔐 Intentando login:', user);
-    console.log('📋 Empleados disponibles:', data.empleados.length);
-    
-    if (data.empleados.length === 0) {
-        alert('⚠️ No hay empleados registrados. Contacta al administrador.');
-        return;
-    }
-    
-    const emp = data.empleados.find(e => 
-        e.usuario === user && 
-        e.password === pass && 
-        e.estado === 'activo'
-    );
-    
-    if (emp) {
-        console.log('✅ Login exitoso:', emp.nombre);
-        empleadoActual = emp;
+        const user = document.getElementById('empLoginUser').value.trim();
+        const pass = document.getElementById('empLoginPass').value.trim();
+        const data = getData();
         
-        // Ocultar login, mostrar dashboard
-        document.getElementById('loginEmpleado').classList.add('hidden');
-        document.getElementById('empleadoDashboard').classList.remove('hidden');
-        document.getElementById('empleadoError').style.display = 'none';
+        if (data.empleados.length === 0) {
+            alert('⚠️ No hay empleados registrados. Contacta al administrador.');
+            return;
+        }
         
-        // Info del empleado
-        document.getElementById('empNombreDisplay').textContent = emp.nombre;
-        const hoy = new Date().toISOString().slice(0,10);
-        document.getElementById('fechaHoyDisplay').textContent = `— ${nombreDia(hoy)} ${formatoFecha(hoy)}`;
+        const emp = data.empleados.find(e => 
+            e.usuario === user && 
+            e.password === pass && 
+            e.estado === 'activo'
+        );
         
-        // Cargar TODAS las secciones del empleado
-        try {
+        if (emp) {
+            empleadoActual = emp;
+            document.getElementById('loginEmpleado').classList.add('hidden');
+            document.getElementById('empleadoDashboard').classList.remove('hidden');
+            document.getElementById('empleadoError').style.display = 'none';
+            document.getElementById('empNombreDisplay').textContent = emp.nombre;
+            const hoy = new Date().toISOString().slice(0,10);
+            document.getElementById('fechaHoyDisplay').textContent = `— ${nombreDia(hoy)} ${formatoFecha(hoy)}`;
+            
             cargarTrabajosHoy();
             cargarTrabajosEmpleado();
             cargarHistorialEmpleado();
-            console.log('✅ Panel de empleado cargado correctamente');
-        } catch (error) {
-            console.error('❌ Error al cargar paneles:', error);
-            alert('Hubo un error al cargar tu panel. Revisa la consola (F12).');
+        } else {
+            document.getElementById('empleadoError').style.display = 'block';
         }
-        
-        // Activar la primera pestaña por defecto
-        document.querySelectorAll('.empleado-dashboard .tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.empleado-dashboard .tab-content').forEach(t => t.classList.remove('active'));
-        const primerBtn = document.querySelector('.empleado-dashboard .tab-btn[data-tab="emp-trabajos-hoy"]');
-        const primerTab = document.getElementById('tab-emp-trabajos-hoy');
-        if (primerBtn) primerBtn.classList.add('active');
-        if (primerTab) primerTab.classList.add('active');
-        
-    } else {
-        console.log('❌ Credenciales inválidas');
-        document.getElementById('empleadoError').style.display = 'block';
     }
-}
+
     document.getElementById('adminPass').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); loginAdmin(); }
     });
@@ -1910,7 +981,7 @@ async function borrarJornadas() {
     });
 
     // ============================================================
-    // RENDER ALL
+    // RENDER ADMIN
     // ============================================================
     function renderAll() {
         if (!firebaseListo) return;
@@ -1924,7 +995,6 @@ async function borrarJornadas() {
         renderResumenDescuentos(data);
         cargarDatosBoleta();
         cargarSelectsAdelantosPagos(data);
-        cargarSelectsJornadaManual();
         renderAgendaDiaria();
         renderSemana();
         renderMes();
@@ -1943,7 +1013,7 @@ async function borrarJornadas() {
                 <td>$${e.tarifa}/h</td>
                 <td>${e.cargo}</td>
                 <td>${e.usuario}</td>
-                <td><span class="badge ${e.estado === 'activo' ? 'badge-success' : 'badge-danger'}">${e.estado === 'activo' ? t('emp.activo') : t('emp.inactivo')}</span></td>
+                <td><span class="badge ${e.estado === 'activo' ? 'badge-success' : 'badge-danger'}">${e.estado}</span></td>
                 <td>$${totalAdelantos.toFixed(2)}</td>
                 <td>
                     <button class="btn btn-warning btn-sm" onclick="editarEmpleado('${e.id}')">✏️</button>
@@ -1958,12 +1028,12 @@ async function borrarJornadas() {
         const tbody = document.getElementById('tablaClientes');
         if (!tbody) return;
         if (data.clientes.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:#4a5568;">${datosGlobales.idioma === 'en' ? 'No clients registered. Add one above.' : 'No hay clientes registrados. Agrega uno arriba.'}</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:#4a5568;">No hay clientes registrados. Agrega uno arriba.</td></tr>';
             return;
         }
         tbody.innerHTML = data.clientes.map(c => {
             const codigoMostrar = c.tipoCodigo ? `<span class="badge badge-warning">${etiquetaTipoCodigo(c.tipoCodigo)}</span><br><small>${c.codigoAcceso || '—'}</small>` : '—';
-            const frecLabel = c.frecuencia === 'quincenal' ? (datosGlobales.idioma === 'en' ? 'Biweekly' : 'Quincenal') : (c.frecuencia === 'mensual' ? (datosGlobales.idioma === 'en' ? 'Monthly' : 'Mensual') : (datosGlobales.idioma === 'en' ? 'Weekly' : 'Semanal'));
+            const frecLabel = c.frecuencia === 'quincenal' ? 'Quincenal' : (c.frecuencia === 'mensual' ? 'Mensual' : 'Semanal');
             const frecBadge = c.frecuencia === 'quincenal' ? 'badge-warning' : (c.frecuencia === 'mensual' ? 'badge-info' : 'badge-success');
             const diasTexto = c.dias && c.dias.length > 0 ? c.dias.map(d => d.slice(0,3).charAt(0).toUpperCase() + d.slice(1,3)).join(', ') : '—';
             return `<tr>
@@ -1983,41 +1053,30 @@ async function borrarJornadas() {
         }).join('');
     }
 
-   function renderJornadas(data) {
-    const tbody = document.getElementById('tablaJornadas');
-    if (!tbody) return;
-    tbody.innerHTML = data.jornadas.map(j => {
-        const emp = data.empleados.find(e => e.id === j.empleadoId);
-        const cli = data.clientes.find(c => c.id === j.clienteId);
-        const horas = calcularHoras(j.horaEntrada, j.horaSalida);
-        const total = horas * (emp ? emp.tarifa : 0);
-        const geo = j.lat && j.lng ? `📍${j.lat.toFixed(4)}, ${j.lng.toFixed(4)}` : '—';
-        
-        // Select de empleados (solo activos + el empleado actual si está inactivo)
-        const opcionesEmpleados = data.empleados
-            .filter(e => e.estado === 'activo' || e.id === j.empleadoId)
-            .map(e => `<option value="${e.id}" ${e.id === j.empleadoId ? 'selected' : ''}>${e.nombre}</option>`)
-            .join('');
-        
-        return `<tr>
-            <td>
-                <select class="input-fecha" id="emp_${j.id}" onchange="editarJornada('${j.id}')" style="min-width:120px;">
-                    <option value="">-- Sin asignar --</option>
-                    ${opcionesEmpleados}
-                </select>
-            </td>
-            <td>${cli ? cli.nombre : 'Eliminado'}</td>
-            <td>${formatoFecha(j.fecha)}</td>
-            <td><input type="time" class="input-hora" id="entrada_${j.id}" value="${j.horaEntrada || ''}" onchange="editarJornada('${j.id}')"></td>
-            <td><input type="time" class="input-hora" id="salida_${j.id}" value="${j.horaSalida || ''}" onchange="editarJornada('${j.id}')"></td>
-            <td>${horas.toFixed(2)}h</td>
-            <td>$${total.toFixed(2)}</td>
-            <td><span class="geo-badge">${geo}</span></td>
-            <td><span class="badge ${j.estado === 'completado' ? 'badge-success' : 'badge-warning'}">${j.estado}</span></td>
-            <td><button class="btn btn-danger btn-sm" onclick="eliminarJornada('${j.id}')">🗑️</button></td>
-        </tr>`;
-    }).join('');
-}
+    function renderJornadas(data) {
+        const tbody = document.getElementById('tablaJornadas');
+        if (!tbody) return;
+        tbody.innerHTML = data.jornadas.map(j => {
+            const emp = data.empleados.find(e => e.id === j.empleadoId);
+            const cli = data.clientes.find(c => c.id === j.clienteId);
+            const horas = calcularHoras(j.horaEntrada, j.horaSalida);
+            const total = horas * (emp ? emp.tarifa : 0);
+            const geo = j.lat && j.lng ? `📍${j.lat.toFixed(4)}, ${j.lng.toFixed(4)}` : '—';
+            return `<tr>
+                <td>${emp ? emp.nombre : 'Eliminado'}</td>
+                <td>${cli ? cli.nombre : 'Eliminado'}</td>
+                <td>${formatoFecha(j.fecha)}</td>
+                <td><input type="time" class="input-hora" id="entrada_${j.id}" value="${j.horaEntrada || ''}" onchange="editarJornada('${j.id}')"></td>
+                <td><input type="time" class="input-hora" id="salida_${j.id}" value="${j.horaSalida || ''}" onchange="editarJornada('${j.id}')"></td>
+                <td>${horas.toFixed(2)}h</td>
+                <td>$${total.toFixed(2)}</td>
+                <td><span class="geo-badge">${geo}</span></td>
+                <td><span class="badge ${j.estado === 'completado' ? 'badge-success' : 'badge-warning'}">${j.estado}</span></td>
+                <td><button class="btn btn-danger btn-sm" onclick="eliminarJornada('${j.id}')">🗑️</button></td>
+            </tr>`;
+        }).join('');
+    }
+
     function renderStats(data) {
         const e1 = document.getElementById('totalEmpleados');
         if (!e1) return;
@@ -2036,19 +1095,10 @@ async function borrarJornadas() {
         const el = document.getElementById('resumenDescuentos');
         if (!el) return;
         const cfg = data.config;
-        const total = (cfg.FICA || 0) + (cfg.Medicare || 0);
-        el.innerHTML = `Social Security: ${cfg.FICA || 0}% | Medicare: ${cfg.Medicare || 0}%<br><strong>${t('config.resumen')}: ${total}%</strong>`;
+        const total = (cfg.FICA || 0) + (cfg.Medicare || 0) + (cfg.SUI || 0) + (cfg.FUTA || 0);
+        el.innerHTML = `Total descuentos: ${total}%`;
         const empEl = document.getElementById('cfgEmpresa');
         if (empEl) empEl.value = cfg.empresa || 'Mi Empresa';
-        const ficaEl = document.getElementById('cfgFICA');
-        if (ficaEl) ficaEl.value = cfg.FICA || 6.2;
-        const medEl = document.getElementById('cfgMedicare');
-        if (medEl) medEl.value = cfg.Medicare || 1.45;
-        
-        const headerEl = document.getElementById('nombreEmpresaHeader');
-        if (headerEl) {
-            headerEl.textContent = cfg.empresa || 'Mi Empresa';
-        }
     }
 
     function renderSelectsBoleta(data) {
@@ -2063,25 +1113,16 @@ async function borrarJornadas() {
         if (!tbody) return;
         tbody.innerHTML = data.boletas.map(b => {
             const emp = data.empleados.find(e => e.id === b.empleadoId);
-            const horasHHMM = b.totalHoras ? formatoHorasHHMM(b.totalHoras) : '—';
             return `<tr>
-                <td>${emp ? emp.nombre : '—'}</td>
-                <td>${b.periodo || '—'}</td>
-                <td>${horasHHMM}</td>
-                <td>$${(b.totalBruto || 0).toFixed(2)}</td>
-                <td>$${(b.descuentoFICA || 0).toFixed(2)}</td>
-                <td>$${(b.descuentoMedicare || 0).toFixed(2)}</td>
-                <td><strong>$${(b.totalNeto || 0).toFixed(2)}</strong></td>
-                <td><button class="btn btn-danger btn-sm" onclick="eliminarBoleta('${b.id}')">🗑️</button></td>
+                <td>${emp ? emp.nombre : 'Eliminado'}</td>
+                <td>${b.semana}</td>
+                <td>${b.totalHoras.toFixed(2)}h</td>
+                <td>$${b.totalBruto.toFixed(2)}</td>
+                <td>$${(b.descuento || 0).toFixed(2)}</td>
+                <td>$${b.totalNeto.toFixed(2)}</td>
+                <td><span class="badge ${b.tipoPago === 'cheque' ? 'badge-warning' : 'badge-success'}">${b.tipoPago === 'cheque' ? '📄 Cheque' : '💵 Efectivo'}</span></td>
             </tr>`;
         }).join('');
-    }
-
-    function eliminarBoleta(id) {
-        if (!confirm('¿Eliminar esta boleta?')) return;
-        const data = getData();
-        data.boletas = data.boletas.filter(b => b.id !== id);
-        saveData('boletas', data.boletas);
     }
 
     function cargarSelectsAdelantosPagos(data) {
@@ -2098,24 +1139,7 @@ async function borrarJornadas() {
         }
         const filtro = document.getElementById('filtroClientePagos');
         if (filtro) {
-            filtro.innerHTML = `<option value="">${t('pagos.todosCli')}</option>` + data.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
-        }
-    }
-
-    function cargarSelectsJornadaManual() {
-        const data = getData();
-        const selEmp = document.getElementById('jmEmpleado');
-        const selCli = document.getElementById('jmCliente');
-        if (!selEmp || !selCli) return;
-        
-        selEmp.innerHTML = data.empleados.filter(e => e.estado === 'activo')
-            .map(e => `<option value="${e.id}">${e.nombre}</option>`).join('');
-        selCli.innerHTML = data.clientes
-            .map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
-        
-        const fechaInput = document.getElementById('jmFecha');
-        if (fechaInput && !fechaInput.value) {
-            fechaInput.value = new Date().toISOString().slice(0,10);
+            filtro.innerHTML = '<option value="">-- Todos los clientes --</option>' + data.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
         }
     }
 
@@ -2138,17 +1162,18 @@ async function borrarJornadas() {
         const enProceso = jornadasHoy.filter(j => j.estado === 'pendiente' && j.horaEntrada).length;
 
         document.getElementById('agendaResumen').innerHTML = `
-            <div class="item">🏢 ${datosGlobales.idioma === 'en' ? 'Clients today' : 'Clientes hoy'}: <strong>${clientesHoy.length}</strong></div>
-            <div class="item">✅ ${datosGlobales.idioma === 'en' ? 'Completed' : 'Completados'}: <strong>${completados}</strong></div>
-            <div class="item">🔄 ${datosGlobales.idioma === 'en' ? 'In progress' : 'En proceso'}: <strong>${enProceso}</strong></div>
+            <div class="item">🏢 Clientes hoy: <strong>${clientesHoy.length}</strong></div>
+            <div class="item">✅ Completados: <strong>${completados}</strong></div>
+            <div class="item">🔄 En proceso: <strong>${enProceso}</strong></div>
         `;
 
         const container = document.getElementById('agendaContenido');
 
         if (clientesHoy.length === 0) {
             container.innerHTML = `<div class="sin-trabajos">
-                <h3>📭 ${datosGlobales.idioma === 'en' ? 'No clients scheduled for' : 'No hay clientes programados para'} ${formatoFecha(fecha)}</h3>
+                <h3>📭 No hay clientes programados para ${formatoFecha(fecha)}</h3>
                 <p>${nombreDia(fecha)}</p>
+                <p style="margin-top:10px;">Los clientes aparecen aquí según los días y frecuencia que tengan configurados.</p>
             </div>`;
             return;
         }
@@ -2161,19 +1186,19 @@ async function borrarJornadas() {
                 const emp = jornada ? data.empleados.find(e => e.id === jornada.empleadoId) : null;
                 
                 let claseEstado = 'pendiente';
-                let estadoBadge = `<span class="badge badge-primary">${t('msg.sinTomar')}</span>`;
+                let estadoBadge = '<span class="badge badge-primary">⏳ Sin tomar</span>';
                 if (cancelado) {
                     claseEstado = 'cancelado';
-                    estadoBadge = `<span class="badge badge-danger">${t('msg.cancelado')}</span>`;
+                    estadoBadge = '<span class="badge badge-danger">❌ Cancelado</span>';
                 } else if (jornada && jornada.estado === 'completado') {
                     claseEstado = 'completado';
-                    estadoBadge = `<span class="badge badge-success">${t('msg.completado')}</span>`;
+                    estadoBadge = '<span class="badge badge-success">✅ Completado</span>';
                 } else if (jornada && jornada.horaEntrada) {
                     claseEstado = 'en-proceso';
-                    estadoBadge = `<span class="badge badge-warning">${t('msg.enProceso')}</span>`;
+                    estadoBadge = '<span class="badge badge-warning">🔄 En proceso</span>';
                 } else if (jornada) {
                     claseEstado = 'en-proceso';
-                    estadoBadge = `<span class="badge badge-info">👤 ${datosGlobales.idioma === 'en' ? 'Taken' : 'Tomado'}</span>`;
+                    estadoBadge = '<span class="badge badge-info">👤 Tomado</span>';
                 }
 
                 let codigoHtml = '';
@@ -2185,20 +1210,20 @@ async function borrarJornadas() {
                     codigoHtml += `</div>`;
                 }
 
-                const frecLabel = cli.frecuencia === 'quincenal' ? (datosGlobales.idioma === 'en' ? 'Biweekly' : 'Quincenal') : (cli.frecuencia === 'mensual' ? (datosGlobales.idioma === 'en' ? 'Monthly' : 'Mensual') : (datosGlobales.idioma === 'en' ? 'Weekly' : 'Semanal'));
+                const frecLabel = cli.frecuencia === 'quincenal' ? 'Quincenal' : (cli.frecuencia === 'mensual' ? 'Mensual' : 'Semanal');
 
                 return `<div class="trabajo-card ${claseEstado}">
                     <div class="trabajo-hora">${cancelado ? '❌' : (jornada && jornada.horaEntrada ? '🕐 ' + jornada.horaEntrada : '📌')}</div>
                     <div class="trabajo-info">
                         <h4>🏢 ${cli.nombre} <span class="badge badge-info" style="font-size:0.65rem;">${frecLabel}</span></h4>
                         <p>📍 ${cli.direccion}</p>
-                        <p>👤 ${emp ? emp.nombre : t('msg.sinAsignar')} ${jornada && jornada.horaSalida ? '· ' + (datosGlobales.idioma === 'en' ? 'Out: ' : 'Salida: ') + jornada.horaSalida : ''}</p>
+                        <p>👤 ${emp ? emp.nombre : 'Sin asignar'} ${jornada && jornada.horaSalida ? '· Salida: ' + jornada.horaSalida : ''}</p>
                         ${codigoHtml}
                     </div>
                     <div class="trabajo-estado">
                         ${estadoBadge}<br><br>
-                        ${cli.direccion ? `<button class="btn btn-info btn-sm" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cli.direccion)}','_blank')">${t('msg.maps')}</button>` : ''}
-                        ${!cancelado ? `<button class="btn btn-danger btn-sm" onclick="cancelarDia('${cli.id}', '${fecha}')">${t('msg.cancelar')}</button>` : `<button class="btn btn-success btn-sm" onclick="reactivarDia('${cli.id}', '${fecha}')">${t('msg.reactivar')}</button>`}
+                        ${cli.direccion ? `<button class="btn btn-info btn-sm" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cli.direccion)}','_blank')">🗺️ Maps</button>` : ''}
+                        ${!cancelado ? `<button class="btn btn-danger btn-sm" onclick="cancelarDia('${cli.id}', '${fecha}')">❌ Cancelar</button>` : `<button class="btn btn-success btn-sm" onclick="reactivarDia('${cli.id}', '${fecha}')">✅ Reactivar</button>`}
                     </div>
                 </div>`;
             }).join('')}
@@ -2206,13 +1231,13 @@ async function borrarJornadas() {
     }
 
     function cancelarDia(clienteId, fecha) {
-        if (!confirm('¿Cancelar este día?')) return;
+        if (!confirm(`¿Cancelar el servicio para ${formatoFecha(fecha)}?`)) return;
         const data = getData();
         const existe = data.cancelaciones.find(c => c.clienteId === clienteId && c.fecha === fecha);
         if (!existe) {
             data.cancelaciones.push({ id: generateId(), clienteId, fecha, registro: new Date().toISOString() });
             saveData('cancelaciones', data.cancelaciones);
-            alert('✅ Ok');
+            alert('✅ Día cancelado');
         }
     }
 
@@ -2220,7 +1245,7 @@ async function borrarJornadas() {
         const data = getData();
         data.cancelaciones = data.cancelaciones.filter(c => !(c.clienteId === clienteId && c.fecha === fecha));
         saveData('cancelaciones', data.cancelaciones);
-        alert('✅ Ok');
+        alert('✅ Día reactivado');
     }
 
     function cambiarDia(delta) {
@@ -2248,7 +1273,7 @@ async function borrarJornadas() {
         lunes.setDate(fecha.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
 
         const dias = [];
-        const diasNombres = datosGlobales.idioma === 'en' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] : ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+        const diasNombres = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
         for (let i = 0; i < 7; i++) {
             const d = new Date(lunes);
             d.setDate(lunes.getDate() + i);
@@ -2258,14 +1283,14 @@ async function borrarJornadas() {
         const container = document.getElementById('semanaContenido');
 
         if (data.clientes.length === 0) {
-            container.innerHTML = `<p style="color:#4a5568; padding:20px; text-align:center;">${datosGlobales.idioma === 'en' ? 'No clients registered.' : 'No hay clientes registrados.'}</p>`;
+            container.innerHTML = '<p style="color:#4a5568; padding:20px; text-align:center;">No hay clientes registrados.</p>';
             return;
         }
 
         const hoy = new Date().toISOString().slice(0,10);
 
         let html = `<div class="semana-grid">`;
-        html += `<div class="semana-cell semana-head" style="background:#0f2b4d;">${datosGlobales.idioma === 'en' ? 'Client' : 'Cliente'}</div>`;
+        html += `<div class="semana-cell semana-head" style="background:#0f2b4d;">Cliente</div>`;
         dias.forEach((dia, i) => {
             const esHoy = dia === hoy;
             html += `<div class="semana-cell semana-head ${esHoy ? 'hoy' : ''}" style="${esHoy ? 'background:#e6a800;' : ''}">${diasNombres[i]}<br><small>${formatoFecha(dia).slice(0,5)}</small></div>`;
@@ -2308,13 +1333,13 @@ async function borrarJornadas() {
     }
 
     function cancelarDiaSemana(clienteId, fecha) {
-        if (!confirm('¿Cancelar este día?')) return;
+        if (!confirm(`¿Cancelar el servicio para ${formatoFecha(fecha)}?`)) return;
         const data = getData();
         const existe = data.cancelaciones.find(c => c.clienteId === clienteId && c.fecha === fecha);
         if (!existe) {
             data.cancelaciones.push({ id: generateId(), clienteId, fecha, registro: new Date().toISOString() });
             saveData('cancelaciones', data.cancelaciones);
-            alert('✅ Ok');
+            alert('✅ Día cancelado');
         }
     }
 
@@ -2367,17 +1392,17 @@ async function borrarJornadas() {
         }
         
         document.getElementById('mesResumen').innerHTML = `
-            <div class="item">📅 ${datosGlobales.idioma === 'en' ? 'Days' : 'Días'}: <strong>${diasEnMes}</strong></div>
-            <div class="item">🏢 ${datosGlobales.idioma === 'en' ? 'Jobs' : 'Trabajos'}: <strong>${totalTrabajos}</strong></div>
-            <div class="item">❌ ${datosGlobales.idioma === 'en' ? 'Cancelled' : 'Cancelados'}: <strong>${totalCancelados}</strong></div>
+            <div class="item">📅 Días: <strong>${diasEnMes}</strong></div>
+            <div class="item">🏢 Trabajos: <strong>${totalTrabajos}</strong></div>
+            <div class="item">❌ Cancelados: <strong>${totalCancelados}</strong></div>
         `;
         
         if (data.clientes.length === 0) {
-            container.innerHTML = `<p style="color:#4a5568; padding:20px; text-align:center;">${datosGlobales.idioma === 'en' ? 'No clients registered.' : 'No hay clientes registrados.'}</p>`;
+            container.innerHTML = '<p style="color:#4a5568; padding:20px; text-align:center;">No hay clientes registrados.</p>';
             return;
         }
         
-        const nombresDias = datosGlobales.idioma === 'en' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] : ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+        const nombresDias = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
         const hoy = new Date().toISOString().slice(0,10);
         
         let html = `<div class="mes-grid">`;
@@ -2427,28 +1452,28 @@ async function borrarJornadas() {
         const emp = jornada ? data.empleados.find(e => e.id === jornada.empleadoId) : null;
         
         let html = `<h3>🏢 ${cli.nombre}</h3>`;
-        html += `<p><strong>📅 ${datosGlobales.idioma === 'en' ? 'Date' : 'Fecha'}:</strong> ${nombreDia(fecha)} ${formatoFecha(fecha)}</p>`;
-        html += `<p><strong>📍 ${datosGlobales.idioma === 'en' ? 'Address' : 'Dirección'}:</strong> ${cli.direccion}</p>`;
-        html += `<p><strong>🔧 ${datosGlobales.idioma === 'en' ? 'Service' : 'Servicio'}:</strong> ${cli.servicio || 'Regular'}</p>`;
-        html += `<p><strong>💰 ${datosGlobales.idioma === 'en' ? 'Cost' : 'Costo'}:</strong> $${cli.costo || 0}</p>`;
+        html += `<p><strong>📅 Fecha:</strong> ${nombreDia(fecha)} ${formatoFecha(fecha)}</p>`;
+        html += `<p><strong>📍 Dirección:</strong> ${cli.direccion}</p>`;
+        html += `<p><strong>🔧 Servicio:</strong> ${cli.servicio || 'Regular'}</p>`;
+        html += `<p><strong>💰 Costo:</strong> $${cli.costo || 0}</p>`;
         if (cli.tipoCodigo || cli.codigoAcceso) {
-            html += `<p><strong>🔑 ${datosGlobales.idioma === 'en' ? 'Code' : 'Código'}:</strong> ${etiquetaTipoCodigo(cli.tipoCodigo)} - ${cli.codigoAcceso || '—'}</p>`;
+            html += `<p><strong>🔑 Código:</strong> ${etiquetaTipoCodigo(cli.tipoCodigo)} - ${cli.codigoAcceso || '—'}</p>`;
         }
         if (cli.instrucciones) {
-            html += `<p><strong>📝 ${datosGlobales.idioma === 'en' ? 'Instructions' : 'Instrucciones'}:</strong> ${cli.instrucciones}</p>`;
+            html += `<p><strong>📝 Instrucciones:</strong> ${cli.instrucciones}</p>`;
         }
         html += `<hr style="margin:15px 0;">`;
         if (cancelado) {
-            html += `<p style="color:#b22234; font-weight:600;">❌ ${datosGlobales.idioma === 'en' ? 'This day is CANCELLED' : 'Este día está CANCELADO'}</p>`;
-            html += `<button class="btn btn-success btn-sm" onclick="reactivarDia('${clienteId}', '${fecha}'); cerrarModal();">✅ ${t('msg.reactivar')}</button>`;
+            html += `<p style="color:#b22234; font-weight:600;">❌ Este día está CANCELADO</p>`;
+            html += `<button class="btn btn-success btn-sm" onclick="reactivarDia('${clienteId}', '${fecha}'); cerrarModal();">✅ Reactivar este día</button>`;
         } else if (jornada) {
-            html += `<p><strong>👤 ${datosGlobales.idioma === 'en' ? 'Employee' : 'Empleado'}:</strong> ${emp ? emp.nombre : 'N/A'}</p>`;
-            html += `<p><strong>⏱️ ${datosGlobales.idioma === 'en' ? 'Clock In' : 'Entrada'}:</strong> ${jornada.horaEntrada || '—'}</p>`;
-            html += `<p><strong>⏱️ ${datosGlobales.idioma === 'en' ? 'Clock Out' : 'Salida'}:</strong> ${jornada.horaSalida || '—'}</p>`;
-            html += `<p><strong>${datosGlobales.idioma === 'en' ? 'Status' : 'Estado'}:</strong> <span class="badge ${jornada.estado === 'completado' ? 'badge-success' : 'badge-warning'}">${jornada.estado}</span></p>`;
+            html += `<p><strong>👤 Empleado:</strong> ${emp ? emp.nombre : 'N/A'}</p>`;
+            html += `<p><strong>⏱️ Entrada:</strong> ${jornada.horaEntrada || 'Pendiente'}</p>`;
+            html += `<p><strong>⏱️ Salida:</strong> ${jornada.horaSalida || 'Pendiente'}</p>`;
+            html += `<p><strong>Estado:</strong> <span class="badge ${jornada.estado === 'completado' ? 'badge-success' : 'badge-warning'}">${jornada.estado}</span></p>`;
         } else {
-            html += `<p style="color:#1a4a7a;">⏳ ${datosGlobales.idioma === 'en' ? 'Not started yet' : 'Sin tomar aún'}</p>`;
-            html += `<button class="btn btn-danger btn-sm" onclick="cancelarDia('${clienteId}', '${fecha}'); cerrarModal();">${t('msg.cancelar')}</button>`;
+            html += `<p style="color:#1a4a7a;">⏳ Sin tomar aún</p>`;
+            html += `<button class="btn btn-danger btn-sm" onclick="cancelarDia('${clienteId}', '${fecha}'); cerrarModal();">❌ Cancelar este día</button>`;
         }
         
         document.getElementById('modalContent').innerHTML = html;
@@ -2517,9 +1542,9 @@ async function borrarJornadas() {
         const totalVencido = pagos.filter(p => p.estado === 'pendiente' && p.fecha < hoyStr).reduce((s, p) => s + p.monto, 0);
         
         document.getElementById('cuentasResumen').innerHTML = `
-            <div class="cuenta-card pagado"><div class="monto">$${totalPagado.toFixed(2)}</div><div class="label">✅ ${datosGlobales.idioma === 'en' ? 'Total Paid' : 'Total Pagado'}</div></div>
-            <div class="cuenta-card pendiente"><div class="monto">$${totalPendiente.toFixed(2)}</div><div class="label">⏳ ${datosGlobales.idioma === 'en' ? 'Total Pending' : 'Total Pendiente'}</div></div>
-            <div class="cuenta-card vencido"><div class="monto">$${totalVencido.toFixed(2)}</div><div class="label">⚠️ ${datosGlobales.idioma === 'en' ? 'Overdue' : 'Vencido'}</div></div>
+            <div class="cuenta-card pagado"><div class="monto">$${totalPagado.toFixed(2)}</div><div class="label">✅ Total Pagado</div></div>
+            <div class="cuenta-card pendiente"><div class="monto">$${totalPendiente.toFixed(2)}</div><div class="label">⏳ Total Pendiente</div></div>
+            <div class="cuenta-card vencido"><div class="monto">$${totalVencido.toFixed(2)}</div><div class="label">⚠️ Vencido</div></div>
         `;
         
         const totalPaginas = Math.max(1, Math.ceil(filtrados.length / PAGOS_POR_PAGINA));
@@ -2532,7 +1557,7 @@ async function borrarJornadas() {
         
         const tbody = document.getElementById('tablaPagosClientes');
         if (filtrados.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:#4a5568;">${datosGlobales.idioma === 'en' ? 'No payments registered.' : 'No hay pagos registrados.'}</td></tr>`;
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#4a5568;">No hay pagos registrados.</td></tr>';
             document.getElementById('paginacionPagos').innerHTML = '';
             return;
         }
@@ -2547,18 +1572,18 @@ async function borrarJornadas() {
                 <td><input type="number" class="input-monto" step="0.01" value="${p.monto}" onchange="editarPagoServicio('${p.id}', 'monto', this.value)"></td>
                 <td>
                     <select class="input-fecha" onchange="editarPagoServicio('${p.id}', 'estado', this.value)" style="${p.estado === 'pagado' ? 'background:#d4edda;' : (vencido ? 'background:#f8d7da;' : 'background:#fff3cd;')}">
-                        <option value="pendiente" ${p.estado === 'pendiente' ? 'selected' : ''}>⏳ ${datosGlobales.idioma === 'en' ? 'Pending' : 'Pendiente'}</option>
-                        <option value="pagado" ${p.estado === 'pagado' ? 'selected' : ''}>✅ ${datosGlobales.idioma === 'en' ? 'Paid' : 'Pagado'}</option>
+                        <option value="pendiente" ${p.estado === 'pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                        <option value="pagado" ${p.estado === 'pagado' ? 'selected' : ''}>✅ Pagado</option>
                     </select>
                 </td>
                 <td><input type="date" class="input-fecha" value="${p.fechaPago || ''}" onchange="editarPagoServicio('${p.id}', 'fechaPago', this.value)" ${p.estado === 'pendiente' ? 'disabled' : ''}></td>
                 <td>
                     <select class="input-fecha" onchange="editarPagoServicio('${p.id}', 'metodo', this.value)" ${p.estado === 'pendiente' ? 'disabled' : ''}>
                         <option value="">--</option>
-                        <option value="efectivo" ${p.metodo === 'efectivo' ? 'selected' : ''}>💵 ${datosGlobales.idioma === 'en' ? 'Cash' : 'Efectivo'}</option>
-                        <option value="cheque" ${p.metodo === 'cheque' ? 'selected' : ''}>📄 ${datosGlobales.idioma === 'en' ? 'Check' : 'Cheque'}</option>
-                        <option value="transferencia" ${p.metodo === 'transferencia' ? 'selected' : ''}>🏦 ${datosGlobales.idioma === 'en' ? 'Transfer' : 'Transferencia'}</option>
-                        <option value="tarjeta" ${p.metodo === 'tarjeta' ? 'selected' : ''}>💳 ${datosGlobales.idioma === 'en' ? 'Card' : 'Tarjeta'}</option>
+                        <option value="efectivo" ${p.metodo === 'efectivo' ? 'selected' : ''}>💵 Efectivo</option>
+                        <option value="cheque" ${p.metodo === 'cheque' ? 'selected' : ''}>📄 Cheque</option>
+                        <option value="transferencia" ${p.metodo === 'transferencia' ? 'selected' : ''}>🏦 Transferencia</option>
+                        <option value="tarjeta" ${p.metodo === 'tarjeta' ? 'selected' : ''}>💳 Tarjeta</option>
                     </select>
                 </td>
                 <td><button class="btn btn-danger btn-sm" onclick="eliminarPagoServicio('${p.id}')">🗑️</button></td>
@@ -2566,8 +1591,8 @@ async function borrarJornadas() {
         }).join('');
         
         let pagHtml = '';
-        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(1)">« ${datosGlobales.idioma === 'en' ? 'First' : 'Primera'}</button>`;
-        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual - 1})">‹ ${datosGlobales.idioma === 'en' ? 'Previous' : 'Anterior'}</button>`;
+        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(1)">« Primera</button>`;
+        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual - 1})">‹ Anterior</button>`;
         
         let inicioRango = Math.max(1, paginaPagosActual - 2);
         let finRango = Math.min(totalPaginas, paginaPagosActual + 2);
@@ -2576,9 +1601,9 @@ async function borrarJornadas() {
             pagHtml += `<button class="${i === paginaPagosActual ? 'active' : ''}" onclick="cambiarPaginaPagos(${i})">${i}</button>`;
         }
         
-        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual + 1})">${datosGlobales.idioma === 'en' ? 'Next' : 'Siguiente'} ›</button>`;
-        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${totalPaginas})">${datosGlobales.idioma === 'en' ? 'Last' : 'Última'} »</button>`;
-        pagHtml += `<span class="info">${datosGlobales.idioma === 'en' ? 'Page' : 'Página'} ${paginaPagosActual} ${datosGlobales.idioma === 'en' ? 'of' : 'de'} ${totalPaginas} · ${filtrados.length} ${datosGlobales.idioma === 'en' ? 'records' : 'registros'}</span>`;
+        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual + 1})">Siguiente ›</button>`;
+        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${totalPaginas})">Última »</button>`;
+        pagHtml += `<span class="info">Página ${paginaPagosActual} de ${totalPaginas} · ${filtrados.length} registros</span>`;
         
         document.getElementById('paginacionPagos').innerHTML = pagHtml;
     }
@@ -2619,7 +1644,7 @@ async function borrarJornadas() {
     }
 
     function eliminarPagoServicio(id) {
-        if (!confirm('¿Eliminar este registro?')) return;
+        if (!confirm('¿Eliminar este registro de pago?')) return;
         const data = getData();
         data.pagosServicios = data.pagosServicios.filter(p => p.id !== id);
         saveData('pagosServicios', data.pagosServicios);
@@ -2651,7 +1676,7 @@ async function borrarJornadas() {
         }
         saveData('empleados', data.empleados);
         limpiarFormEmpleado();
-        alert('✅ ' + (datosGlobales.idioma === 'en' ? 'Employee saved' : 'Empleado guardado'));
+        alert('✅ Empleado guardado');
     }
 
     function editarEmpleado(id) {
@@ -2670,7 +1695,7 @@ async function borrarJornadas() {
     }
 
     function eliminarEmpleado(id) {
-        if (!confirm('¿Eliminar?')) return;
+        if (!confirm('¿Eliminar este empleado?')) return;
         let data = getData();
         data.empleados = data.empleados.filter(e => e.id !== id);
         saveData('empleados', data.empleados);
@@ -2681,31 +1706,34 @@ async function borrarJornadas() {
         document.getElementById('formEmpleado').reset();
     }
 
+    // ============================================================
+    // ADELANTOS EMPLEADOS
+    // ============================================================
     function registrarAdelantoEmpleado() {
         const data = getData();
         const empleadoId = document.getElementById('adelantoEmpleadoSelect').value;
         const monto = parseFloat(document.getElementById('adelantoEmpleadoMonto').value);
         const fecha = document.getElementById('adelantoEmpleadoFecha').value;
-        if (!empleadoId || !monto || !fecha) { alert('⚠️ Completa campos'); return; }
+        if (!empleadoId || !monto || !fecha) { alert('⚠️ Completa todos los campos'); return; }
         const adelanto = { id: generateId(), empleadoId, monto, fecha, registro: new Date().toISOString() };
         data.adelantosEmpleados.push(adelanto);
         saveData('adelantosEmpleados', data.adelantosEmpleados);
         document.getElementById('adelantoEmpleadoMonto').value = '';
-        alert('✅ Ok');
+        alert('✅ Adelanto registrado');
     }
 
     function verAdelantosEmpleado(id) {
         const data = getData();
         const emp = data.empleados.find(e => e.id === id);
         const adelantos = data.adelantosEmpleados.filter(a => a.empleadoId === id);
-        let html = `<h3>💰 ${emp ? emp.nombre : ''}</h3>`;
-        if (adelantos.length === 0) { html += '<p>—</p>'; }
+        let html = `<h3>💰 Adelantos de ${emp ? emp.nombre : ''}</h3>`;
+        if (adelantos.length === 0) { html += '<p>Sin adelantos registrados</p>'; }
         else {
-            html += `<table><tr><th>${datosGlobales.idioma === 'en' ? 'Date' : 'Fecha'}</th><th>${datosGlobales.idioma === 'en' ? 'Amount' : 'Monto'}</th></tr>`;
+            html += `<table><tr><th>Fecha</th><th>Monto</th></tr>`;
             adelantos.forEach(a => { html += `<tr><td>${formatoFecha(a.fecha)}</td><td>$${a.monto.toFixed(2)}</td></tr>`; });
             html += `</table>`;
             const total = adelantos.reduce((s, a) => s + a.monto, 0);
-            html += `<p><strong>Total: $${total.toFixed(2)}</strong></p>`;
+            html += `<p><strong>Total adelantos:</strong> $${total.toFixed(2)}</p>`;
         }
         document.getElementById('modalContent').innerHTML = html;
         document.getElementById('modalOverlay').classList.add('active');
@@ -2725,7 +1753,7 @@ async function borrarJornadas() {
         });
         
         if (diasSeleccionados.length === 0) {
-            alert('⚠️ ' + (datosGlobales.idioma === 'en' ? 'Select at least one day' : 'Selecciona al menos un día'));
+            alert('⚠️ Debes seleccionar al menos un día de servicio');
             return;
         }
         
@@ -2748,11 +1776,11 @@ async function borrarJornadas() {
         if (id) {
             const idx = data.clientes.findIndex(c => c.id === id);
             if (idx !== -1) data.clientes[idx] = { ...data.clientes[idx], ...cli };
-            alert('✅ ' + (datosGlobales.idioma === 'en' ? 'Client updated' : 'Cliente actualizado'));
+            alert('✅ Cliente actualizado correctamente');
         } else {
             cli.id = generateId();
             data.clientes.push(cli);
-            alert('✅ ' + (datosGlobales.idioma === 'en' ? 'Client added' : 'Cliente agregado'));
+            alert('✅ Cliente agregado correctamente');
         }
         saveData('clientes', data.clientes);
         limpiarFormCliente();
@@ -2786,14 +1814,14 @@ async function borrarJornadas() {
         });
         
         actualizarCamposFrecuencia();
-        document.getElementById('clienteFormTitulo').innerHTML = `✏️ ${cli.nombre}`;
-        document.getElementById('btnGuardarCliente').textContent = '💾 ' + (datosGlobales.idioma === 'en' ? 'Update' : 'Actualizar');
+        document.getElementById('clienteFormTitulo').innerHTML = `✏️ Editando: ${cli.nombre}`;
+        document.getElementById('btnGuardarCliente').textContent = '💾 Actualizar Cliente';
         document.querySelector('.tab-btn[data-tab="admin-clientes"]').click();
         document.getElementById('formCliente').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function eliminarCliente(id) {
-        if (!confirm('¿Eliminar?')) return;
+        if (!confirm('¿Eliminar este cliente?')) return;
         let data = getData();
         data.clientes = data.clientes.filter(c => c.id !== id);
         saveData('clientes', data.clientes);
@@ -2805,8 +1833,8 @@ async function borrarJornadas() {
         document.querySelectorAll('#diasGrid .dia-check').forEach(label => label.classList.remove('activo'));
         document.getElementById('cliFechaInicio').value = new Date().toISOString().slice(0,10);
         document.getElementById('cliFrecuencia').value = 'semanal';
-        document.getElementById('clienteFormTitulo').innerHTML = t('cli.nuevo');
-        document.getElementById('btnGuardarCliente').textContent = t('cli.guardar');
+        document.getElementById('clienteFormTitulo').innerHTML = '➕ Nuevo Cliente';
+        document.getElementById('btnGuardarCliente').textContent = '💾 Guardar';
         actualizarCamposFrecuencia();
     }
 
@@ -2817,6 +1845,9 @@ async function borrarJornadas() {
         });
     });
 
+    // ============================================================
+    // PAGOS MANUALES
+    // ============================================================
     function registrarPagoCliente() {
         const data = getData();
         const clienteId = document.getElementById('pagoClienteSelect').value;
@@ -2824,273 +1855,179 @@ async function borrarJornadas() {
         const concepto = document.getElementById('pagoClienteConcepto').value;
         const fecha = document.getElementById('pagoClienteFecha').value;
         const notas = document.getElementById('pagoClienteNotas').value;
-        if (!clienteId || !monto || !fecha) { alert('⚠️ Completa campos'); return; }
+        if (!clienteId || !monto || !fecha) { alert('⚠️ Completa todos los campos'); return; }
         const pago = { id: generateId(), clienteId, monto, concepto, fecha, notas, registro: new Date().toISOString() };
         data.pagosClientes.push(pago);
         saveData('pagosClientes', data.pagosClientes);
         document.getElementById('pagoClienteMonto').value = '';
         document.getElementById('pagoClienteNotas').value = '';
-        alert('✅ Ok');
+        alert('✅ Pago registrado');
     }
 
     // ============================================================
-    // JORNADAS MANUALES
+    // JORNADAS - EDICIÓN (SOLO HORAS)
     // ============================================================
-    function guardarJornadaManual(e) {
-        e.preventDefault();
-        const data = getData();
-        const editId = document.getElementById('jmEditId').value;
-        
-        const empleadoId = document.getElementById('jmEmpleado').value;
-        const clienteId = document.getElementById('jmCliente').value;
-        const fecha = document.getElementById('jmFecha').value;
-        const horaEntrada = document.getElementById('jmEntrada').value;
-        const horaSalida = document.getElementById('jmSalida').value;
-        const pago = document.getElementById('jmPago').value;
-        
-        if (!empleadoId || !clienteId || !fecha || !horaEntrada || !horaSalida) {
-            alert('⚠️ Completa todos los campos');
-            return;
-        }
-        
-        if (horaSalida <= horaEntrada) {
-            alert('⚠️ ' + (datosGlobales.idioma === 'en' ? 'Clock out must be after clock in' : 'La hora de salida debe ser mayor'));
-            return;
-        }
-        
-        const cli = data.clientes.find(c => c.id === clienteId);
-        const direccion = cli ? cli.direccion : '';
-        
-        if (editId) {
-            const j = data.jornadas.find(j => j.id === editId);
-            if (j) {
-                j.empleadoId = empleadoId;
-                j.clienteId = clienteId;
-                j.fecha = fecha;
-                j.horaEntrada = horaEntrada;
-                j.horaSalida = horaSalida;
-                j.direccion = direccion;
-                j.pago = pago;
-                j.estado = 'completado';
-                j.registradoPorAdmin = true;
-                alert('✅ Ok');
-            }
-        } else {
-            const nuevaJornada = {
-                id: generateId(),
-                empleadoId,
-                clienteId,
-                fecha,
-                horaEntrada,
-                horaSalida,
-                direccion,
-                pago,
-                estado: 'completado',
-                lat: null,
-                lng: null,
-                registradoPorAdmin: true,
-                registroManual: new Date().toISOString()
-            };
-            data.jornadas.push(nuevaJornada);
-            alert('✅ Ok');
-        }
-        
-        saveData('jornadas', data.jornadas);
-        limpiarFormJornadaManual();
-    }
-
-    function limpiarFormJornadaManual() {
-        document.getElementById('jmEditId').value = '';
-        document.getElementById('jmEntrada').value = '';
-        document.getElementById('jmSalida').value = '';
-        document.getElementById('jmFecha').value = new Date().toISOString().slice(0,10);
-        document.getElementById('jmPago').value = 'efectivo';
-        document.getElementById('btnGuardarJornadaManual').textContent = t('jor.guardar');
-    }
-
     function editarJornada(id) {
-    const data = getData();
-    const j = data.jornadas.find(j => j.id === id);
-    if (!j) return;
-    
-    // Capturar TODOS los campos editables
-    const entrada = document.getElementById('entrada_' + id).value;
-    const salida = document.getElementById('salida_' + id).value;
-    const empleadoSelect = document.getElementById('emp_' + id);
-    const nuevoEmpleadoId = empleadoSelect ? empleadoSelect.value : null;
-    
-    j.horaEntrada = entrada || null;
-    j.horaSalida = salida || null;
-    
-    // Actualizar empleado si se cambió
-    if (nuevoEmpleadoId && nuevoEmpleadoId !== j.empleadoId) {
-        j.empleadoId = nuevoEmpleadoId;
+        const data = getData();
+        const j = data.jornadas.find(j => j.id === id);
+        if (!j) return;
+        const entrada = document.getElementById('entrada_' + id).value;
+        const salida = document.getElementById('salida_' + id).value;
+        j.horaEntrada = entrada || null;
+        j.horaSalida = salida || null;
+        j.estado = (entrada && salida) ? 'completado' : 'pendiente';
+        saveData('jornadas', data.jornadas);
+        renderJornadas(data);
     }
-    
-    j.estado = (entrada && salida) ? 'completado' : 'pendiente';
-    saveData('jornadas', data.jornadas);
-    renderJornadas(data);
-}
 
     function eliminarJornada(id) {
-        if (!confirm('¿Eliminar?')) return;
+        if (!confirm('¿Eliminar esta jornada?')) return;
         let data = getData();
         data.jornadas = data.jornadas.filter(j => j.id !== id);
         saveData('jornadas', data.jornadas);
     }
 
     // ============================================================
-    // BOLETAS QUINCENALES
+    // BOLETAS (CORREGIDO: descuentos SOLO con cheque)
     // ============================================================
-    function obtenerRangoQuincena(mes, quincena) {
-        const [year, month] = mes.split('-').map(Number);
-        
-        if (quincena === '1') {
-            const inicio = `${year}-${String(month).padStart(2, '0')}-01`;
-            const fin = `${year}-${String(month).padStart(2, '0')}-15`;
-            return { inicio, fin, periodo: `${formatoFecha(inicio)} - ${formatoFecha(fin)}` };
-        } else {
-            const ultimoDia = new Date(year, month, 0).getDate();
-            const inicio = `${year}-${String(month).padStart(2, '0')}-16`;
-            const fin = `${year}-${String(month).padStart(2, '0')}-${String(ultimoDia).padStart(2, '0')}`;
-            return { inicio, fin, periodo: `${formatoFecha(inicio)} - ${formatoFecha(fin)}` };
-        }
+    function obtenerRangoSemana(semana) {
+        const [year, week] = semana.split('-W').map(Number);
+        const firstDay = new Date(year, 0, 1 + (week - 1) * 7);
+        const dayOffset = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+        const lunes = new Date(firstDay);
+        lunes.setDate(firstDay.getDate() - dayOffset);
+        const domingo = new Date(lunes);
+        domingo.setDate(lunes.getDate() + 6);
+        return { inicio: lunes.toISOString().slice(0,10), fin: domingo.toISOString().slice(0,10) };
     }
 
     function cargarDatosBoleta() {
-    const data = getData();
-    const empId = document.getElementById('boletaEmpleado').value;
-    const semana = document.getElementById('boletaSemana').value;
-    
-    // ⚠️ Leer el tipo de pago de forma MUY explícita
-    const selectPago = document.getElementById('boletaTipoPago');
-    const tipoPago = selectPago ? selectPago.value : 'efectivo';
-    
-    if (!empId || !semana) {
-        document.getElementById('boletaPreview').classList.add('hidden');
-        return;
-    }
-    
-    const { inicio, fin } = obtenerRangoSemana(semana);
-    const emp = data.empleados.find(e => e.id === empId);
-    if (!emp) return;
-    
-    const jornadas = data.jornadas.filter(j => j.empleadoId === empId && j.estado === 'completado' && j.fecha >= inicio && j.fecha <= fin);
-    let totalHoras = 0;
-    jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
-    const bruto = totalHoras * emp.tarifa;
-    
-    // ⚠️⚠️ AQUÍ ESTÁ LA CLAVE: descuentos SOLO si es cheque
-    let descuento = 0;
-    if (tipoPago === 'cheque') {
-        descuento = calcularDescuentos(bruto, data.config);
-    }
-    const neto = bruto - descuento;
-    
-    // === Construir la vista previa ===
-    let html = `<div class="boleta-pdf-preview">`;
-    html += `<h4 style="text-align:center;">${data.config.empresa || 'Mi Empresa'}</h4>`;
-    html += `<p style="text-align:center;"><strong>BOLETA DE PAGO</strong></p>`;
-    html += `<p><strong>Empleado:</strong> ${emp.nombre}</p>`;
-    html += `<p><strong>Semana:</strong> ${formatoFecha(inicio)} al ${formatoFecha(fin)}</p>`;
-    
-    // Indicador visual MUY claro del tipo de pago
-    if (tipoPago === 'efectivo') {
-        html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>💵 PAGO EN EFECTIVO — SIN DESCUENTOS</strong></p>`;
-    } else {
-        html += `<p style="background:#fff3cd; padding:8px; border-radius:6px; color:#856404;"><strong>📄 PAGO CON CHEQUE — CON DESCUENTOS DE LEY</strong></p>`;
-    }
-    
-    html += `<hr>`;
-    html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">`;
-    
-    // Columna izquierda: Detalle de horas
-    html += `<div><h5>📋 Detalle de Horas</h5><table>`;
-    html += `<tr><th>Fecha</th><th>Cliente</th><th>Horas</th><th>Monto</th></tr>`;
-    jornadas.forEach(j => {
-        const cli = data.clientes.find(c => c.id === j.clienteId);
-        const horas = calcularHoras(j.horaEntrada, j.horaSalida);
-        const monto = horas * emp.tarifa;
-        html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : 'N/A'}</td><td>${horas.toFixed(2)}h</td><td class="text-right">$${monto.toFixed(2)}</td></tr>`;
-    });
-    html += `<tr><td colspan="3"><strong>Total Horas</strong></td><td class="text-right"><strong>${totalHoras.toFixed(2)}h</strong></td></tr>`;
-    html += `<tr><td colspan="3"><strong>Subtotal</strong></td><td class="text-right"><strong>$${bruto.toFixed(2)}</strong></td></tr>`;
-    html += `</table></div>`;
-    
-    // Columna derecha: descuentos (solo si es cheque)
-    if (tipoPago === 'cheque') {
-        html += `<div><h5>📊 Descuentos de Ley</h5><table>`;
-        const cfg = data.config;
-        html += `<tr><th>Concepto</th><th>%</th><th>Monto</th></tr>`;
-        html += `<tr><td>FICA</td><td>${cfg.FICA || 0}%</td><td class="text-right">$${((bruto * (cfg.FICA || 0)) / 100).toFixed(2)}</td></tr>`;
-        html += `<tr><td>Medicare</td><td>${cfg.Medicare || 0}%</td><td class="text-right">$${((bruto * (cfg.Medicare || 0)) / 100).toFixed(2)}</td></tr>`;
-        html += `<tr><td>SUI</td><td>${cfg.SUI || 0}%</td><td class="text-right">$${((bruto * (cfg.SUI || 0)) / 100).toFixed(2)}</td></tr>`;
-        html += `<tr><td>FUTA</td><td>${cfg.FUTA || 0}%</td><td class="text-right">$${((bruto * (cfg.FUTA || 0)) / 100).toFixed(2)}</td></tr>`;
-        html += `<tr><td colspan="2"><strong>Total Descuentos</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
-        html += `<tr><td colspan="2"><strong>Neto a Pagar</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
+        const data = getData();
+        const empId = document.getElementById('boletaEmpleado').value;
+        const semana = document.getElementById('boletaSemana').value;
+        const tipoPago = document.getElementById('boletaTipoPago').value;
+        
+        if (!empId || !semana) {
+            document.getElementById('boletaPreview').classList.add('hidden');
+            return;
+        }
+        
+        const { inicio, fin } = obtenerRangoSemana(semana);
+        const emp = data.empleados.find(e => e.id === empId);
+        if (!emp) return;
+        
+        const jornadas = data.jornadas.filter(j => 
+            j.empleadoId === empId && 
+            j.estado === 'completado' && 
+            j.fecha >= inicio && 
+            j.fecha <= fin
+        );
+        
+        let totalHoras = 0;
+        jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
+        const bruto = totalHoras * emp.tarifa;
+        
+        // ⚠️⚠️ DESCUENTOS SOLO SI ES CHEQUE
+        let descuento = 0;
+        if (tipoPago === 'cheque') {
+            descuento = calcularDescuentos(bruto, data.config);
+        }
+        const neto = bruto - descuento;
+
+        let html = `<div class="boleta-pdf-preview">`;
+        html += `<h4 style="text-align:center;">${data.config.empresa || 'Mi Empresa'}</h4>`;
+        html += `<p style="text-align:center;"><strong>BOLETA DE PAGO</strong></p>`;
+        html += `<p><strong>Empleado:</strong> ${emp.nombre}</p>`;
+        html += `<p><strong>Semana:</strong> ${formatoFecha(inicio)} al ${formatoFecha(fin)}</p>`;
+        
+        if (tipoPago === 'efectivo') {
+            html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>💵 PAGO EN EFECTIVO — SIN DESCUENTOS</strong></p>`;
+        } else {
+            html += `<p style="background:#fff3cd; padding:8px; border-radius:6px; color:#856404;"><strong>📄 PAGO CON CHEQUE — CON DESCUENTOS DE LEY</strong></p>`;
+        }
+        
+        html += `<hr>`;
+        html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">`;
+        
+        html += `<div><h5>📋 Detalle de Horas</h5><table>`;
+        html += `<tr><th>Fecha</th><th>Cliente</th><th>Horas</th><th>Monto</th></tr>`;
+        jornadas.forEach(j => {
+            const cli = data.clientes.find(c => c.id === j.clienteId);
+            const horas = calcularHoras(j.horaEntrada, j.horaSalida);
+            const monto = horas * emp.tarifa;
+            html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : 'N/A'}</td><td>${horas.toFixed(2)}h</td><td class="text-right">$${monto.toFixed(2)}</td></tr>`;
+        });
+        html += `<tr><td colspan="3"><strong>Total Horas</strong></td><td class="text-right"><strong>${totalHoras.toFixed(2)}h</strong></td></tr>`;
+        html += `<tr><td colspan="3"><strong>Subtotal</strong></td><td class="text-right"><strong>$${bruto.toFixed(2)}</strong></td></tr>`;
         html += `</table></div>`;
-    } else {
-        html += `<div><h5>📊 Descuentos</h5><table>`;
-        html += `<tr><td style="text-align:center; color:#0d7a3e; padding:20px; font-size:1rem;">✅ Sin descuentos<br><small>(Pago en efectivo)</small></td></tr>`;
-        html += `</table>`;
-        html += `<div style="margin-top:15px; padding:10px; background:#d4edda; border-radius:6px; text-align:center;">`;
-        html += `<strong style="color:#0d7a3e;">💰 TOTAL A PAGAR: $${neto.toFixed(2)}</strong>`;
-        html += `</div>`;
-        html += `</div>`;
+        
+        if (tipoPago === 'cheque') {
+            html += `<div><h5>📊 Descuentos de Ley</h5><table>`;
+            const cfg = data.config;
+            html += `<tr><th>Concepto</th><th>%</th><th>Monto</th></tr>`;
+            html += `<tr><td>FICA</td><td>${cfg.FICA || 0}%</td><td class="text-right">$${((bruto * (cfg.FICA || 0)) / 100).toFixed(2)}</td></tr>`;
+            html += `<tr><td>Medicare</td><td>${cfg.Medicare || 0}%</td><td class="text-right">$${((bruto * (cfg.Medicare || 0)) / 100).toFixed(2)}</td></tr>`;
+            html += `<tr><td>SUI</td><td>${cfg.SUI || 0}%</td><td class="text-right">$${((bruto * (cfg.SUI || 0)) / 100).toFixed(2)}</td></tr>`;
+            html += `<tr><td>FUTA</td><td>${cfg.FUTA || 0}%</td><td class="text-right">$${((bruto * (cfg.FUTA || 0)) / 100).toFixed(2)}</td></tr>`;
+            html += `<tr><td colspan="2"><strong>Total Descuentos</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
+            html += `<tr><td colspan="2"><strong>Neto a Pagar</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
+            html += `</table></div>`;
+        } else {
+            html += `<div><h5>📊 Descuentos</h5><table>`;
+            html += `<tr><td style="text-align:center; color:#0d7a3e; padding:20px; font-size:1rem;">✅ Sin descuentos<br><small>(Pago en efectivo)</small></td></tr>`;
+            html += `</table>`;
+            html += `<div style="margin-top:15px; padding:10px; background:#d4edda; border-radius:6px; text-align:center;">`;
+            html += `<strong style="color:#0d7a3e;">💰 TOTAL A PAGAR: $${neto.toFixed(2)}</strong>`;
+            html += `</div></div>`;
+        }
+        
+        html += `</div></div>`;
+        
+        document.getElementById('boletaContenido').innerHTML = html;
+        document.getElementById('boletaPreview').classList.remove('hidden');
     }
-    
-    html += `</div></div>`;
-    
-    document.getElementById('boletaContenido').innerHTML = html;
-    document.getElementById('boletaPreview').classList.remove('hidden');
-}
+
     function generarBoleta() {
-    const data = getData();
-    const empId = document.getElementById('boletaEmpleado').value;
-    const semana = document.getElementById('boletaSemana').value;
-    const selectPago = document.getElementById('boletaTipoPago');
-    const tipoPago = selectPago ? selectPago.value : 'efectivo';
-    
-    if (!empId || !semana) { alert('⚠️ Selecciona empleado y semana'); return; }
-    
-    const { inicio, fin } = obtenerRangoSemana(semana);
-    const emp = data.empleados.find(e => e.id === empId);
-    if (!emp) return;
-    
-    const jornadas = data.jornadas.filter(j => j.empleadoId === empId && j.estado === 'completado' && j.fecha >= inicio && j.fecha <= fin);
-    let totalHoras = 0;
-    jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
-    const bruto = totalHoras * emp.tarifa;
-    
-    // ⚠️ Descuentos SOLO si es cheque
-    let descuento = 0;
-    if (tipoPago === 'cheque') {
-        descuento = calcularDescuentos(bruto, data.config);
+        const data = getData();
+        const empId = document.getElementById('boletaEmpleado').value;
+        const semana = document.getElementById('boletaSemana').value;
+        const tipoPago = document.getElementById('boletaTipoPago').value;
+        if (!empId || !semana) { alert('⚠️ Selecciona empleado y semana'); return; }
+        const { inicio, fin } = obtenerRangoSemana(semana);
+        const emp = data.empleados.find(e => e.id === empId);
+        if (!emp) return;
+        const jornadas = data.jornadas.filter(j => j.empleadoId === empId && j.estado === 'completado' && j.fecha >= inicio && j.fecha <= fin);
+        let totalHoras = 0;
+        jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
+        const bruto = totalHoras * emp.tarifa;
+        
+        // ⚠️ Descuentos SOLO con cheque
+        let descuento = 0;
+        if (tipoPago === 'cheque') {
+            descuento = calcularDescuentos(bruto, data.config);
+        }
+        const neto = bruto - descuento;
+        
+        const boleta = { 
+            id: generateId(), 
+            empleadoId: empId, 
+            semana, 
+            semanaInicio: inicio, 
+            semanaFin: fin, 
+            totalHoras, 
+            totalBruto: bruto, 
+            descuento, 
+            totalNeto: neto, 
+            tipoPago, 
+            fechaGeneracion: new Date().toISOString().slice(0,10) 
+        };
+        data.boletas.push(boleta);
+        saveData('boletas', data.boletas);
+        alert(`✅ Boleta generada\n\nTipo: ${tipoPago === 'cheque' ? '📄 Cheque' : '💵 Efectivo'}\nSubtotal: $${bruto.toFixed(2)}\nDescuentos: $${descuento.toFixed(2)}\nNeto: $${neto.toFixed(2)}`);
+        renderBoletas(data);
+        document.getElementById('boletaPreview').classList.add('hidden');
     }
-    const neto = bruto - descuento;
-    
-    const boleta = {
-        id: generateId(),
-        empleadoId: empId,
-        semana: semana,
-        semanaInicio: inicio,
-        semanaFin: fin,
-        totalHoras: totalHoras,
-        totalBruto: bruto,
-        descuento: descuento,
-        totalNeto: neto,
-        tipoPago: tipoPago,
-        fechaGeneracion: new Date().toISOString().slice(0,10)
-    };
-    
-    data.boletas.push(boleta);
-    saveData('boletas', data.boletas);
-    
-    alert(`✅ Boleta generada\n\nTipo: ${tipoPago === 'cheque' ? '📄 Cheque' : '💵 Efectivo'}\nSubtotal: $${bruto.toFixed(2)}\nDescuentos: $${descuento.toFixed(2)}\nNeto: $${neto.toFixed(2)}`);
-    
-    renderBoletas(data);
-    document.getElementById('boletaPreview').classList.add('hidden');
-}
+
     function exportarBoletaPDF() {
         const contenido = document.getElementById('boletaContenido').innerHTML;
         if (!contenido) { alert('⚠️ Primero genera la vista previa'); return; }
@@ -3099,13 +2036,17 @@ async function borrarJornadas() {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = contenido;
         const lines = tempDiv.innerText.split('\n').filter(l => l.trim());
-        let y = 20;
+        doc.setFontSize(14);
+        doc.text('Boleta de Pago', 14, 18);
+        doc.setFontSize(9);
+        doc.text('Generado: ' + new Date().toLocaleString(), 14, 24);
+        let y = 34;
         lines.forEach(line => {
             if (y > 275) { doc.addPage(); y = 20; }
             const parts = line.match(/.{1,70}/g) || [line];
             parts.forEach(p => { doc.text(p, 14, y); y += 5; });
         });
-        doc.save('boleta_' + Date.now() + '.pdf');
+        doc.save('boleta.pdf');
     }
 
     // ============================================================
@@ -3116,6 +2057,7 @@ async function borrarJornadas() {
         const hoy = new Date().toISOString().slice(0,10);
         
         const clientesHoy = data.clientes.filter(c => clienteTrabajaEnFecha(c, hoy));
+        
         const jornadasHoy = data.jornadas.filter(j => j.fecha === hoy);
         const clientesTomados = jornadasHoy.map(j => j.clienteId);
         const misJornadasHoy = jornadasHoy.filter(j => j.empleadoId === empleadoActual.id);
@@ -3124,7 +2066,7 @@ async function borrarJornadas() {
         
         if (clientesHoy.length === 0) {
             container.innerHTML = `<div class="sin-trabajos">
-                <h3>📭 ${t('emp.clientesHoy')}</h3>
+                <h3>📭 No hay clientes programados para hoy</h3>
                 <p>${nombreDia(hoy)} ${formatoFecha(hoy)}</p>
             </div>`;
             return;
@@ -3140,24 +2082,24 @@ async function borrarJornadas() {
             if (cli.tipoCodigo || cli.codigoAcceso || cli.instrucciones) {
                 codigoHtml = `<div class="codigo-acceso">`;
                 if (cli.tipoCodigo) codigoHtml += `<div><strong>🔑 ${etiquetaTipoCodigo(cli.tipoCodigo)}</strong></div>`;
-                if (cli.codigoAcceso) codigoHtml += `<div><strong>🔢 ${datosGlobales.idioma === 'en' ? 'Code' : 'Código'}:</strong> ${cli.codigoAcceso}</div>`;
+                if (cli.codigoAcceso) codigoHtml += `<div><strong>🔢 Código:</strong> ${cli.codigoAcceso}</div>`;
                 if (cli.instrucciones) codigoHtml += `<div><strong>📝 ${cli.instrucciones}</strong></div>`;
                 codigoHtml += `</div>`;
             }
             
             let botones = '';
             if (!tomado) {
-                botones = `<button class="btn btn-success" onclick="iniciarTrabajo('${cli.id}')">${t('msg.comenzar')}</button>`;
+                botones = `<button class="btn btn-success" onclick="iniciarTrabajo('${cli.id}')">🚀 Comenzar este trabajo</button>`;
             } else if (miTrabajo) {
                 if (!miTrabajo.horaEntrada) {
-                    botones = `<button class="btn btn-success" onclick="marcarEntrada('${miTrabajo.id}')">${t('msg.marcarEntrada')}</button>`;
+                    botones = `<button class="btn btn-success" onclick="marcarEntrada('${miTrabajo.id}')">✅ Marcar Entrada + Geo</button>`;
                 } else if (!miTrabajo.horaSalida) {
-                    botones = `<button class="btn btn-danger" onclick="marcarSalida('${miTrabajo.id}')">${t('msg.marcarSalida')}</button>`;
+                    botones = `<button class="btn btn-danger" onclick="marcarSalida('${miTrabajo.id}')">⏹️ Marcar Salida + Geo</button>`;
                 } else {
-                    botones = `<span class="badge badge-success">${t('msg.completado')}</span>`;
+                    botones = `<span class="badge badge-success">✅ Completado</span>`;
                 }
             } else {
-                botones = `<span class="badge badge-secondary">${t('msg.tomadoPor')} ${empTomador ? empTomador.nombre : '—'}</span>`;
+                botones = `<span class="badge badge-secondary">👤 Tomado por ${empTomador ? empTomador.nombre : 'otro'}</span>`;
             }
             
             const claseCard = miTrabajo ? (miTrabajo.estado === 'completado' ? 'completado' : 'en-proceso') : 'pendiente';
@@ -3167,12 +2109,12 @@ async function borrarJornadas() {
                 <div class="trabajo-info">
                     <h4>🏢 ${cli.nombre}</h4>
                     <p>📍 ${cli.direccion}</p>
-                    <p>🔧 ${cli.servicio || 'Regular'}</p>
+                    <p>🔧 Servicio: ${cli.servicio || 'Regular'}</p>
                     ${codigoHtml}
                 </div>
                 <div class="trabajo-estado">
                     ${botones}<br><br>
-                    ${cli.direccion ? `<button class="btn btn-info btn-sm" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cli.direccion)}','_blank')">${t('msg.maps')}</button>` : ''}
+                    ${cli.direccion ? `<button class="btn btn-info btn-sm" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cli.direccion)}','_blank')">🗺️ Maps</button>` : ''}
                 </div>
             </div>`;
         }).join('');
@@ -3184,7 +2126,7 @@ async function borrarJornadas() {
         
         const tomado = data.jornadas.find(j => j.fecha === hoy && j.clienteId === clienteId);
         if (tomado) {
-            alert('⚠️ ' + (datosGlobales.idioma === 'en' ? 'Already taken by another employee' : 'Ya fue tomado por otro empleado'));
+            alert('⚠️ Este cliente ya fue tomado por otro empleado');
             cargarTrabajosHoy();
             return;
         }
@@ -3207,7 +2149,7 @@ async function borrarJornadas() {
         };
         data.jornadas.push(jornada);
         saveData('jornadas', data.jornadas);
-        alert('✅ Ok');
+        alert('✅ Trabajo tomado. Ahora marca tu entrada cuando llegues.');
         cargarTrabajosHoy();
         cargarTrabajosEmpleado();
     }
@@ -3217,7 +2159,7 @@ async function borrarJornadas() {
         const misJornadas = data.jornadas.filter(j => j.empleadoId === empleadoActual.id && j.estado === 'pendiente');
         const container = document.getElementById('misTrabajosActivos');
         if (misJornadas.length === 0) {
-            container.innerHTML = `<p style="color:#4a5568;">${datosGlobales.idioma === 'en' ? 'No active jobs' : 'No tienes trabajos activos'}</p>`;
+            container.innerHTML = '<p style="color:#4a5568;">No tienes trabajos activos.</p>';
             return;
         }
         container.innerHTML = misJornadas.map(j => {
@@ -3225,25 +2167,25 @@ async function borrarJornadas() {
             let codigoHtml = '';
             if (cli && (cli.tipoCodigo || cli.codigoAcceso || cli.instrucciones)) {
                 codigoHtml = `<div class="codigo-acceso">`;
-                if (cli.tipoCodigo) codigoHtml += `<div><strong>🔑 ${etiquetaTipoCodigo(cli.tipoCodigo)}</strong></div>`;
-                if (cli.codigoAcceso) codigoHtml += `<div><strong>🔢 ${datosGlobales.idioma === 'en' ? 'Code' : 'Código'}:</strong> ${cli.codigoAcceso}</div>`;
-                if (cli.instrucciones) codigoHtml += `<div><strong>📝 ${cli.instrucciones}</strong></div>`;
+                if (cli.tipoCodigo) codigoHtml += `<div><strong>🔑 Tipo:</strong> ${etiquetaTipoCodigo(cli.tipoCodigo)}</div>`;
+                if (cli.codigoAcceso) codigoHtml += `<div><strong>🔢 Código:</strong> ${cli.codigoAcceso}</div>`;
+                if (cli.instrucciones) codigoHtml += `<div><strong>📝 Instrucciones:</strong> ${cli.instrucciones}</div>`;
                 codigoHtml += `</div>`;
             }
             return `<div class="boleta-box" style="margin-bottom:10px;">
-                <p><strong>${cli ? cli.nombre : '—'}</strong> | 📅 ${formatoFecha(j.fecha)}</p>
+                <p><strong>${cli ? cli.nombre : 'Eliminado'}</strong> | 📅 ${formatoFecha(j.fecha)}</p>
                 <p>📍 ${j.direccion}</p>
                 ${codigoHtml}
-                <p style="margin-top:8px;">⏱️ ${datosGlobales.idioma === 'en' ? 'In' : 'Entrada'}: ${j.horaEntrada || 'Pendiente'} | ${datosGlobales.idioma === 'en' ? 'Out' : 'Salida'}: ${j.horaSalida || 'Pendiente'}</p>
-                ${!j.horaEntrada ? `<button class="btn btn-success btn-sm" onclick="marcarEntrada('${j.id}')">${t('msg.marcarEntrada')}</button>` : ''}
-                ${j.horaEntrada && !j.horaSalida ? `<button class="btn btn-danger btn-sm" onclick="marcarSalida('${j.id}')">${t('msg.marcarSalida')}</button>` : ''}
-                ${j.direccion ? `<button class="btn btn-info btn-sm" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(j.direccion)}','_blank')">${t('msg.maps')}</button>` : ''}
+                <p style="margin-top:8px;">⏱️ Entrada: ${j.horaEntrada || 'Pendiente'} | Salida: ${j.horaSalida || 'Pendiente'}</p>
+                ${!j.horaEntrada ? `<button class="btn btn-success btn-sm" onclick="marcarEntrada('${j.id}')">✅ Entrada + Geo</button>` : ''}
+                ${j.horaEntrada && !j.horaSalida ? `<button class="btn btn-danger btn-sm" onclick="marcarSalida('${j.id}')">⏹️ Salida + Geo</button>` : ''}
+                ${j.direccion ? `<button class="btn btn-info btn-sm" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(j.direccion)}','_blank')">🗺️ Maps</button>` : ''}
             </div>`;
         }).join('');
     }
 
     function marcarEntrada(id) {
-        if (!navigator.geolocation) { alert('⚠️ Sin geolocalización'); return; }
+        if (!navigator.geolocation) { alert('⚠️ Sin soporte de geolocalización'); return; }
         navigator.geolocation.getCurrentPosition(
             function(pos) {
                 const data = getData();
@@ -3256,7 +2198,7 @@ async function borrarJornadas() {
                 saveData('jornadas', data.jornadas);
                 cargarTrabajosHoy();
                 cargarTrabajosEmpleado();
-                alert('✅ Ok');
+                alert('✅ Entrada registrada con geolocalización');
             },
             function(err) {
                 const data = getData();
@@ -3267,20 +2209,20 @@ async function borrarJornadas() {
                 saveData('jornadas', data.jornadas);
                 cargarTrabajosHoy();
                 cargarTrabajosEmpleado();
-                alert('✅ Ok');
+                alert('✅ Entrada registrada (sin geo)');
             },
             { enableHighAccuracy: true }
         );
     }
 
     function marcarSalida(id) {
-        if (!navigator.geolocation) { alert('⚠️ Sin geolocalización'); return; }
+        if (!navigator.geolocation) { alert('⚠️ Sin soporte de geolocalización'); return; }
         navigator.geolocation.getCurrentPosition(
             function(pos) {
                 const data = getData();
                 const j = data.jornadas.find(j => j.id === id);
                 if (!j) return;
-                if (!j.horaEntrada) { alert('⚠️ Primero entrada'); return; }
+                if (!j.horaEntrada) { alert('⚠️ Primero marca la entrada'); return; }
                 const ahora = new Date();
                 j.horaSalida = String(ahora.getHours()).padStart(2, '0') + ':' + String(ahora.getMinutes()).padStart(2, '0');
                 j.lat = pos.coords.latitude;
@@ -3290,13 +2232,13 @@ async function borrarJornadas() {
                 cargarTrabajosHoy();
                 cargarTrabajosEmpleado();
                 cargarHistorialEmpleado();
-                alert('✅ Ok');
+                alert('✅ Salida registrada con geolocalización');
             },
             function(err) {
                 const data = getData();
                 const j = data.jornadas.find(j => j.id === id);
                 if (!j) return;
-                if (!j.horaEntrada) { alert('⚠️ Primero entrada'); return; }
+                if (!j.horaEntrada) { alert('⚠️ Primero marca la entrada'); return; }
                 const ahora = new Date();
                 j.horaSalida = String(ahora.getHours()).padStart(2, '0') + ':' + String(ahora.getMinutes()).padStart(2, '0');
                 j.estado = 'completado';
@@ -3304,7 +2246,7 @@ async function borrarJornadas() {
                 cargarTrabajosHoy();
                 cargarTrabajosEmpleado();
                 cargarHistorialEmpleado();
-                alert('✅ Ok');
+                alert('✅ Salida registrada (sin geo)');
             },
             { enableHighAccuracy: true }
         );
@@ -3315,41 +2257,31 @@ async function borrarJornadas() {
         const misJornadas = data.jornadas.filter(j => j.empleadoId === empleadoActual.id && j.estado === 'completado');
         const container = document.getElementById('historialEmpleado');
         if (misJornadas.length === 0) {
-            container.innerHTML = `<p style="color:#4a5568;">${datosGlobales.idioma === 'en' ? 'No history' : 'No hay historial'}</p>`;
+            container.innerHTML = '<p style="color:#4a5568;">No hay historial.</p>';
             return;
         }
         let totalHoras = 0;
-        let html = `<table><tr><th>${datosGlobales.idioma === 'en' ? 'Date' : 'Fecha'}</th><th>${datosGlobales.idioma === 'en' ? 'Client' : 'Cliente'}</th><th>${datosGlobales.idioma === 'en' ? 'In' : 'Entrada'}</th><th>${datosGlobales.idioma === 'en' ? 'Out' : 'Salida'}</th><th>${datosGlobales.idioma === 'en' ? 'Hours' : 'Horas'}</th></tr>`;
+        let html = `<table><tr><th>Fecha</th><th>Cliente</th><th>Entrada</th><th>Salida</th><th>Horas</th></tr>`;
         misJornadas.sort((a, b) => b.fecha.localeCompare(a.fecha)).forEach(j => {
             const cli = data.clientes.find(c => c.id === j.clienteId);
-            const horas = calcularHorasEnDecimal(j.horaEntrada, j.horaSalida);
+            const horas = calcularHoras(j.horaEntrada, j.horaSalida);
             totalHoras += horas;
-            html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : ''}</td><td>${j.horaEntrada}</td><td>${j.horaSalida}</td><td>${formatoHorasHHMM(horas)}</td></tr>`;
+            html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : ''}</td><td>${j.horaEntrada}</td><td>${j.horaSalida}</td><td>${horas.toFixed(2)}h</td></tr>`;
         });
-        html += `<tr style="background:#f7fafc; font-weight:700;"><td colspan="4">Total</td><td>${formatoHorasHHMM(totalHoras)}</td></tr>`;
+        html += `<tr style="background:#f7fafc; font-weight:700;"><td colspan="4">Total Horas</td><td>${totalHoras.toFixed(2)}h</td></tr>`;
         html += `</table>`;
         container.innerHTML = html;
     }
 
     // ============================================================
-    // EXPORTAR / BACKUP / CONFIG
+    // EXPORTAR / BACKUP
     // ============================================================
     function exportarExcelJornadas() {
         const data = getData();
         const rows = data.jornadas.map(j => {
             const emp = data.empleados.find(e => e.id === j.empleadoId);
             const cli = data.clientes.find(c => c.id === j.clienteId);
-            const horas = calcularHorasEnDecimal(j.horaEntrada, j.horaSalida);
-            return { 
-                Empleado: emp ? emp.nombre : '', 
-                Cliente: cli ? cli.nombre : '', 
-                Fecha: j.fecha, 
-                Entrada: j.horaEntrada || '', 
-                Salida: j.horaSalida || '', 
-                Horas: formatoHorasHHMM(horas),
-                Latitud: j.lat || '', 
-                Longitud: j.lng || '' 
-            };
+            return { Empleado: emp ? emp.nombre : '', Cliente: cli ? cli.nombre : '', Fecha: j.fecha, Entrada: j.horaEntrada || '', Salida: j.horaSalida || '', Latitud: j.lat || '', Longitud: j.lng || '' };
         });
         const wb = XLSX.utils.book_new();
         const ws = XLSX.utils.json_to_sheet(rows);
@@ -3381,59 +2313,29 @@ async function borrarJornadas() {
                 });
                 guardarEnFirebase();
                 renderAll();
-                alert('✅ Ok');
-            } catch { alert('❌ Error'); }
+                alert('✅ Backup restaurado y sincronizado con Firebase');
+            } catch { alert('❌ Error en el archivo'); }
         };
         reader.readAsText(file);
         e.target.value = '';
     }
 
+    // ============================================================
+    // CONFIG
+    // ============================================================
     function guardarConfig(e) {
         e.preventDefault();
         const config = {
             FICA: parseFloat(document.getElementById('cfgFICA').value) || 0,
             Medicare: parseFloat(document.getElementById('cfgMedicare').value) || 0,
+            SUI: parseFloat(document.getElementById('cfgSUI').value) || 0,
+            FUTA: parseFloat(document.getElementById('cfgFUTA').value) || 0,
             empresa: document.getElementById('cfgEmpresa').value || 'Mi Empresa'
         };
         datosGlobales.config = config;
         guardarEnFirebase();
         renderAll();
-        alert('✅ Ok');
-    }
-
-    function cambiarPasswordAdmin(e) {
-        e.preventDefault();
-        const actual = document.getElementById('passActual').value;
-        const nueva = document.getElementById('passNueva').value;
-        const confirmar = document.getElementById('passConfirmar').value;
-        
-        const passGuardada = datosGlobales.adminPassword || 'admin123';
-        
-        if (actual !== passGuardada) {
-            alert('❌ ' + (datosGlobales.idioma === 'en' ? 'Current password is incorrect' : 'La contraseña actual es incorrecta'));
-            return;
-        }
-        
-        if (nueva !== confirmar) {
-            alert('❌ ' + (datosGlobales.idioma === 'en' ? 'New passwords do not match' : 'Las contraseñas nuevas no coinciden'));
-            return;
-        }
-        
-        if (nueva.length < 4) {
-            alert('⚠️ ' + (datosGlobales.idioma === 'en' ? 'Minimum 4 characters' : 'Mínimo 4 caracteres'));
-            return;
-        }
-        
-        if (!confirm('⚠️ ¿Confirmas?')) return;
-        
-        datosGlobales.adminPassword = nueva;
-        guardarEnFirebase();
-        
-        document.getElementById('passActual').value = '';
-        document.getElementById('passNueva').value = '';
-        document.getElementById('passConfirmar').value = '';
-        
-        alert('✅ Ok');
+        alert('✅ Config guardada');
     }
 
     // ============================================================
@@ -3457,7 +2359,6 @@ async function borrarJornadas() {
                 if (contentId === 'admin-semana') renderSemana();
                 if (contentId === 'admin-mes') renderMes();
                 if (contentId === 'admin-clientes') renderPagosClientes();
-                if (contentId === 'admin-boletas') cargarDatosBoleta();
                 if (contentId === 'emp-trabajos-hoy') cargarTrabajosHoy();
             });
         });
@@ -3475,8 +2376,6 @@ async function borrarJornadas() {
     document.getElementById('semanaFecha').value = new Date().toISOString().slice(0,10);
     const hoyMes = new Date();
     document.getElementById('mesFecha').value = hoyMes.getFullYear() + '-' + String(hoyMes.getMonth() + 1).padStart(2, '0');
-    const boletaMesEl = document.getElementById('boletaMes');
-    if (boletaMesEl) boletaMesEl.value = hoyMes.getFullYear() + '-' + String(hoyMes.getMonth() + 1).padStart(2, '0');
     document.getElementById('cliFechaInicio').value = new Date().toISOString().slice(0,10);
     actualizarCamposFrecuencia();
 </script>
