@@ -1843,25 +1843,62 @@ async function borrarJornadas() {
     }
 
     function loginEmpleado() {
-        const user = document.getElementById('empLoginUser').value;
-        const pass = document.getElementById('empLoginPass').value;
-        const data = getData();
-        const emp = data.empleados.find(e => e.usuario === user && e.password === pass && e.estado === 'activo');
-        if (emp) {
-            empleadoActual = emp;
-            document.getElementById('loginEmpleado').classList.add('hidden');
-            document.getElementById('empleadoDashboard').classList.remove('hidden');
-            document.getElementById('empleadoError').style.display = 'none';
-            document.getElementById('empNombreDisplay').textContent = emp.nombre;
-            document.getElementById('fechaHoyDisplay').textContent = `— ${nombreDia(new Date().toISOString().slice(0,10))} ${formatoFecha(new Date().toISOString().slice(0,10))}`;
+    const user = document.getElementById('empLoginUser').value.trim();
+    const pass = document.getElementById('empLoginPass').value.trim();
+    const data = getData();
+    
+    console.log('🔐 Intentando login:', user);
+    console.log('📋 Empleados disponibles:', data.empleados.length);
+    
+    if (data.empleados.length === 0) {
+        alert('⚠️ No hay empleados registrados. Contacta al administrador.');
+        return;
+    }
+    
+    const emp = data.empleados.find(e => 
+        e.usuario === user && 
+        e.password === pass && 
+        e.estado === 'activo'
+    );
+    
+    if (emp) {
+        console.log('✅ Login exitoso:', emp.nombre);
+        empleadoActual = emp;
+        
+        // Ocultar login, mostrar dashboard
+        document.getElementById('loginEmpleado').classList.add('hidden');
+        document.getElementById('empleadoDashboard').classList.remove('hidden');
+        document.getElementById('empleadoError').style.display = 'none';
+        
+        // Info del empleado
+        document.getElementById('empNombreDisplay').textContent = emp.nombre;
+        const hoy = new Date().toISOString().slice(0,10);
+        document.getElementById('fechaHoyDisplay').textContent = `— ${nombreDia(hoy)} ${formatoFecha(hoy)}`;
+        
+        // Cargar TODAS las secciones del empleado
+        try {
             cargarTrabajosHoy();
             cargarTrabajosEmpleado();
             cargarHistorialEmpleado();
-        } else {
-            document.getElementById('empleadoError').style.display = 'block';
+            console.log('✅ Panel de empleado cargado correctamente');
+        } catch (error) {
+            console.error('❌ Error al cargar paneles:', error);
+            alert('Hubo un error al cargar tu panel. Revisa la consola (F12).');
         }
+        
+        // Activar la primera pestaña por defecto
+        document.querySelectorAll('.empleado-dashboard .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.empleado-dashboard .tab-content').forEach(t => t.classList.remove('active'));
+        const primerBtn = document.querySelector('.empleado-dashboard .tab-btn[data-tab="emp-trabajos-hoy"]');
+        const primerTab = document.getElementById('tab-emp-trabajos-hoy');
+        if (primerBtn) primerBtn.classList.add('active');
+        if (primerTab) primerTab.classList.add('active');
+        
+    } else {
+        console.log('❌ Credenciales inválidas');
+        document.getElementById('empleadoError').style.display = 'block';
     }
-
+}
     document.getElementById('adminPass').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); loginAdmin(); }
     });
@@ -1946,34 +1983,41 @@ async function borrarJornadas() {
         }).join('');
     }
 
-    function renderJornadas(data) {
-        const tbody = document.getElementById('tablaJornadas');
-        if (!tbody) return;
-        tbody.innerHTML = data.jornadas.map(j => {
-            const emp = data.empleados.find(e => e.id === j.empleadoId);
-            const cli = data.clientes.find(c => c.id === j.clienteId);
-            const horas = calcularHoras(j.horaEntrada, j.horaSalida);
-            const total = horas * (emp ? emp.tarifa : 0);
-            const geo = j.lat && j.lng ? `📍${j.lat.toFixed(4)}, ${j.lng.toFixed(4)}` : '—';
-            const horasHHMM = horas > 0 ? formatoHorasHHMM(horas) : '—';
-            return `<tr>
-                <td>${emp ? emp.nombre : '—'}</td>
-                <td>${cli ? cli.nombre : '—'}</td>
-                <td>${formatoFecha(j.fecha)}</td>
-                <td>${j.horaEntrada || '--'}</td>
-                <td>${j.horaSalida || '--'}</td>
-                <td>${horasHHMM}</td>
-                <td>$${total.toFixed(2)}</td>
-                <td><span class="geo-badge">${geo}</span></td>
-                <td><span class="badge ${j.estado === 'completado' ? 'badge-success' : 'badge-warning'}">${j.estado}</span></td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editarJornadaManual('${j.id}')">✏️</button>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarJornada('${j.id}')">🗑️</button>
-                </td>
-            </tr>`;
-        }).join('');
-    }
-
+   function renderJornadas(data) {
+    const tbody = document.getElementById('tablaJornadas');
+    if (!tbody) return;
+    tbody.innerHTML = data.jornadas.map(j => {
+        const emp = data.empleados.find(e => e.id === j.empleadoId);
+        const cli = data.clientes.find(c => c.id === j.clienteId);
+        const horas = calcularHoras(j.horaEntrada, j.horaSalida);
+        const total = horas * (emp ? emp.tarifa : 0);
+        const geo = j.lat && j.lng ? `📍${j.lat.toFixed(4)}, ${j.lng.toFixed(4)}` : '—';
+        
+        // Select de empleados (solo activos + el empleado actual si está inactivo)
+        const opcionesEmpleados = data.empleados
+            .filter(e => e.estado === 'activo' || e.id === j.empleadoId)
+            .map(e => `<option value="${e.id}" ${e.id === j.empleadoId ? 'selected' : ''}>${e.nombre}</option>`)
+            .join('');
+        
+        return `<tr>
+            <td>
+                <select class="input-fecha" id="emp_${j.id}" onchange="editarJornada('${j.id}')" style="min-width:120px;">
+                    <option value="">-- Sin asignar --</option>
+                    ${opcionesEmpleados}
+                </select>
+            </td>
+            <td>${cli ? cli.nombre : 'Eliminado'}</td>
+            <td>${formatoFecha(j.fecha)}</td>
+            <td><input type="time" class="input-hora" id="entrada_${j.id}" value="${j.horaEntrada || ''}" onchange="editarJornada('${j.id}')"></td>
+            <td><input type="time" class="input-hora" id="salida_${j.id}" value="${j.horaSalida || ''}" onchange="editarJornada('${j.id}')"></td>
+            <td>${horas.toFixed(2)}h</td>
+            <td>$${total.toFixed(2)}</td>
+            <td><span class="geo-badge">${geo}</span></td>
+            <td><span class="badge ${j.estado === 'completado' ? 'badge-success' : 'badge-warning'}">${j.estado}</span></td>
+            <td><button class="btn btn-danger btn-sm" onclick="eliminarJornada('${j.id}')">🗑️</button></td>
+        </tr>`;
+    }).join('');
+}
     function renderStats(data) {
         const e1 = document.getElementById('totalEmpleados');
         if (!e1) return;
@@ -2864,23 +2908,29 @@ async function borrarJornadas() {
         document.getElementById('btnGuardarJornadaManual').textContent = t('jor.guardar');
     }
 
-    function editarJornadaManual(id) {
-        const data = getData();
-        const j = data.jornadas.find(j => j.id === id);
-        if (!j) return;
-        
-        document.getElementById('jmEditId').value = j.id;
-        document.getElementById('jmEmpleado').value = j.empleadoId;
-        document.getElementById('jmCliente').value = j.clienteId;
-        document.getElementById('jmFecha').value = j.fecha;
-        document.getElementById('jmEntrada').value = j.horaEntrada || '';
-        document.getElementById('jmSalida').value = j.horaSalida || '';
-        document.getElementById('jmPago').value = j.pago || 'efectivo';
-        document.getElementById('btnGuardarJornadaManual').textContent = '💾 ' + (datosGlobales.idioma === 'en' ? 'Update' : 'Actualizar');
-        
-        document.querySelector('.tab-btn[data-tab="admin-jornadas"]').click();
-        document.getElementById('jmEmpleado').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    function editarJornada(id) {
+    const data = getData();
+    const j = data.jornadas.find(j => j.id === id);
+    if (!j) return;
+    
+    // Capturar TODOS los campos editables
+    const entrada = document.getElementById('entrada_' + id).value;
+    const salida = document.getElementById('salida_' + id).value;
+    const empleadoSelect = document.getElementById('emp_' + id);
+    const nuevoEmpleadoId = empleadoSelect ? empleadoSelect.value : null;
+    
+    j.horaEntrada = entrada || null;
+    j.horaSalida = salida || null;
+    
+    // Actualizar empleado si se cambió
+    if (nuevoEmpleadoId && nuevoEmpleadoId !== j.empleadoId) {
+        j.empleadoId = nuevoEmpleadoId;
     }
+    
+    j.estado = (entrada && salida) ? 'completado' : 'pendiente';
+    saveData('jornadas', data.jornadas);
+    renderJornadas(data);
+}
 
     function eliminarJornada(id) {
         if (!confirm('¿Eliminar?')) return;
