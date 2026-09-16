@@ -657,19 +657,23 @@
             </div>
             
             <hr style="margin:30px 0;">
-            <h3 id="datosTitulo">🗄️ Gestión de Datos</h3>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn btn-danger" onclick="exportarBackup()" id="btnBackup">💾 Backup local</button>
-                <button class="btn btn-success" onclick="importarBackup()" id="btnRestaurar">📂 Restaurar local</button>
-                <button class="btn btn-warning" onclick="borrarTodosLosDatos()" id="btnBorrarTodo">🗑️ Borrar Todos los Datos</button>
-            </div>
-            <input type="file" id="backupInput" accept=".json" style="display:none;" onchange="cargarBackup(event)">
-            <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;" id="datosInfo">
-                ☁️ <strong>Sincronización activa:</strong> Todos los cambios se guardan automáticamente en la nube (Firebase).
-            </div>
-        </div>
-    </div>
+            <h3>🗄️ Gestión de Datos</h3>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+    <button class="btn btn-danger" onclick="exportarBackup()">💾 Backup local</button>
+    <button class="btn btn-success" onclick="importarBackup()">📂 Restaurar local</button>
+</div>
 
+<div style="background:#fff3cd; border-left:4px solid #e6a800; padding:15px; border-radius:8px; margin-top:20px;">
+    <h4 style="color:#856404; margin-bottom:10px;">⚠️ Zona de Peligro</h4>
+    <p style="font-size:0.85rem; color:#856404; margin-bottom:12px;">
+        Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) <strong>se conserva</strong>.
+    </p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn btn-warning" onclick="borrarBoletas()">🗑️ Borrar solo Boletas</button>
+        <button class="btn btn-warning" onclick="borrarJornadas()">🗑️ Borrar solo Jornadas</button>
+        <button class="btn btn-danger" onclick="borrarTodosLosDatos()">🚨 Borrar TODOS los Datos</button>
+    </div>
+</div>
     <!-- ========== DASHBOARD EMPLEADO ========== -->
     <div id="empleadoDashboard" class="empleado-dashboard hidden">
         <div style="margin-bottom:20px;">
@@ -1629,29 +1633,45 @@
         }
     }
 
-    async function borrarTodosLosDatos() {
-        if (!confirm('⚠️ ¿Borrar TODOS los datos del sistema?')) return;
-        if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN: ¿Estás seguro?')) return;
-        
-        datosGlobales = {
-            empleados: [],
-            clientes: [],
-            jornadas: [],
-            boletas: [],
-            config: { FICA: 6.2, Medicare: 1.45, empresa: 'Mi Empresa' },
-            pagosClientes: [],
-            adelantosEmpleados: [],
-            pagosServicios: [],
-            cancelaciones: [],
-            adminPassword: 'admin123',
-            idioma: datosGlobales.idioma || 'es'
-        };
-        
-        await guardarEnFirebase();
-        alert('✅ Datos eliminados');
-        location.reload();
-    }
+ async function borrarTodosLosDatos() {
+    if (!confirm('⚠️ ¿Borrar TODOS los datos (empleados, clientes, jornadas, boletas)?\n\n✅ La configuración (nombre empresa y % descuentos) SE CONSERVARÁ.\n\nEsta acción no se puede deshacer.')) return;
+    if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN: ¿Estás seguro de borrar todo?')) return;
+    
+    // ⚠️ CONSERVAR la configuración actual
+    const configActual = datosGlobales.config || { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' };
+    
+    datosGlobales = {
+        empleados: [],
+        clientes: [],
+        jornadas: [],
+        boletas: [],
+        config: configActual,  // ← Se conserva
+        pagosClientes: [],
+        adelantosEmpleados: [],
+        pagosServicios: [],
+        cancelaciones: []
+    };
+    
+    await guardarEnFirebase();
+    alert('✅ Todos los datos han sido eliminados.\n\n⚙️ La configuración se conservó.');
+    location.reload();
+}
+    async function borrarBoletas() {
+    if (!confirm('⚠️ ¿Borrar TODAS las boletas generadas?\n\nSe conservan empleados, clientes, jornadas y configuración.')) return;
+    datosGlobales.boletas = [];
+    await guardarEnFirebase();
+    alert('✅ Boletas eliminadas. Todo lo demás se conservó.');
+    renderAll();
+}
 
+async function borrarJornadas() {
+    if (!confirm('⚠️ ¿Borrar TODAS las jornadas (registros de entrada/salida)?\n\nSe conservan empleados, clientes, boletas y configuración.')) return;
+    if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN: ¿Seguro? Las horas trabajadas se perderán.')) return;
+    datosGlobales.jornadas = [];
+    await guardarEnFirebase();
+    alert('✅ Jornadas eliminadas. Todo lo demás se conservó.');
+    renderAll();
+}
     function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
 
     // ============================================================
