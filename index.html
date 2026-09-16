@@ -2975,63 +2975,52 @@
     document.getElementById('boletaPreview').classList.remove('hidden');
 }
     function generarBoleta() {
-        const data = getData();
-        const empId = document.getElementById('boletaEmpleado').value;
-        const mes = document.getElementById('boletaMes').value;
-        const quincena = document.getElementById('boletaQuincena').value;
-        const tipoPago = document.getElementById('boletaTipoPago').value;
-        
-        if (!empId || !mes || !quincena) { alert('⚠️ Selecciona empleado, mes y quincena'); return; }
-        
-        const { inicio, fin, periodo } = obtenerRangoQuincena(mes, quincena);
-        const emp = data.empleados.find(e => e.id === empId);
-        if (!emp) return;
-        
-        const jornadas = data.jornadas.filter(j => 
-            j.empleadoId === empId && 
-            j.estado === 'completado' && 
-            j.fecha >= inicio && 
-            j.fecha <= fin
-        );
-        
-        if (jornadas.length === 0) {
-            alert('⚠️ ' + (datosGlobales.idioma === 'en' ? 'No work logs in this period' : 'No hay jornadas registradas en este período'));
-            return;
-        }
-        
-        let totalHorasDecimal = 0;
-        jornadas.forEach(j => { totalHorasDecimal += calcularHorasEnDecimal(j.horaEntrada, j.horaSalida); });
-        
-        const bruto = totalHorasDecimal * emp.tarifa;
-        const descuentos = calcularDescuentos(bruto, data.config);
-        const neto = bruto - descuentos.total;
-        
-        const boleta = {
-            id: generateId(),
-            empleadoId: empId,
-            mes: mes,
-            quincena: quincena,
-            periodo: periodo,
-            semanaInicio: inicio,
-            semanaFin: fin,
-            totalHoras: totalHorasDecimal,
-            totalHorasHHMM: formatoHorasHHMM(totalHorasDecimal),
-            totalBruto: bruto,
-            descuentoFICA: descuentos.fica,
-            descuentoMedicare: descuentos.medicare,
-            descuento: descuentos.total,
-            totalNeto: neto,
-            tipoPago: tipoPago,
-            fechaGeneracion: new Date().toISOString().slice(0,10)
-        };
-        
-        data.boletas.push(boleta);
-        saveData('boletas', data.boletas);
-        alert('✅ ' + (datosGlobales.idioma === 'en' ? 'Pay stub generated' : 'Boleta generada'));
-        renderBoletas(data);
-        document.getElementById('boletaPreview').classList.add('hidden');
+    const data = getData();
+    const empId = document.getElementById('boletaEmpleado').value;
+    const semana = document.getElementById('boletaSemana').value;
+    const selectPago = document.getElementById('boletaTipoPago');
+    const tipoPago = selectPago ? selectPago.value : 'efectivo';
+    
+    if (!empId || !semana) { alert('⚠️ Selecciona empleado y semana'); return; }
+    
+    const { inicio, fin } = obtenerRangoSemana(semana);
+    const emp = data.empleados.find(e => e.id === empId);
+    if (!emp) return;
+    
+    const jornadas = data.jornadas.filter(j => j.empleadoId === empId && j.estado === 'completado' && j.fecha >= inicio && j.fecha <= fin);
+    let totalHoras = 0;
+    jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
+    const bruto = totalHoras * emp.tarifa;
+    
+    // ⚠️ Descuentos SOLO si es cheque
+    let descuento = 0;
+    if (tipoPago === 'cheque') {
+        descuento = calcularDescuentos(bruto, data.config);
     }
-
+    const neto = bruto - descuento;
+    
+    const boleta = {
+        id: generateId(),
+        empleadoId: empId,
+        semana: semana,
+        semanaInicio: inicio,
+        semanaFin: fin,
+        totalHoras: totalHoras,
+        totalBruto: bruto,
+        descuento: descuento,
+        totalNeto: neto,
+        tipoPago: tipoPago,
+        fechaGeneracion: new Date().toISOString().slice(0,10)
+    };
+    
+    data.boletas.push(boleta);
+    saveData('boletas', data.boletas);
+    
+    alert(`✅ Boleta generada\n\nTipo: ${tipoPago === 'cheque' ? '📄 Cheque' : '💵 Efectivo'}\nSubtotal: $${bruto.toFixed(2)}\nDescuentos: $${descuento.toFixed(2)}\nNeto: $${neto.toFixed(2)}`);
+    
+    renderBoletas(data);
+    document.getElementById('boletaPreview').classList.add('hidden');
+}
     function exportarBoletaPDF() {
         const contenido = document.getElementById('boletaContenido').innerHTML;
         if (!contenido) { alert('⚠️ Primero genera la vista previa'); return; }
