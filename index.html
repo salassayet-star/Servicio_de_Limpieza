@@ -1366,9 +1366,11 @@
     }
 
     function etiquetaTipoCodigo(tipo) {
-        const map = { alarma: '🚨 Alarma', cerradura: '🔐 Cerradura', lockbox: '📦 Lockbox', llave: '🔑 Llave física', portero: '🛎️ Portero', otro: '📌 Otro' };
-        return map[tipo] || tipo || '—';
-    }
+    const mapEs = { alarma: '🚨 Alarma', cerradura: '🔐 Cerradura', lockbox: '📦 Lockbox', llave: '🔑 Llave física', portero: '🛎️ Portero', otro: '📌 Otro' };
+    const mapEn = { alarma: '🚨 Alarm', cerradura: '🔐 Lock code', lockbox: '📦 Lockbox', llave: '🔑 Physical key', portero: '🛎️ Doorman', otro: '📌 Other' };
+    const map = idiomaActual === 'en' ? mapEn : mapEs;
+    return map[tipo] || tipo || '—';
+}
 
     function formatoFecha(fechaStr) {
         if (!fechaStr) return '';
@@ -1376,11 +1378,13 @@
         return `${d}/${m}/${y}`;
     }
 
-    function nombreDia(fechaStr) {
-        const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        const fecha = new Date(fechaStr + 'T00:00:00');
-        return dias[fecha.getDay()];
-    }
+   function nombreDia(fechaStr) {
+    const diasEs = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const diasEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const fecha = new Date(fechaStr + 'T00:00:00');
+    const dias = idiomaActual === 'en' ? diasEn : diasEs;
+    return dias[fecha.getDay()];
+}
 
     function nombreDiaKey(fechaStr) {
         const dias = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
@@ -1553,56 +1557,76 @@
     }
 
     function renderEmpleados(data) {
-        const tbody = document.getElementById('tablaEmpleados');
-        if (!tbody) return;
-        tbody.innerHTML = data.empleados.map(e => {
-            const adelantos = data.adelantosEmpleados.filter(a => a.empleadoId === e.id);
-            const totalAdelantos = adelantos.reduce((sum, a) => sum + a.monto, 0);
-            return `<tr>
-                <td><strong>${e.nombre}</strong></td>
-                <td>${e.telefono}</td>
-                <td>$${e.tarifa}/h</td>
-                <td>${e.cargo}</td>
-                <td>${e.usuario}</td>
-                <td><span class="badge ${e.estado === 'activo' ? 'badge-success' : 'badge-danger'}">${e.estado}</span></td>
-                <td>$${totalAdelantos.toFixed(2)}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editarEmpleado('${e.id}')">✏️</button>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarEmpleado('${e.id}')">🗑️</button>
-                    <button class="btn btn-info btn-sm" onclick="verAdelantosEmpleado('${e.id}')">💰</button>
-                </td>
-            </tr>`;
-        }).join('');
-    }
+    const tbody = document.getElementById('tablaEmpleados');
+    if (!tbody) return;
+    tbody.innerHTML = data.empleados.map(e => {
+        const adelantos = data.adelantosEmpleados.filter(a => a.empleadoId === e.id);
+        const totalAdelantos = adelantos.reduce((sum, a) => sum + a.monto, 0);
+        const estadoTexto = e.estado === 'activo' ? t('emp_activo') : t('emp_inactivo');
+        return `<tr>
+            <td><strong>${e.nombre}</strong></td>
+            <td>${e.telefono}</td>
+            <td>$${e.tarifa}/h</td>
+            <td>${e.cargo}</td>
+            <td>${e.usuario}</td>
+            <td><span class="badge ${e.estado === 'activo' ? 'badge-success' : 'badge-danger'}">${estadoTexto}</span></td>
+            <td>$${totalAdelantos.toFixed(2)}</td>
+            <td>
+                <button class="btn btn-warning btn-sm" onclick="editarEmpleado('${e.id}')">✏️</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarEmpleado('${e.id}')">🗑️</button>
+                <button class="btn btn-info btn-sm" onclick="verAdelantosEmpleado('${e.id}')">💰</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
 
-    function renderClientes(data) {
-        const tbody = document.getElementById('tablaClientes');
-        if (!tbody) return;
-        if (data.clientes.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:#4a5568;">No hay clientes registrados. Agrega uno arriba.</td></tr>';
-            return;
-        }
-        tbody.innerHTML = data.clientes.map(c => {
-            const codigoMostrar = c.tipoCodigo ? `<span class="badge badge-warning">${etiquetaTipoCodigo(c.tipoCodigo)}</span><br><small>${c.codigoAcceso || '—'}</small>` : '—';
-            const frecLabel = c.frecuencia === 'quincenal' ? 'Quincenal' : (c.frecuencia === 'mensual' ? 'Mensual' : 'Semanal');
-            const frecBadge = c.frecuencia === 'quincenal' ? 'badge-warning' : (c.frecuencia === 'mensual' ? 'badge-info' : 'badge-success');
-            const diasTexto = c.dias && c.dias.length > 0 ? c.dias.map(d => d.slice(0,3).charAt(0).toUpperCase() + d.slice(1,3)).join(', ') : '—';
-            return `<tr>
-                <td><strong>${c.nombre}</strong></td>
-                <td>${c.direccion}</td>
-                <td>${c.telefono}</td>
-                <td><span class="badge badge-primary">${c.servicio || 'regular'}</span></td>
-                <td>$${c.costo || 0}</td>
-                <td><small>${diasTexto}</small></td>
-                <td><span class="badge ${frecBadge}">${frecLabel}</span></td>
-                <td>${codigoMostrar}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editarCliente('${c.id}')">✏️</button>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarCliente('${c.id}')">🗑️</button>
-                </td>
-            </tr>`;
-        }).join('');
+   function renderClientes(data) {
+    const tbody = document.getElementById('tablaClientes');
+    if (!tbody) return;
+    if (data.clientes.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:#4a5568;">${t('msg_sin_clientes')}</td></tr>`;
+        return;
     }
+    tbody.innerHTML = data.clientes.map(c => {
+        const codigoMostrar = c.tipoCodigo ? `<span class="badge badge-warning">${etiquetaTipoCodigo(c.tipoCodigo)}</span><br><small>${c.codigoAcceso || '—'}</small>` : '—';
+        const frecLabel = c.frecuencia === 'quincenal' 
+            ? (idiomaActual === 'en' ? 'Bi-weekly' : 'Quincenal')
+            : (c.frecuencia === 'mensual' 
+                ? (idiomaActual === 'en' ? 'Monthly' : 'Mensual') 
+                : (idiomaActual === 'en' ? 'Weekly' : 'Semanal'));
+        const frecBadge = c.frecuencia === 'quincenal' ? 'badge-warning' : (c.frecuencia === 'mensual' ? 'badge-info' : 'badge-success');
+        const diasTexto = c.dias && c.dias.length > 0 ? c.dias.map(d => {
+            const map = {
+                lunes: idiomaActual === 'en' ? 'Mon' : 'Lun',
+                martes: idiomaActual === 'en' ? 'Tue' : 'Mar',
+                miercoles: idiomaActual === 'en' ? 'Wed' : 'Mié',
+                jueves: idiomaActual === 'en' ? 'Thu' : 'Jue',
+                viernes: idiomaActual === 'en' ? 'Fri' : 'Vie',
+                sabado: idiomaActual === 'en' ? 'Sat' : 'Sáb',
+                domingo: idiomaActual === 'en' ? 'Sun' : 'Dom'
+            };
+            return map[d] || d;
+        }).join(', ') : '—';
+        const servicioLabel = c.servicio === 'profunda' ? t('serv_profunda') 
+            : c.servicio === 'construccion' ? t('serv_construccion')
+            : c.servicio === 'especial' ? t('serv_especial')
+            : t('serv_regular');
+        return `<tr>
+            <td><strong>${c.nombre}</strong></td>
+            <td>${c.direccion}</td>
+            <td>${c.telefono}</td>
+            <td><span class="badge badge-primary">${servicioLabel}</span></td>
+            <td>$${c.costo || 0}</td>
+            <td><small>${diasTexto}</small></td>
+            <td><span class="badge ${frecBadge}">${frecLabel}</span></td>
+            <td>${codigoMostrar}</td>
+            <td>
+                <button class="btn btn-warning btn-sm" onclick="editarCliente('${c.id}')">✏️</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarCliente('${c.id}')">🗑️</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
 
     function renderJornadas(data) {
         const tbody = document.getElementById('tablaJornadas');
@@ -1629,19 +1653,25 @@
     }
 
     function renderStats(data) {
-        const e1 = document.getElementById('totalEmpleados');
-        if (!e1) return;
-        e1.textContent = data.empleados.filter(e => e.estado === 'activo').length;
-        document.getElementById('totalClientes').textContent = data.clientes.length;
-        document.getElementById('totalJornadas').textContent = data.jornadas.length;
-        let total = 0;
-        data.jornadas.forEach(j => {
-            const emp = data.empleados.find(e => e.id === j.empleadoId);
-            if (emp) total += calcularHoras(j.horaEntrada, j.horaSalida) * emp.tarifa;
-        });
-        document.getElementById('totalIngresos').textContent = '$' + total.toFixed(2);
-    }
-
+    const e1 = document.getElementById('totalEmpleados');
+    if (!e1) return;
+    e1.textContent = data.empleados.filter(e => e.estado === 'activo').length;
+    document.getElementById('totalClientes').textContent = data.clientes.length;
+    document.getElementById('totalJornadas').textContent = data.jornadas.length;
+    let total = 0;
+    data.jornadas.forEach(j => {
+        const emp = data.empleados.find(e => e.id === j.empleadoId);
+        if (emp) total += calcularHoras(j.horaEntrada, j.horaSalida) * emp.tarifa;
+    });
+    document.getElementById('totalIngresos').textContent = '$' + total.toFixed(2);
+    
+    // Traducir labels de stats
+    const statsCards = document.querySelectorAll('.admin-dashboard .stat-card .label');
+    if (statsCards[0]) statsCards[0].textContent = t('stat_empleados');
+    if (statsCards[1]) statsCards[1].textContent = t('stat_clientes');
+    if (statsCards[2]) statsCards[2].textContent = t('stat_jornadas');
+    if (statsCards[3]) statsCards[3].textContent = t('stat_ingresos');
+}
     function renderResumenDescuentos(data) {
     const el = document.getElementById('resumenDescuentos');
     if (!el) return;
