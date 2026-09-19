@@ -1416,32 +1416,6 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         const tituloEmpHistorial = document.getElementById('tituloEmpHistorial');
         if (tituloEmpHistorial) tituloEmpHistorial.textContent = idiomaActual === 'en' ? '📜 My History' : '📜 Mi Historial';
         
-        // === LABELS DEL FORMULARIO DE EMPLEADOS ===
-        const lbls = {
-            lblEmpNombre: { es: 'Nombre *', en: 'Name *' },
-            lblEmpTelefono: { es: 'Teléfono *', en: 'Phone *' },
-            lblEmpEmail: { es: 'Email', en: 'Email' },
-            lblEmpTarifa: { es: 'Tarifa/h ($) *', en: 'Hourly rate ($) *' },
-            lblEmpCargo: { es: 'Cargo *', en: 'Position *' },
-            lblEmpUsuario: { es: 'Usuario *', en: 'Username *' },
-            lblEmpPassword: { es: 'Contraseña *', en: 'Password *' },
-            lblEmpEstado: { es: 'Estado', en: 'Status' },
-            lblCliNombre: { es: 'Nombre *', en: 'Name *' },
-            lblCliDireccion: { es: 'Dirección *', en: 'Address *' },
-            lblCliTelefono: { es: 'Teléfono *', en: 'Phone *' },
-            lblCliEmail: { es: 'Email', en: 'Email' },
-            lblCliServicio: { es: 'Tipo de Servicio Regular', en: 'Regular Service Type' },
-            lblCliCosto: { es: 'Costo del Servicio ($)', en: 'Service Cost ($)' },
-            lblCliDias: { es: '📆 Días de servicio', en: '📆 Service days' },
-            lblCliFrecuencia: { es: '🔄 Frecuencia del servicio', en: '🔄 Service frequency' },
-            lblCliFechaInicio: { es: '📆 Fecha de inicio del servicio', en: '📆 Service start date' },
-            lblCliSemanaQuincenal: { es: '📌 ¿Qué semana le toca?', en: '📌 Which week?' },
-            lblCliInfoMensual: { es: '📌 Información', en: '📌 Information' },
-            lblCliTipoCodigo: { es: '🔑 Tipo de Código de Acceso', en: '🔑 Access Code Type' },
-            lblCliCodigo: { es: '🔢 Código / Número', en: '🔢 Code / Number' },
-            lblCliInstrucciones: { es: '📝 Instrucciones especiales de ingreso', en: '📝 Special entry instructions' }
-        };
-        
         Object.keys(lbls).forEach(id => {
             const el = document.getElementById(id);
             if (el) el.textContent = idiomaActual === 'en' ? lbls[id].en : lbls[id].es;
