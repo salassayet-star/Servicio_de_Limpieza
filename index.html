@@ -643,6 +643,17 @@
     let paginaPagosActual = 1;
     const PAGOS_POR_PAGINA = 10;
     const DOC_ID = 'sistema_limpieza_datos';
+        let datosGlobales = {
+        empleados: [],
+        clientes: [],
+        jornadas: [],
+        boletas: [],
+        config: { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' },
+        pagosClientes: [],
+        adelantosEmpleados: [],
+        pagosServicios: [],
+        cancelaciones: []
+    };
     // ============================================================
     // SISTEMA DE IDIOMA
     // ============================================================
@@ -1440,17 +1451,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         
         console.log('🌐 Idioma aplicado:', idiomaActual);
     }
-    let datosGlobales = {
-        empleados: [],
-        clientes: [],
-        jornadas: [],
-        boletas: [],
-        config: { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' },
-        pagosClientes: [],
-        adelantosEmpleados: [],
-        pagosServicios: [],
-        cancelaciones: []
-    };
+   
 
     // ============================================================
     // FIREBASE - SINCRONIZACIÓN
