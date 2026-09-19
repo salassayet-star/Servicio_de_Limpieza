@@ -257,18 +257,18 @@
 </div>
             </div>
 
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+                        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
                 <div style="display:flex; align-items:center; gap:6px; font-size:0.85rem;">
                     <div style="width:20px; height:20px; background:#d4edda; border-radius:4px;"></div>
-                    <span>Activo</span>
+                    <span id="labelSemanalActivo">Activo</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:6px; font-size:0.85rem;">
                     <div style="width:20px; height:20px; background:#f8d7da; border-radius:4px;"></div>
-                    <span>Cancelado</span>
+                    <span id="labelSemanalCancelado">Cancelado</span>
                 </div>
                 <div style="display:flex; align-items:center; gap:6px; font-size:0.85rem;">
                     <div style="width:20px; height:20px; background:#f7fafc; border:1px solid #e2e8f0; border-radius:4px;"></div>
-                    <span>No programado</span>
+                    <span id="labelSemanalNoProg">No programado</span>
                 </div>
             </div>
 
@@ -1267,6 +1267,63 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         const btnMesSiguiente = document.getElementById('btnMesSiguiente');
         if (btnMesSiguiente) btnMesSiguiente.textContent = idiomaActual === 'en' ? 'Next ▶️' : 'Siguiente ▶️';
         
+                // === ESTADOS DE VISTA SEMANAL ===
+        const labelSemanalActivo = document.getElementById('labelSemanalActivo');
+        if (labelSemanalActivo) labelSemanalActivo.textContent = idiomaActual === 'en' ? 'Active' : 'Activo';
+        
+        const labelSemanalCancelado = document.getElementById('labelSemanalCancelado');
+        if (labelSemanalCancelado) labelSemanalCancelado.textContent = idiomaActual === 'en' ? 'Canceled' : 'Cancelado';
+        
+        const labelSemanalNoProg = document.getElementById('labelSemanalNoProg');
+        if (labelSemanalNoProg) labelSemanalNoProg.textContent = idiomaActual === 'en' ? 'Not scheduled' : 'No programado';
+        
+        // === BOLETAS ===
+        const labelsBoleta = document.querySelectorAll('#tab-admin-boletas label');
+        if (labelsBoleta[0]) labelsBoleta[0].textContent = idiomaActual === 'en' ? 'Employee' : 'Empleado';
+        if (labelsBoleta[1]) labelsBoleta[1].textContent = idiomaActual === 'en' ? 'Week (pick any date)' : 'Semana (elige cualquier fecha)';
+        if (labelsBoleta[2]) labelsBoleta[2].textContent = idiomaActual === 'en' ? 'Payment type' : 'Tipo de Pago';
+        
+        // Traducir opciones del select de tipo de pago
+        const selectPago = document.getElementById('boletaTipoPago');
+        if (selectPago) {
+            const opciones = selectPago.querySelectorAll('option');
+            if (opciones[0]) opciones[0].textContent = idiomaActual === 'en' ? '💵 Cash (no deductions)' : '💵 Efectivo (sin descuentos)';
+            if (opciones[1]) opciones[1].textContent = idiomaActual === 'en' ? '📄 Check (with deductions)' : '📄 Cheque (con descuentos)';
+        }
+        
+        // === FORMULARIO EMPLEADOS ===
+        const labelsEmp = document.querySelectorAll('#formEmpleado label');
+        if (labelsEmp[0]) labelsEmp[0].textContent = idiomaActual === 'en' ? 'Name *' : 'Nombre *';
+        if (labelsEmp[1]) labelsEmp[1].textContent = idiomaActual === 'en' ? 'Phone *' : 'Teléfono *';
+        if (labelsEmp[2]) labelsEmp[2].textContent = idiomaActual === 'en' ? 'Email' : 'Email';
+        if (labelsEmp[3]) labelsEmp[3].textContent = idiomaActual === 'en' ? 'Hourly rate ($) *' : 'Tarifa/h ($) *';
+        if (labelsEmp[4]) labelsEmp[4].textContent = idiomaActual === 'en' ? 'Position *' : 'Cargo *';
+        if (labelsEmp[5]) labelsEmp[5].textContent = idiomaActual === 'en' ? 'Username *' : 'Usuario *';
+        if (labelsEmp[6]) labelsEmp[6].textContent = idiomaActual === 'en' ? 'Password *' : 'Contraseña *';
+        if (labelsEmp[7]) labelsEmp[7].textContent = idiomaActual === 'en' ? 'Status' : 'Estado';
+        
+        // Opciones de estado del empleado
+        const selectEmpEstado = document.getElementById('empEstado');
+        if (selectEmpEstado) {
+            const opcs = selectEmpEstado.querySelectorAll('option');
+            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? 'Active' : 'Activo';
+            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? 'Inactive' : 'Inactivo';
+        }
+        
+        // === FORMULARIO CLIENTES ===
+        const labelsCli = document.querySelectorAll('#formCliente label');
+        if (labelsCli[0]) labelsCli[0].textContent = idiomaActual === 'en' ? 'Name *' : 'Nombre *';
+        if (labelsCli[1]) labelsCli[1].textContent = idiomaActual === 'en' ? 'Address *' : 'Dirección *';
+        if (labelsCli[2]) labelsCli[2].textContent = idiomaActual === 'en' ? 'Phone *' : 'Teléfono *';
+        if (labelsCli[3]) labelsCli[3].textContent = idiomaActual === 'en' ? 'Email' : 'Email';
+        if (labelsCli[4]) labelsCli[4].textContent = idiomaActual === 'en' ? 'Regular Service Type' : 'Tipo de Servicio Regular';
+        if (labelsCli[5]) labelsCli[5].textContent = idiomaActual === 'en' ? 'Service Cost ($)' : 'Costo del Servicio ($)';
+        
+        // Título del form de cliente
+        const tituloFormCliente = document.getElementById('clienteFormTitulo');
+        if (tituloFormCliente && !document.getElementById('cliEditId').value) {
+            tituloFormCliente.textContent = idiomaActual === 'en' ? '➕ New Client' : '➕ Nuevo Cliente';
+        }
         // Re-renderizar todo lo dinámico
         if (firebaseListo) {
             renderAgendaDiaria();
@@ -1942,8 +1999,10 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         const lunes = new Date(fecha);
         lunes.setDate(fecha.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
 
-        const dias = [];
-        const diasNombres = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+               const dias = [];
+        const diasNombres = idiomaActual === 'en' 
+            ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            : ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
         for (let i = 0; i < 7; i++) {
             const d = new Date(lunes);
             d.setDate(lunes.getDate() + i);
@@ -2072,7 +2131,9 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
             return;
         }
         
-        const nombresDias = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+                const nombresDias = idiomaActual === 'en' 
+            ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            : ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
         const hoy = new Date().toISOString().slice(0,10);
         
         let html = `<div class="mes-grid">`;
