@@ -1133,6 +1133,19 @@
         if (btnSalir) btnSalir.textContent = t('btn_salir');
             const btnModo = document.getElementById('btnModo');
 if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 Modo';
+                    // Traducir sync badge
+        const syncBadge = document.getElementById('syncStatus');
+        if (syncBadge) {
+            const textoActual = syncBadge.textContent;
+            // Detectar el estado actual según el texto o clase
+            if (syncBadge.classList.contains('error')) {
+                syncBadge.textContent = t('sync_error');
+            } else if (syncBadge.classList.contains('syncing')) {
+                syncBadge.textContent = t('sync_syncing');
+            } else {
+                syncBadge.textContent = t('sync_ok');
+            }
+        }
         
         // Login principal
         const modoSel = document.getElementById('modoSeleccion');
