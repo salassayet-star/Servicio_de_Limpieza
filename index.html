@@ -1272,13 +1272,26 @@
         
         // === SISTEMA AUTOMÁTICO DE TRADUCCIÓN POR TEXTO ===
         // Este sistema reemplaza textos exactos en todo el DOM
-        const MAPA = idiomaActual === 'en' ? {
-            // Formularios y labels
+               const MAPA = idiomaActual === 'en' ? {
+            // === TÍTULOS PRINCIPALES ===
             '👤 Gestión de Empleados': '👤 Employee Management',
             '🏢 Gestión de Clientes': '🏢 Client Management',
             '📋 Monitoreo de Jornadas': '📋 Job Monitoring',
             '📄 Boletas de Pago': '📄 Paystubs',
             '⚙️ Configuración': '⚙️ Settings',
+            
+            // === DESCRIPCIONES ===
+            'Edita cualquier cliente con el botón ✏️ si solicitan cambios.': 'Edit any client with the ✏️ button if they request changes.',
+            'Los empleados marcan entrada/salida con geolocalización. Puedes modificar las horas aquí.': 'Employees clock in/out with geolocation. You can modify hours here.',
+            'Solo el administrador genera boletas. Descuentos solo cuando el pago es con cheque.': 'Only admin generates paystubs. Deductions only when paid by check.',
+            'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.': 'Scheduled days for each client. Click any day to activate/cancel.',
+            'Clientes que tocan según sus días y frecuencia programados.': 'Clients scheduled according to their days and frequency.',
+            'Calendario mensual con todos los clientes programados por día.': 'Monthly calendar with all scheduled clients per day.',
+            'Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.': 'Edit dates, amounts, and mark payments as completed. Pagination of 10 per page.',
+            'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.': 'These actions cannot be undone. Settings (company name and % deductions) are preserved.',
+            '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.': '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.',
+            
+            // === FORMULARIOS ===
             'Nombre *': 'Name *',
             'Teléfono *': 'Phone *',
             'Email': 'Email',
@@ -1318,13 +1331,13 @@
             'Otro': 'Other',
             '🔢 Código / Número': '🔢 Code / Number',
             '📝 Instrucciones especiales de ingreso': '📝 Special entry instructions',
-            'Ej: 1234#, #5678, Caja 5': 'Ex: 1234#, #5678, Box 5',
-            'Ej: Tocar timbre 2 veces, la llave está debajo del macetero...': 'Ex: Ring bell 2 times, key is under the flowerpot...',
             '💾 Guardar': '💾 Save',
             '🔄 Limpiar': '🔄 Clear',
             '🔄 Limpiar / Nuevo': '🔄 Clear / New',
             '➕ Nuevo Cliente': '➕ New Client',
             '📋 Clientes Registrados': '📋 Registered Clients',
+            
+            // === COLUMNAS DE TABLAS ===
             'Nombre': 'Name',
             'Dirección': 'Address',
             'Teléfono': 'Phone',
@@ -1334,8 +1347,31 @@
             'Frecuencia': 'Frequency',
             'Código': 'Code',
             'Acciones': 'Actions',
+            'Adelantos': 'Advances',
+            'Fecha': 'Date',
+            'Entrada': 'Check-in',
+            'Salida': 'Check-out',
+            'Horas': 'Hours',
+            'Total': 'Total',
+            'Cliente': 'Client',
+            'Empleado': 'Employee',
+            'Semana': 'Week',
+            'Bruto': 'Gross',
+            'Descuentos': 'Deductions',
+            'Neto': 'Net',
+            'Pago': 'Payment',
+            'Método': 'Method',
+            'Monto': 'Amount',
+            'Concepto': 'Concept',
+            'Notas': 'Notes',
+            
+            // === ADELANTOS EMPLEADOS ===
+            '💰 Adelantos a Empleados': '💰 Employee Advances',
+            'Monto ($)': 'Amount ($)',
+            '💰 Registrar Adelanto': '💰 Register Advance',
+            
+            // === PAGOS CLIENTES ===
             '💰 Registro de Pagos por Cliente': '💰 Client Payment Records',
-            'Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.': 'Edit dates, amounts, and mark payments as completed. Pagination of 10 per page.',
             'Filtrar por cliente': 'Filter by client',
             '-- Todos los clientes --': '-- All clients --',
             'Filtrar por estado': 'Filter by status',
@@ -1345,13 +1381,10 @@
             '✅ Total Pagado': '✅ Total Paid',
             '⏳ Total Pendiente': '⏳ Total Pending',
             '⚠️ Vencido': '⚠️ Overdue',
-            'Cliente': 'Client',
             'Fecha Programada': 'Scheduled Date',
-            'Monto': 'Amount',
             'Pendiente': 'Pending',
             'Pagado': 'Paid',
             'Fecha Pago': 'Payment Date',
-            'Método': 'Method',
             '💵 Efectivo': '💵 Cash',
             '📄 Cheque': '📄 Check',
             '🏦 Transferencia': '🏦 Transfer',
@@ -1361,58 +1394,44 @@
             'Siguiente ›': 'Next ›',
             'Última »': 'Last »',
             'Página': 'Page',
-            'de': 'of',
             'registros': 'records',
             '💰 Pagos/Adelantos Manuales': '💰 Manual Payments/Advances',
-            'Concepto': 'Concept',
             'Adelanto': 'Advance',
             'Pago directo': 'Direct payment',
             'Servicio extra': 'Extra service',
-            'Fecha': 'Date',
-            'Notas': 'Notes',
             'Opcional': 'Optional',
             '💰 Registrar Pago Manual': '💰 Register Manual Payment',
-            '💰 Adelantos a Empleados': '💰 Employee Advances',
-            'Monto ($)': 'Amount ($)',
-            '💰 Registrar Adelanto': '💰 Register Advance',
-            'Los empleados marcan entrada/salida con geolocalización. Puedes modificar las horas aquí.': 'Employees clock in/out with geolocation. You can modify hours here.',
+            
+            // === JORNADAS ===
             '📊 Exportar Excel': '📊 Export Excel',
-            'Empleado': 'Employee',
-            'Fecha': 'Date',
-            'Entrada': 'Check-in',
-            'Salida': 'Check-out',
-            'Horas': 'Hours',
-            'Total': 'Total',
-            'Estado': 'Status',
             'Completado': 'Completed',
-            'Solo el administrador genera boletas. Descuentos solo cuando el pago es con cheque.': 'Only admin generates paystubs. Deductions only when paid by check.',
+            'Cancelado': 'Canceled',
+            
+            // === BOLETAS ===
             'Semana (elige cualquier fecha)': 'Week (pick any date)',
             'Tipo de Pago': 'Payment type',
             '💵 Efectivo (sin descuentos)': '💵 Cash (no deductions)',
             '📄 Cheque (con descuentos)': '📄 Check (with deductions)',
             '🧾 Vista Previa': '🧾 Preview',
             '✅ Generar': '✅ Generate',
-            '📄 PDF': '📄 PDF',
             '📋 Boletas Generadas': '📋 Generated Paystubs',
-            'Bruto': 'Gross',
-            'Descuentos': 'Deductions',
-            'Neto': 'Net',
-            'Pago': 'Payment',
-            'Gestión de Datos': '🗄️ Data Management',
+            
+            // === CONFIG ===
+            'Empresa': 'Company',
+            'Total descuentos': 'Total deductions',
+            '🗄️ Gestión de Datos': '🗄️ Data Management',
             '💾 Backup local': '💾 Local Backup',
             '📂 Restaurar local': '📂 Restore Local',
             '⚠️ Zona de Peligro': '⚠️ Danger Zone',
-            'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.': 'These actions cannot be undone. Settings (company name and % deductions) are preserved.',
             '🗑️ Borrar solo Boletas': '🗑️ Delete Paystubs Only',
             '🗑️ Borrar solo Jornadas': '🗑️ Delete Jobs Only',
             '🚨 Borrar TODOS los Datos': '🚨 Delete ALL Data',
-            '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.': '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.',
+            
+            // === AGENDA DIARIA ===
             '📅 Agenda Diaria': '📅 Daily Schedule',
-            'Clientes que tocan según sus días y frecuencia programados.': 'Clients scheduled according to their days and frequency.',
             '📆 Fecha:': '📆 Date:',
             '◀️ Anterior': '◀️ Previous',
             '📌 Hoy': '📌 Today',
-            'Siguiente ▶️': 'Next ▶️',
             '🏢 Clientes hoy:': '🏢 Clients today:',
             '✅ Completados:': '✅ Completed:',
             '🔄 En proceso:': '🔄 In progress:',
@@ -1420,18 +1439,24 @@
             'Sin asignar': 'Unassigned',
             '❌ Cancelar': '❌ Cancel',
             '✅ Reactivar': '✅ Reactivate',
+            
+            // === VISTA SEMANAL ===
             '🗓️ Vista Semanal de Clientes': '🗓️ Weekly Client View',
-            'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.': 'Scheduled days for each client. Click any day to activate/cancel.',
             '📆 Semana de:': '📆 Week of:',
             '📌 Actual': '📌 Current',
-            'Cancelado': 'Canceled',
             'No programado': 'Not scheduled',
+            'Lunes': 'Monday', 'Martes': 'Tuesday', 'Miércoles': 'Wednesday',
+            'Jueves': 'Thursday', 'Viernes': 'Friday', 'Sábado': 'Saturday', 'Domingo': 'Sunday',
+            'Lun': 'Mon', 'Mar': 'Tue', 'Mié': 'Wed', 'Jue': 'Thu', 'Vie': 'Fri', 'Sáb': 'Sat', 'Dom': 'Sun',
+            
+            // === VISTA MENSUAL ===
             '📆 Vista Mensual': '📆 Monthly View',
-            'Calendario mensual con todos los clientes programados por día.': 'Monthly calendar with all scheduled clients per day.',
             '📆 Mes:': '📆 Month:',
             '📅 Días:': '📅 Days:',
             '🏢 Trabajos:': '🏢 Jobs:',
             '❌ Cancelados:': '❌ Canceled:',
+            
+            // === EMPLEADO ===
             '📋 Trabajos de Hoy': "📋 Today's Jobs",
             'Clientes para hoy': "Today's Clients",
             'Elige un cliente para comenzar a trabajar.': 'Choose a client to start working.',
@@ -1444,15 +1469,27 @@
             '🚀 Comenzar este trabajo': '🚀 Start this job',
             '✅ Entrada + Geo': '✅ Check-in + Geo',
             '⏹️ Salida + Geo': '⏹️ Check-out + Geo',
-            '🗺️ Maps': '🗺️ Maps',
             '✅ Completado': '✅ Completed'
         } : {
-            // Español: reemplazar los textos en inglés por español
+            // === TÍTULOS PRINCIPALES ===
             '👤 Employee Management': '👤 Gestión de Empleados',
             '🏢 Client Management': '🏢 Gestión de Clientes',
             '📋 Job Monitoring': '📋 Monitoreo de Jornadas',
             '📄 Paystubs': '📄 Boletas de Pago',
             '⚙️ Settings': '⚙️ Configuración',
+            
+            // === DESCRIPCIONES ===
+            'Edit any client with the ✏️ button if they request changes.': 'Edita cualquier cliente con el botón ✏️ si solicitan cambios.',
+            'Employees clock in/out with geolocation. You can modify hours here.': 'Los empleados marcan entrada/salida con geolocalización. Puedes modificar las horas aquí.',
+            'Only admin generates paystubs. Deductions only when paid by check.': 'Solo el administrador genera boletas. Descuentos solo cuando el pago es con cheque.',
+            'Scheduled days for each client. Click any day to activate/cancel.': 'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.',
+            'Clients scheduled according to their days and frequency.': 'Clientes que tocan según sus días y frecuencia programados.',
+            'Monthly calendar with all scheduled clients per day.': 'Calendario mensual con todos los clientes programados por día.',
+            'Edit dates, amounts, and mark payments as completed. Pagination of 10 per page.': 'Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.',
+            'These actions cannot be undone. Settings (company name and % deductions) are preserved.': 'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.',
+            '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.': '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.',
+            
+            // === FORMULARIOS ===
             'Name *': 'Nombre *',
             'Phone *': 'Teléfono *',
             'Hourly rate ($) *': 'Tarifa/h ($) *',
@@ -1495,7 +1532,40 @@
             '🔄 Clear / New': '🔄 Limpiar / Nuevo',
             '➕ New Client': '➕ Nuevo Cliente',
             '📋 Registered Clients': '📋 Clientes Registrados',
+            
+            // === COLUMNAS DE TABLAS ===
+            'Name': 'Nombre',
+            'Address': 'Dirección',
+            'Phone': 'Teléfono',
+            'Service': 'Servicio',
+            'Cost': 'Costo',
+            'Days': 'Días',
+            'Frequency': 'Frecuencia',
+            'Code': 'Código',
             'Actions': 'Acciones',
+            'Advances': 'Adelantos',
+            'Date': 'Fecha',
+            'Check-in': 'Entrada',
+            'Check-out': 'Salida',
+            'Hours': 'Horas',
+            'Client': 'Cliente',
+            'Employee': 'Empleado',
+            'Week': 'Semana',
+            'Gross': 'Bruto',
+            'Deductions': 'Descuentos',
+            'Net': 'Neto',
+            'Payment': 'Pago',
+            'Method': 'Método',
+            'Amount': 'Monto',
+            'Concept': 'Concepto',
+            'Notes': 'Notas',
+            
+            // === ADELANTOS EMPLEADOS ===
+            '💰 Employee Advances': '💰 Adelantos a Empleados',
+            'Amount ($)': 'Monto ($)',
+            '💰 Register Advance': '💰 Registrar Adelanto',
+            
+            // === PAGOS CLIENTES ===
             '💰 Client Payment Records': '💰 Registro de Pagos por Cliente',
             'Filter by client': 'Filtrar por cliente',
             '-- All clients --': '-- Todos los clientes --',
@@ -1506,11 +1576,8 @@
             '✅ Total Paid': '✅ Total Pagado',
             '⏳ Total Pending': '⏳ Total Pendiente',
             '⚠️ Overdue': '⚠️ Vencido',
-            'Client': 'Cliente',
             'Scheduled Date': 'Fecha Programada',
-            'Amount': 'Monto',
             'Payment Date': 'Fecha Pago',
-            'Method': 'Método',
             '💵 Cash': '💵 Efectivo',
             '📄 Check': '📄 Cheque',
             '🏦 Transfer': '🏦 Transferencia',
@@ -1523,24 +1590,18 @@
             'of': 'de',
             'records': 'registros',
             '💰 Manual Payments/Advances': '💰 Pagos/Adelantos Manuales',
-            'Concept': 'Concepto',
             'Advance': 'Adelanto',
             'Direct payment': 'Pago directo',
             'Extra service': 'Servicio extra',
-            'Date': 'Fecha',
-            'Notes': 'Notas',
             'Optional': 'Opcional',
             '💰 Register Manual Payment': '💰 Registrar Pago Manual',
-            '💰 Employee Advances': '💰 Adelantos a Empleados',
-            'Amount ($)': 'Monto ($)',
-            '💰 Register Advance': '💰 Registrar Adelanto',
+            
+            // === JORNADAS ===
             '📊 Export Excel': '📊 Exportar Excel',
-            'Employee': 'Empleado',
-            'Check-in': 'Entrada',
-            'Check-out': 'Salida',
-            'Hours': 'Horas',
-            'Total': 'Total',
             'Completed': 'Completado',
+            'Canceled': 'Cancelado',
+            
+            // === BOLETAS ===
             'Week (pick any date)': 'Semana (elige cualquier fecha)',
             'Payment type': 'Tipo de Pago',
             '💵 Cash (no deductions)': '💵 Efectivo (sin descuentos)',
@@ -1548,10 +1609,10 @@
             '🧾 Preview': '🧾 Vista Previa',
             '✅ Generate': '✅ Generar',
             '📋 Generated Paystubs': '📋 Boletas Generadas',
-            'Gross': 'Bruto',
-            'Deductions': 'Descuentos',
-            'Net': 'Net',
-            'Payment': 'Pago',
+            
+            // === CONFIG ===
+            'Company': 'Empresa',
+            'Total deductions': 'Total descuentos',
             '🗄️ Data Management': '🗄️ Gestión de Datos',
             '💾 Local Backup': '💾 Backup local',
             '📂 Restore Local': '📂 Restaurar local',
@@ -1559,11 +1620,12 @@
             '🗑️ Delete Paystubs Only': '🗑️ Borrar solo Boletas',
             '🗑️ Delete Jobs Only': '🗑️ Borrar solo Jornadas',
             '🚨 Delete ALL Data': '🚨 Borrar TODOS los Datos',
+            
+            // === AGENDA DIARIA ===
             '📅 Daily Schedule': '📅 Agenda Diaria',
             '📆 Date:': '📆 Fecha:',
             '◀️ Previous': '◀️ Anterior',
             '📌 Today': '📌 Hoy',
-            'Next ▶️': 'Siguiente ▶️',
             '🏢 Clients today:': '🏢 Clientes hoy:',
             '✅ Completed:': '✅ Completados:',
             '🔄 In progress:': '🔄 En proceso:',
@@ -1571,16 +1633,24 @@
             'Unassigned': 'Sin asignar',
             '❌ Cancel': '❌ Cancelar',
             '✅ Reactivate': '✅ Reactivar',
+            
+            // === VISTA SEMANAL ===
             '🗓️ Weekly Client View': '🗓️ Vista Semanal de Clientes',
             '📆 Week of:': '📆 Semana de:',
             '📌 Current': '📌 Actual',
-            'Canceled': 'Cancelado',
             'Not scheduled': 'No programado',
+            'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'Miércoles',
+            'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'Sábado', 'Sunday': 'Domingo',
+            'Mon': 'Lun', 'Tue': 'Mar', 'Wed': 'Mié', 'Thu': 'Jue', 'Fri': 'Vie', 'Sat': 'Sáb', 'Sun': 'Dom',
+            
+            // === VISTA MENSUAL ===
             '📆 Monthly View': '📆 Vista Mensual',
             '📆 Month:': '📆 Mes:',
             '📅 Days:': '📅 Días:',
             '🏢 Jobs:': '🏢 Trabajos:',
             '❌ Canceled:': '❌ Cancelados:',
+            
+            // === EMPLEADO ===
             "📋 Today's Jobs": '📋 Trabajos de Hoy',
             "Today's Clients": 'Clientes para hoy',
             'Choose a client to start working.': 'Elige un cliente para comenzar a trabajar.',
