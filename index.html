@@ -639,7 +639,7 @@
                 </div>
             </div>
             <input type="file" id="backupInput" accept=".json" style="display:none;" onchange="cargarBackup(event)">
-            <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;">
+                        <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;" id="syncInfoConfig">
                 ☁️ <strong>Sincronización activa:</strong> Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.
             </div>
         </div>
@@ -1778,6 +1778,20 @@
             const txt = th.textContent.trim();
             if (MAPA[txt]) th.textContent = MAPA[txt];
         });
+                // Traducir textos de Config
+        const syncInfoConfig = document.getElementById('syncInfoConfig');
+        if (syncInfoConfig) {
+            if (idiomaActual === 'en') {
+                syncInfoConfig.innerHTML = '☁️ <strong>Sync active:</strong> All changes are automatically saved to the cloud (Firebase) and synced across all devices.';
+            } else {
+                syncInfoConfig.innerHTML = '☁️ <strong>Sincronización activa:</strong> Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.';
+            }
+        }
+        
+        // Re-renderizar resumen de descuentos para aplicar traducción
+        if (firebaseListo) {
+            renderResumenDescuentos(getData());
+        }
         
         // === RE-RENDERIZAR TODO LO DINÁMICO ===
         if (firebaseListo) {
@@ -2266,7 +2280,8 @@
     if (!el) return;
     const cfg = data.config;
     const total = (cfg.FICA || 0) + (cfg.Medicare || 0);
-    el.innerHTML = `<strong>Total descuentos: ${total}%</strong> · Social Security (${cfg.FICA || 0}%) + Medicare (${cfg.Medicare || 0}%)`;
+    const txtTotal = idiomaActual === 'en' ? 'Total deductions' : 'Total descuentos';
+    el.innerHTML = `${txtTotal}: ${total}%`;
     const empEl = document.getElementById('cfgEmpresa');
     if (empEl) empEl.value = cfg.empresa || 'Mi Empresa';
 }
