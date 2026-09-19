@@ -167,7 +167,7 @@
     <div class="header-actions">
         <span class="sync-badge" id="syncStatus">☁️ Conectado</span>
         <button class="btn btn-outline" onclick="cambiarIdioma()" id="btnIdioma" title="Change language / Cambiar idioma">🌐 Español</button>
-        <button class="btn btn-outline" onclick="cambiarModo()">🌙 Modo</button>
+        <button class="btn btn-outline" onclick="cambiarModo()" id="btnModo">🌙 Modo</button>
         <button class="btn btn-outline" onclick="cerrarSesion()" id="btnSalir">🚪 Salir</button>
     </div>
 </header>
@@ -1131,6 +1131,8 @@
         // Header
         const btnSalir = document.getElementById('btnSalir');
         if (btnSalir) btnSalir.textContent = t('btn_salir');
+            const btnModo = document.getElementById('btnModo');
+if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 Modo';
         
         // Login principal
         const modoSel = document.getElementById('modoSeleccion');
@@ -1342,20 +1344,19 @@
     }
 
     function actualizarSyncBadge(estado) {
-        const badge = document.getElementById('syncStatus');
-        if (!badge) return;
-        if (estado === 'ok') {
-            badge.textContent = '☁️ Sincronizado';
-            badge.className = 'sync-badge';
-        } else if (estado === 'syncing') {
-            badge.textContent = '⏳ Guardando...';
-            badge.className = 'sync-badge syncing';
-        } else if (estado === 'error') {
-            badge.textContent = '⚠️ Sin conexión';
-            badge.className = 'sync-badge error';
-        }
+    const badge = document.getElementById('syncStatus');
+    if (!badge) return;
+    if (estado === 'ok') {
+        badge.textContent = t('sync_ok');
+        badge.className = 'sync-badge';
+    } else if (estado === 'syncing') {
+        badge.textContent = t('sync_syncing');
+        badge.className = 'sync-badge syncing';
+    } else if (estado === 'error') {
+        badge.textContent = t('sync_error');
+        badge.className = 'sync-badge error';
     }
-
+}
     // ============================================================
     // DATA LAYER
     // ============================================================
@@ -3126,6 +3127,7 @@
     // ============================================================
     // INIT
     // ============================================================
+    aplicarIdioma();
     document.getElementById('agendaFecha').value = new Date().toISOString().slice(0,10);
     document.getElementById('boletaSemana').value = new Date().toISOString().slice(0,10);
     document.getElementById('semanaFecha').value = new Date().toISOString().slice(0,10);
