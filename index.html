@@ -240,7 +240,7 @@
 </div>
 
 <header class="header">
-    <h1>🧹 CleanManager <span>v5.0</span></h1>
+        <h1 id="tituloApp">🧹 CleanManager <span>v5.0</span></h1>
     <div class="header-actions">
         <span class="sync-badge" id="syncStatus">☁️ Conectado</span>
         <button class="btn btn-outline" onclick="cambiarIdioma()" id="btnIdioma" title="Change language / Cambiar idioma">🌐 Español</button>
@@ -1792,7 +1792,12 @@
         if (firebaseListo) {
             renderResumenDescuentos(getData());
         }
-        
+                // Mostrar nombre de empresa en el header
+        const tituloApp = document.getElementById('tituloApp');
+        if (tituloApp) {
+            const nombreEmpresa = datosGlobales.config?.empresa || 'CleanManager';
+            tituloApp.innerHTML = `🧹 ${nombreEmpresa}`;
+        }
         // === RE-RENDERIZAR TODO LO DINÁMICO ===
         if (firebaseListo) {
             renderAgendaDiaria();
@@ -3558,7 +3563,11 @@
     datosGlobales.config = config;
     guardarEnFirebase();
     renderAll();
-alert(t('msg_config_guardada'));}
+    // Actualizar el título del header
+    const tituloApp = document.getElementById('tituloApp');
+    if (tituloApp) tituloApp.innerHTML = `🧹 ${config.empresa}`;
+    alert(t('msg_config_guardada'));
+}
 
     // ============================================================
     // UI / MODAL / TABS
