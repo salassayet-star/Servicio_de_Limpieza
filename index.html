@@ -2307,9 +2307,10 @@
             selCli.innerHTML = data.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
             document.getElementById('pagoClienteFecha').value = new Date().toISOString().slice(0,10);
         }
-        const filtro = document.getElementById('filtroClientePagos');
+                const filtro = document.getElementById('filtroClientePagos');
         if (filtro) {
-            filtro.innerHTML = '<option value="">-- Todos los clientes --</option>' + data.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+            const txtTodos = idiomaActual === 'en' ? '-- All clients --' : '-- Todos los clientes --';
+            filtro.innerHTML = `<option value="">${txtTodos}</option>` + data.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
         }
     }
 
@@ -2568,10 +2569,14 @@
             totalCancelados += canceladosDia;
         }
         
+                const txtDias = idiomaActual === 'en' ? '📅 Days:' : '📅 Días:';
+        const txtTrabajos = idiomaActual === 'en' ? '🏢 Jobs:' : '🏢 Trabajos:';
+        const txtCancelados = idiomaActual === 'en' ? '❌ Canceled:' : '❌ Cancelados:';
+        
         document.getElementById('mesResumen').innerHTML = `
-            <div class="item">📅 Días: <strong>${diasEnMes}</strong></div>
-            <div class="item">🏢 Trabajos: <strong>${totalTrabajos}</strong></div>
-            <div class="item">❌ Cancelados: <strong>${totalCancelados}</strong></div>
+            <div class="item">${txtDias} <strong>${diasEnMes}</strong></div>
+            <div class="item">${txtTrabajos} <strong>${totalTrabajos}</strong></div>
+            <div class="item">${txtCancelados} <strong>${totalCancelados}</strong></div>
         `;
         
         if (data.clientes.length === 0) {
@@ -2720,10 +2725,14 @@
         const hoyStr = new Date().toISOString().slice(0,10);
         const totalVencido = pagos.filter(p => p.estado === 'pendiente' && p.fecha < hoyStr).reduce((s, p) => s + p.monto, 0);
         
+                const txtPagado = idiomaActual === 'en' ? '✅ Total Paid' : '✅ Total Pagado';
+        const txtPendiente = idiomaActual === 'en' ? '⏳ Total Pending' : '⏳ Total Pendiente';
+        const txtVencido = idiomaActual === 'en' ? '⚠️ Overdue' : '⚠️ Vencido';
+        
         document.getElementById('cuentasResumen').innerHTML = `
-            <div class="cuenta-card pagado"><div class="monto">$${totalPagado.toFixed(2)}</div><div class="label">✅ Total Pagado</div></div>
-            <div class="cuenta-card pendiente"><div class="monto">$${totalPendiente.toFixed(2)}</div><div class="label">⏳ Total Pendiente</div></div>
-            <div class="cuenta-card vencido"><div class="monto">$${totalVencido.toFixed(2)}</div><div class="label">⚠️ Vencido</div></div>
+            <div class="cuenta-card pagado"><div class="monto">$${totalPagado.toFixed(2)}</div><div class="label">${txtPagado}</div></div>
+            <div class="cuenta-card pendiente"><div class="monto">$${totalPendiente.toFixed(2)}</div><div class="label">${txtPendiente}</div></div>
+            <div class="cuenta-card vencido"><div class="monto">$${totalVencido.toFixed(2)}</div><div class="label">${txtVencido}</div></div>
         `;
         
         const totalPaginas = Math.max(1, Math.ceil(filtrados.length / PAGOS_POR_PAGINA));
@@ -2769,9 +2778,17 @@
             </tr>`;
         }).join('');
         
+               const txtPrimera = idiomaActual === 'en' ? '« First' : '« Primera';
+        const txtAnterior = idiomaActual === 'en' ? '‹ Previous' : '‹ Anterior';
+        const txtSiguiente = idiomaActual === 'en' ? 'Next ›' : 'Siguiente ›';
+        const txtUltima = idiomaActual === 'en' ? 'Last »' : 'Última »';
+        const txtPagina = idiomaActual === 'en' ? 'Page' : 'Página';
+        const txtDe = idiomaActual === 'en' ? 'of' : 'de';
+        const txtRegistros = idiomaActual === 'en' ? 'records' : 'registros';
+        
         let pagHtml = '';
-        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(1)">« Primera</button>`;
-        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual - 1})">‹ Anterior</button>`;
+        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(1)">${txtPrimera}</button>`;
+        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual - 1})">${txtAnterior}</button>`;
         
         let inicioRango = Math.max(1, paginaPagosActual - 2);
         let finRango = Math.min(totalPaginas, paginaPagosActual + 2);
@@ -2780,9 +2797,9 @@
             pagHtml += `<button class="${i === paginaPagosActual ? 'active' : ''}" onclick="cambiarPaginaPagos(${i})">${i}</button>`;
         }
         
-        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual + 1})">Siguiente ›</button>`;
-        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${totalPaginas})">Última »</button>`;
-        pagHtml += `<span class="info">Página ${paginaPagosActual} de ${totalPaginas} · ${filtrados.length} registros</span>`;
+        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual + 1})">${txtSiguiente}</button>`;
+        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${totalPaginas})">${txtUltima}</button>`;
+        pagHtml += `<span class="info">${txtPagina} ${paginaPagosActual} ${txtDe} ${totalPaginas} · ${filtrados.length} ${txtRegistros}</span>`;
         
         document.getElementById('paginacionPagos').innerHTML = pagHtml;
     }
