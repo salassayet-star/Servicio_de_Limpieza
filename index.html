@@ -299,15 +299,15 @@
             <h2 id="tituloEmpleados">👤 Gestión de Empleados</h2>
            <form id="formEmpleado" onsubmit="guardarEmpleado(event)">
     <div class="form-grid">
-        <div class="form-group"><label id="lblEmpNombre">Nombre *</label><input type="text" id="empNombre" required></div>
-        <div class="form-group"><label id="lblEmpTelefono">Teléfono *</label><input type="tel" id="empTelefono" required></div>
-        <div class="form-group"><label id="lblEmpEmail">Email</label><input type="email" id="empEmail"></div>
-        <div class="form-group"><label id="lblEmpTarifa">Tarifa/h ($) *</label><input type="number" id="empTarifa" step="0.01" required></div>
-        <div class="form-group"><label id="lblEmpCargo">Cargo *</label><input type="text" id="empCargo" required></div>
-        <div class="form-group"><label id="lblEmpUsuario">Usuario *</label><input type="text" id="empUsuario" required></div>
-        <div class="form-group"><label id="lblEmpPassword">Contraseña *</label><input type="text" id="empPassword" required></div>
-        <div class="form-group"><label id="lblEmpEstado">Estado</label><select id="empEstado"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select></div>
-    </div>
+    <div class="form-group"><label id="lblEmpNombre">Nombre *</label><input type="text" id="empNombre" required></div>
+    <div class="form-group"><label id="lblEmpTelefono">Teléfono *</label><input type="tel" id="empTelefono" required></div>
+    <div class="form-group"><label id="lblEmpEmail">Email</label><input type="email" id="empEmail"></div>
+    <div class="form-group"><label id="lblEmpTarifa">Tarifa/h ($) *</label><input type="number" id="empTarifa" step="0.01" required></div>
+    <div class="form-group"><label id="lblEmpCargo">Cargo *</label><input type="text" id="empCargo" required></div>
+    <div class="form-group"><label id="lblEmpUsuario">Usuario *</label><input type="text" id="empUsuario" required></div>
+    <div class="form-group"><label id="lblEmpPassword">Contraseña *</label><input type="text" id="empPassword" required></div>
+    <div class="form-group"><label id="lblEmpEstado">Estado</label><select id="empEstado"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select></div>
+</div>
             </form>
             <div style="margin:15px 0;"><h4>💰 Adelantos a Empleados</h4>
                 <div class="form-grid">
@@ -335,13 +335,13 @@
                 <div id="clienteFormTitulo" style="background:#e3f2fd; padding:10px 15px; border-radius:8px; margin-bottom:15px; color:#1a4a7a; font-weight:600;">
                     ➕ Nuevo Cliente
                 </div>
-               <div class="form-grid">
+       <div class="form-grid">
     <div class="form-group"><label id="lblCliNombre">Nombre *</label><input type="text" id="cliNombre" required></div>
     <div class="form-group"><label id="lblCliDireccion">Dirección *</label><input type="text" id="cliDireccion" required></div>
     <div class="form-group"><label id="lblCliTelefono">Teléfono *</label><input type="tel" id="cliTelefono" required></div>
     <div class="form-group"><label id="lblCliEmail">Email</label><input type="email" id="cliEmail"></div>
     <div class="form-group"><label id="lblCliServicio">Tipo de Servicio Regular</label>
-        <select id="cliServicio">...</select>
+        <select id="cliServicio"><option value="regular">Regular</option><option value="profunda">Profunda</option><option value="construccion">Construcción</option><option value="especial">Especial</option></select>
     </div>
     <div class="form-group"><label id="lblCliCosto">Costo del Servicio ($)</label><input type="number" id="cliCosto" step="0.01"></div>
 </div>
@@ -581,18 +581,18 @@
         </div>
 
         <div class="tab-content active" id="tab-emp-trabajos-hoy">
-            <h3>📅 Clientes para hoy <span id="fechaHoyDisplay" style="color:#4a5568; font-weight:400; font-size:0.9rem;"></span></h3>
+            <h3 id="tituloEmpHoy">📅 Clientes para hoy <span id="fechaHoyDisplay" style="color:#4a5568; font-weight:400; font-size:0.9rem;"></span></h3>
             <p style="color:#4a5568; margin-bottom:15px;">Elige un cliente para comenzar a trabajar.</p>
             <div id="trabajosDisponiblesHoy"></div>
         </div>
 
         <div class="tab-content" id="tab-emp-mis-trabajos">
-            <h3>📋 Mis trabajos activos</h3>
+            <h3 id="tituloEmpActivos">📋 Mis trabajos activos</h3>
             <div id="misTrabajosActivos"></div>
         </div>
 
         <div class="tab-content" id="tab-emp-historial">
-            <h3>📜 Mi Historial</h3>
+            <h3 id="tituloEmpHistorial">📜 Mi Historial</h3>
             <div id="historialEmpleado"></div>
         </div>
     </div>
@@ -732,10 +732,10 @@
             'msg_eliminar_empleado': '¿Eliminar este empleado?',
             'msg_eliminar_cliente': '¿Eliminar este cliente?',
             'msg_eliminar_jornada': '¿Eliminar esta jornada?',
-            'msg_sin_clientes': 'No hay clientes registrados. Agrega uno arriba.',
+            'msg_sin_clientes': '${t('msg_sin_clientes')}',
             'msg_sin_historial': 'No hay historial.',
             'msg_sin_trabajos': 'No tienes trabajos activos.',
-            'msg_no_clientes_hoy': '📭 No hay clientes programados para hoy',
+            'msg_no_clientes_hoy': '${t('msg_no_clientes_hoy')}',
             'msg_selecciona_dias': '⚠️ Debes seleccionar al menos un día de servicio',
             'msg_selecciona_empleado_semana': '⚠️ Selecciona empleado y semana',
             'msg_efectivo_sin_desc': '💵 PAGO EN EFECTIVO — SIN DESCUENTOS',
@@ -1402,6 +1402,79 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         }
         const btnLimpiarCli = document.querySelector('#formCliente button[type="button"]');
         if (btnLimpiarCli) btnLimpiarCli.textContent = t('btn_limpiar_nuevo');
+                // === TÍTULOS DEL EMPLEADO ===
+        const tituloEmpHoy = document.getElementById('tituloEmpHoy');
+        if (tituloEmpHoy) {
+            const fechaSpan = document.getElementById('fechaHoyDisplay');
+            const fechaTexto = fechaSpan ? fechaSpan.outerHTML : '';
+            tituloEmpHoy.innerHTML = (idiomaActual === 'en' ? "📅 Today's Clients " : '📅 Clientes para hoy ') + fechaTexto;
+        }
+        
+        const tituloEmpActivos = document.getElementById('tituloEmpActivos');
+        if (tituloEmpActivos) tituloEmpActivos.textContent = idiomaActual === 'en' ? '📋 My Active Jobs' : '📋 Mis trabajos activos';
+        
+        const tituloEmpHistorial = document.getElementById('tituloEmpHistorial');
+        if (tituloEmpHistorial) tituloEmpHistorial.textContent = idiomaActual === 'en' ? '📜 My History' : '📜 Mi Historial';
+        
+        // === LABELS DEL FORMULARIO DE EMPLEADOS ===
+        const lbls = {
+            lblEmpNombre: { es: 'Nombre *', en: 'Name *' },
+            lblEmpTelefono: { es: 'Teléfono *', en: 'Phone *' },
+            lblEmpEmail: { es: 'Email', en: 'Email' },
+            lblEmpTarifa: { es: 'Tarifa/h ($) *', en: 'Hourly rate ($) *' },
+            lblEmpCargo: { es: 'Cargo *', en: 'Position *' },
+            lblEmpUsuario: { es: 'Usuario *', en: 'Username *' },
+            lblEmpPassword: { es: 'Contraseña *', en: 'Password *' },
+            lblEmpEstado: { es: 'Estado', en: 'Status' },
+            lblCliNombre: { es: 'Nombre *', en: 'Name *' },
+            lblCliDireccion: { es: 'Dirección *', en: 'Address *' },
+            lblCliTelefono: { es: 'Teléfono *', en: 'Phone *' },
+            lblCliEmail: { es: 'Email', en: 'Email' },
+            lblCliServicio: { es: 'Tipo de Servicio Regular', en: 'Regular Service Type' },
+            lblCliCosto: { es: 'Costo del Servicio ($)', en: 'Service Cost ($)' },
+            lblCliDias: { es: '📆 Días de servicio', en: '📆 Service days' },
+            lblCliFrecuencia: { es: '🔄 Frecuencia del servicio', en: '🔄 Service frequency' },
+            lblCliFechaInicio: { es: '📆 Fecha de inicio del servicio', en: '📆 Service start date' },
+            lblCliSemanaQuincenal: { es: '📌 ¿Qué semana le toca?', en: '📌 Which week?' },
+            lblCliInfoMensual: { es: '📌 Información', en: '📌 Information' },
+            lblCliTipoCodigo: { es: '🔑 Tipo de Código de Acceso', en: '🔑 Access Code Type' },
+            lblCliCodigo: { es: '🔢 Código / Número', en: '🔢 Code / Number' },
+            lblCliInstrucciones: { es: '📝 Instrucciones especiales de ingreso', en: '📝 Special entry instructions' }
+        };
+        
+        Object.keys(lbls).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = idiomaActual === 'en' ? lbls[id].en : lbls[id].es;
+        });
+        
+        // Opciones del select de servicio
+        const selServicio = document.getElementById('cliServicio');
+        if (selServicio) {
+            const opcs = selServicio.querySelectorAll('option');
+            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? 'Regular' : 'Regular';
+            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? 'Deep Clean' : 'Profunda';
+            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? 'Construction' : 'Construcción';
+            if (opcs[3]) opcs[3].textContent = idiomaActual === 'en' ? 'Special' : 'Especial';
+        }
+        
+        // Opciones del select de frecuencia
+        const selFrecuencia = document.getElementById('cliFrecuencia');
+        if (selFrecuencia) {
+            const opcs = selFrecuencia.querySelectorAll('option');
+            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? '📅 Weekly (every week)' : '📅 Semanal (todas las semanas)';
+            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? '📅 Bi-weekly (every other week)' : '📅 Quincenal (semana sí, semana no)';
+            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? '📅 Monthly (once a month)' : '📅 Mensual (una vez al mes)';
+        }
+        
+        // Opciones del tipo de código
+        const selTipoCodigo = document.getElementById('cliTipoCodigo');
+        if (selTipoCodigo) {
+            const opcs = selTipoCodigo.querySelectorAll('option');
+            const textos = idiomaActual === 'en' 
+                ? ['-- No code --', 'Alarm', 'Lock code', 'Lockbox', 'Physical key', 'Doorman/Reception', 'Other']
+                : ['-- Sin código --', 'Alarma', 'Cerradura con clave', 'Lockbox (caja de llaves)', 'Llave física', 'Portero/Recepción', 'Otro'];
+            opcs.forEach((op, i) => { if (textos[i]) op.textContent = textos[i]; });
+        }
         // Re-renderizar todo lo dinámico
         if (firebaseListo) {
             renderAgendaDiaria();
@@ -2042,16 +2115,14 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         if (!existe) {
             data.cancelaciones.push({ id: generateId(), clienteId, fecha, registro: new Date().toISOString() });
             saveData('cancelaciones', data.cancelaciones);
-            alert('✅ Día cancelado');
-        }
+            alert(t('msg_dia_cancelado'));        }
     }
 
     function reactivarDia(clienteId, fecha) {
         const data = getData();
         data.cancelaciones = data.cancelaciones.filter(c => !(c.clienteId === clienteId && c.fecha === fecha));
         saveData('cancelaciones', data.cancelaciones);
-        alert('✅ Día reactivado');
-    }
+        alert(t('msg_dia_reactivado'));    }
 
     function cambiarDia(delta) {
         const input = document.getElementById('agendaFecha');
@@ -2146,8 +2217,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         if (!existe) {
             data.cancelaciones.push({ id: generateId(), clienteId, fecha, registro: new Date().toISOString() });
             saveData('cancelaciones', data.cancelaciones);
-            alert('✅ Día cancelado');
-        }
+            alert(t('msg_dia_cancelado'));        }
     }
 
     function cambiarSemana(delta) {
@@ -2485,7 +2555,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         }
         saveData('empleados', data.empleados);
         limpiarFormEmpleado();
-        alert('✅ Empleado guardado');
+        alert(t('msg_empleado_guardado'));
     }
 
     function editarEmpleado(id) {
@@ -2504,7 +2574,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
     }
 
     function eliminarEmpleado(id) {
-        if (!confirm('¿Eliminar este empleado?')) return;
+        if (!confirm(t('msg_eliminar_empleado'))) return;
         let data = getData();
         data.empleados = data.empleados.filter(e => e.id !== id);
         saveData('empleados', data.empleados);
@@ -2562,7 +2632,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         });
         
         if (diasSeleccionados.length === 0) {
-            alert('⚠️ Debes seleccionar al menos un día de servicio');
+            alert(t('msg_selecciona_dias'));
             return;
         }
         
@@ -2585,11 +2655,11 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         if (id) {
             const idx = data.clientes.findIndex(c => c.id === id);
             if (idx !== -1) data.clientes[idx] = { ...data.clientes[idx], ...cli };
-            alert('✅ Cliente actualizado correctamente');
+            alert(t('msg_cliente_actualizado'));
         } else {
             cli.id = generateId();
             data.clientes.push(cli);
-            alert('✅ Cliente agregado correctamente');
+            alert(t('msg_cliente_agregado'));
         }
         saveData('clientes', data.clientes);
         limpiarFormCliente();
@@ -2630,7 +2700,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
     }
 
     function eliminarCliente(id) {
-        if (!confirm('¿Eliminar este cliente?')) return;
+        if (!confirm(t('msg_eliminar_cliente'))) return;
         let data = getData();
         data.clientes = data.clientes.filter(c => c.id !== id);
         saveData('clientes', data.clientes);
@@ -2690,7 +2760,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
     }
 
     function eliminarJornada(id) {
-        if (!confirm('¿Eliminar esta jornada?')) return;
+        if (!confirm(t('msg_eliminar_jornada'))) return;
         let data = getData();
         data.jornadas = data.jornadas.filter(j => j.id !== id);
         saveData('jornadas', data.jornadas);
@@ -2721,90 +2791,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
     return { inicio: lunes.toISOString().slice(0,10), fin: domingo.toISOString().slice(0,10) };
 }
 
-   function cargarDatosBoleta() {
-    const data = getData();
-    const empId = document.getElementById('boletaEmpleado').value;
-    const semana = document.getElementById('boletaSemana').value;
-    const tipoPago = document.getElementById('boletaTipoPago').value;
-    
-    if (!empId || !semana) {
-        document.getElementById('boletaPreview').classList.add('hidden');
-        return;
-    }
-    
-    const { inicio, fin } = obtenerRangoSemana(semana);
-    const emp = data.empleados.find(e => e.id === empId);
-    if (!emp) return;
-    
-    const jornadas = data.jornadas.filter(j => 
-        j.empleadoId === empId && 
-        j.estado === 'completado' && 
-        j.fecha >= inicio && 
-        j.fecha <= fin
-    );
-    
-    let totalHoras = 0;
-    jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
-    const bruto = totalHoras * emp.tarifa;
-    
-    // ⚠️⚠️ DESCUENTOS SOLO SI ES CHEQUE
-    let descuento = 0;
-    if (tipoPago === 'cheque') {
-        descuento = calcularDescuentos(bruto, data.config);
-    }
-    const neto = bruto - descuento;
-
-    let html = `<div class="boleta-pdf-preview">`;
-    html += `<h4 style="text-align:center;">${data.config.empresa || 'Mi Empresa'}</h4>`;
-    html += `<p style="text-align:center;"><strong>BOLETA DE PAGO</strong></p>`;
-    html += `<p><strong>Empleado:</strong> ${emp.nombre}</p>`;
-    html += `<p><strong>Semana:</strong> ${formatoFecha(inicio)} al ${formatoFecha(fin)}</p>`;
-    
-    if (tipoPago === 'efectivo') {
-        html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>💵 PAGO EN EFECTIVO — SIN DESCUENTOS</strong></p>`;
-    } else {
-        html += `<p style="background:#fff3cd; padding:8px; border-radius:6px; color:#856404;"><strong>📄 PAGO CON CHEQUE — CON DESCUENTOS DE LEY</strong></p>`;
-    }
-    
-    html += `<hr>`;
-    html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">`;
-    
-    html += `<div><h5>📋 Detalle de Horas</h5><table>`;
-    html += `<tr><th>Fecha</th><th>Cliente</th><th>Horas</th><th>Monto</th></tr>`;
-    jornadas.forEach(j => {
-        const cli = data.clientes.find(c => c.id === j.clienteId);
-        const horas = calcularHoras(j.horaEntrada, j.horaSalida);
-        const monto = horas * emp.tarifa;
-        html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : 'N/A'}</td><td>${horas.toFixed(2)}h</td><td class="text-right">$${monto.toFixed(2)}</td></tr>`;
-    });
-    html += `<tr><td colspan="3"><strong>Total Horas</strong></td><td class="text-right"><strong>${totalHoras.toFixed(2)}h</strong></td></tr>`;
-    html += `<tr><td colspan="3"><strong>Subtotal</strong></td><td class="text-right"><strong>$${bruto.toFixed(2)}</strong></td></tr>`;
-    html += `</table></div>`;
-    
-    if (tipoPago === 'cheque') {
-        html += `<div><h5>📊 Descuentos de Ley</h5><table>`;
-        const cfg = data.config;
-        html += `<tr><th>Concepto</th><th>%</th><th>Monto</th></tr>`;
-        html += `<tr><td>Social Security (FICA)</td><td>${cfg.FICA || 0}%</td><td class="text-right">$${((bruto * (cfg.FICA || 0)) / 100).toFixed(2)}</td></tr>`;
-        html += `<tr><td>Medicare</td><td>${cfg.Medicare || 0}%</td><td class="text-right">$${((bruto * (cfg.Medicare || 0)) / 100).toFixed(2)}</td></tr>`;
-        html += `<tr><td colspan="2"><strong>Total Descuentos</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
-        html += `<tr><td colspan="2"><strong>Neto a Pagar</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
-        html += `</table></div>`;
-    } else {
-        html += `<div><h5>📊 Descuentos</h5><table>`;
-        html += `<tr><td style="text-align:center; color:#0d7a3e; padding:20px; font-size:1rem;">✅ Sin descuentos<br><small>(Pago en efectivo)</small></td></tr>`;
-        html += `</table>`;
-        html += `<div style="margin-top:15px; padding:10px; background:#d4edda; border-radius:6px; text-align:center;">`;
-        html += `<strong style="color:#0d7a3e;">💰 TOTAL A PAGAR: $${neto.toFixed(2)}</strong>`;
-        html += `</div></div>`;
-    }
-    
-    html += `</div></div>`;
-    
-    document.getElementById('boletaContenido').innerHTML = html;
-    document.getElementById('boletaPreview').classList.remove('hidden');
-}
-        function cargarDatosBoleta() {
+      function cargarDatosBoleta() {
         const data = getData();
         const empId = document.getElementById('boletaEmpleado').value;
         const semana = document.getElementById('boletaSemana').value;
@@ -2830,7 +2817,6 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
         const bruto = totalHoras * emp.tarifa;
         
-        // ⚠️ DESCUENTOS SOLO SI ES CHEQUE
         let descuento = 0;
         if (tipoPago === 'cheque') {
             descuento = calcularDescuentos(bruto, data.config);
@@ -2839,25 +2825,24 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
 
         let html = `<div class="boleta-pdf-preview">`;
         html += `<h4 style="text-align:center;">${data.config.empresa || 'Mi Empresa'}</h4>`;
-        html += `<p style="text-align:center;"><strong>BOLETA DE PAGO</strong></p>`;
-        html += `<p><strong>Empleado:</strong> ${emp.nombre}</p>`;
-        html += `<p><strong>Semana:</strong> ${formatoFecha(inicio)} al ${formatoFecha(fin)}</p>`;
+        html += `<p style="text-align:center;"><strong>${t('boleta_titulo')}</strong></p>`;
+        html += `<p><strong>${t('boleta_empleado')}:</strong> ${emp.nombre}</p>`;
+        html += `<p><strong>${t('boleta_semana')}:</strong> ${formatoFecha(inicio)} ${idiomaActual === 'en' ? 'to' : 'al'} ${formatoFecha(fin)}</p>`;
         
         if (tipoPago === 'efectivo') {
-            html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>💵 PAGO EN EFECTIVO — SIN DESCUENTOS</strong></p>`;
+            html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>${t('msg_efectivo_sin_desc')}</strong></p>`;
         } else {
-            html += `<p style="background:#fff3cd; padding:8px; border-radius:6px; color:#856404;"><strong>📄 PAGO CON CHEQUE — CON DESCUENTOS DE LEY</strong></p>`;
+            html += `<p style="background:#fff3cd; padding:8px; border-radius:6px; color:#856404;"><strong>${t('msg_cheque_con_desc')}</strong></p>`;
         }
         
         html += `<hr>`;
         html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">`;
         
-        // Columna izquierda: Detalle de horas
-        html += `<div><h5>📋 Detalle de Horas</h5><table>`;
-        html += `<tr><th>Fecha</th><th>Cliente</th><th>Horas</th><th>Monto</th></tr>`;
+        html += `<div><h5>${t('boleta_detalle_horas')}</h5><table>`;
+        html += `<tr><th>${t('boleta_fecha')}</th><th>${t('boleta_cliente')}</th><th>${t('boleta_horas')}</th><th>${t('boleta_monto')}</th></tr>`;
         
         if (jornadas.length === 0) {
-            html += `<tr><td colspan="4" style="text-align:center; padding:20px; color:#856404;">⚠️ No hay jornadas completadas en esta semana</td></tr>`;
+            html += `<tr><td colspan="4" style="text-align:center; padding:20px; color:#856404;">${t('boleta_sin_jornadas')}</td></tr>`;
         } else {
             jornadas.forEach(j => {
                 const cli = data.clientes.find(c => c.id === j.clienteId);
@@ -2867,26 +2852,25 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
             });
         }
         
-        html += `<tr><td colspan="3"><strong>Total Horas</strong></td><td class="text-right"><strong>${totalHoras.toFixed(2)}h</strong></td></tr>`;
-        html += `<tr><td colspan="3"><strong>Subtotal</strong></td><td class="text-right"><strong>$${bruto.toFixed(2)}</strong></td></tr>`;
+        html += `<tr><td colspan="3"><strong>${t('boleta_total_horas')}</strong></td><td class="text-right"><strong>${totalHoras.toFixed(2)}h</strong></td></tr>`;
+        html += `<tr><td colspan="3"><strong>${t('boleta_subtotal')}</strong></td><td class="text-right"><strong>$${bruto.toFixed(2)}</strong></td></tr>`;
         html += `</table></div>`;
         
-        // Columna derecha: Descuentos (solo si es cheque)
         if (tipoPago === 'cheque') {
-            html += `<div><h5>📊 Descuentos de Ley</h5><table>`;
+            html += `<div><h5>${t('boleta_descuentos')}</h5><table>`;
             const cfg = data.config;
-            html += `<tr><th>Concepto</th><th>%</th><th>Monto</th></tr>`;
+            html += `<tr><th>${t('boleta_concepto')}</th><th>${t('boleta_porcentaje')}</th><th>${t('boleta_monto')}</th></tr>`;
             html += `<tr><td>Social Security (FICA)</td><td>${cfg.FICA || 0}%</td><td class="text-right">$${((bruto * (cfg.FICA || 0)) / 100).toFixed(2)}</td></tr>`;
             html += `<tr><td>Medicare</td><td>${cfg.Medicare || 0}%</td><td class="text-right">$${((bruto * (cfg.Medicare || 0)) / 100).toFixed(2)}</td></tr>`;
-            html += `<tr><td colspan="2"><strong>Total Descuentos</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
-            html += `<tr><td colspan="2"><strong>Neto a Pagar</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
+            html += `<tr><td colspan="2"><strong>${t('boleta_total_desc')}</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
+            html += `<tr><td colspan="2"><strong>${t('boleta_neto')}</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
             html += `</table></div>`;
         } else {
-            html += `<div><h5>📊 Descuentos</h5><table>`;
-            html += `<tr><td style="text-align:center; color:#0d7a3e; padding:20px; font-size:1rem;">✅ Sin descuentos<br><small>(Pago en efectivo)</small></td></tr>`;
+            html += `<div><h5>${t('boleta_descuentos_simple')}</h5><table>`;
+            html += `<tr><td style="text-align:center; color:#0d7a3e; padding:20px; font-size:1rem;">${t('msg_sin_descuentos')}</td></tr>`;
             html += `</table>`;
             html += `<div style="margin-top:15px; padding:10px; background:#d4edda; border-radius:6px; text-align:center;">`;
-            html += `<strong style="color:#0d7a3e;">💰 TOTAL A PAGAR: $${neto.toFixed(2)}</strong>`;
+            html += `<strong style="color:#0d7a3e;">${t('msg_total_pagar')}: $${neto.toFixed(2)}</strong>`;
             html += `</div></div>`;
         }
         
@@ -2895,13 +2879,13 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         document.getElementById('boletaContenido').innerHTML = html;
         document.getElementById('boletaPreview').classList.remove('hidden');
     }
-
+    
     function generarBoleta() {
         const data = getData();
         const empId = document.getElementById('boletaEmpleado').value;
         const semana = document.getElementById('boletaSemana').value;
         const tipoPago = document.getElementById('boletaTipoPago').value;
-        if (!empId || !semana) { alert('⚠️ Selecciona empleado y semana'); return; }
+        if (!empId || !semana) { alert(t('msg_selecciona_empleado_semana')); return; }
         const { inicio, fin } = obtenerRangoSemana(semana);
         const emp = data.empleados.find(e => e.id === empId);
         if (!emp) return;
@@ -3068,7 +3052,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         const misJornadas = data.jornadas.filter(j => j.empleadoId === empleadoActual.id && j.estado === 'pendiente');
         const container = document.getElementById('misTrabajosActivos');
         if (misJornadas.length === 0) {
-            container.innerHTML = '<p style="color:#4a5568;">No tienes trabajos activos.</p>';
+            container.innerHTML = '<p style="color:#4a5568;">${t('msg_sin_trabajos')}</p>';
             return;
         }
         container.innerHTML = misJornadas.map(j => {
@@ -3166,7 +3150,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         const misJornadas = data.jornadas.filter(j => j.empleadoId === empleadoActual.id && j.estado === 'completado');
         const container = document.getElementById('historialEmpleado');
         if (misJornadas.length === 0) {
-            container.innerHTML = '<p style="color:#4a5568;">No hay historial.</p>';
+            container.innerHTML = '<p style="color:#4a5568;">${t('msg_sin_historial')}</p>';
             return;
         }
         let totalHoras = 0;
@@ -3242,8 +3226,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
     datosGlobales.config = config;
     guardarEnFirebase();
     renderAll();
-    alert('✅ Config guardada');
-}
+alert(t('msg_config_guardada'));}
 
     // ============================================================
     // UI / MODAL / TABS
