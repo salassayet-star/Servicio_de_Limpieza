@@ -646,7 +646,559 @@
     let paginaPagosActual = 1;
     const PAGOS_POR_PAGINA = 10;
     const DOC_ID = 'sistema_limpieza_datos';
+    // ============================================================
+    // SISTEMA DE IDIOMA
+    // ============================================================
+    const TRADUCCIONES = {
+        es: {
+            // Header
+            'sync_ok': '☁️ Conectado',
+            'sync_syncing': '⏳ Guardando...',
+            'sync_error': '⚠️ Sin conexión',
+            'btn_idioma': '🌐 Español',
+            'btn_modo': '🌙 Modo',
+            'btn_salir': '🚪 Salir',
+            'app_nombre': 'CleanManager',
+            
+            // Login principal
+            'acceso_sistema': '🔐 Acceso al Sistema',
+            'selecciona_rol': 'Selecciona tu rol',
+            'rol_admin': '👤 Admin',
+            'rol_empleado': '🧹 Empleado',
+            
+            // Login admin
+            'acceso_admin': '👤 Acceso Admin',
+            'contrasena': 'Contraseña',
+            'placeholder_admin': 'admin123',
+            'btn_entrar': '🔐 Entrar',
+            'btn_volver': '⬅️ Volver',
+            'error_admin': '❌ Contraseña incorrecta',
+            
+            // Login empleado
+            'acceso_empleado': '🧹 Acceso Empleado',
+            'usuario': 'Usuario',
+            'error_empleado': '❌ Usuario/contraseña incorrectos',
+            
+            // Stats
+            'stat_empleados': '👤 Empleados',
+            'stat_clientes': '🏢 Clientes',
+            'stat_jornadas': '📋 Jornadas',
+            'stat_ingresos': '💰 Ingresos',
+            
+            // Tabs admin
+            'tab_agenda': '📅 Agenda Diaria',
+            'tab_semana': '🗓️ Vista Semanal',
+            'tab_mes': '📆 Vista Mensual',
+            'tab_empleados': '👤 Empleados',
+            'tab_clientes': '🏢 Clientes',
+            'tab_jornadas': '📋 Jornadas',
+            'tab_boletas': '📄 Boletas',
+            'tab_config': '⚙️ Config',
+            
+            // Tabs empleado
+            'tab_emp_hoy': '📅 Trabajos de Hoy',
+            'tab_emp_activos': '📋 Mis Trabajos Activos',
+            'tab_emp_historial': '📜 Historial',
+            
+            // Botones comunes
+            'btn_guardar': '💾 Guardar',
+            'btn_guardar_cliente': '💾 Guardar',
+            'btn_actualizar_cliente': '💾 Actualizar Cliente',
+            'btn_limpiar': '🔄 Limpiar',
+            'btn_limpiar_nuevo': '🔄 Limpiar / Nuevo',
+            'btn_editar': '✏️',
+            'btn_eliminar': '🗑️',
+            'btn_ver': '💰',
+            'btn_cancelar': '❌ Cancelar',
+            'btn_reactivar': '✅ Reactivar',
+            'btn_maps': '🗺️ Maps',
+            'btn_entrada': '✅ Entrada + Geo',
+            'btn_salida': '⏹️ Salida + Geo',
+            'btn_export_excel': '📊 Exportar Excel',
+            'btn_export_pdf': '📄 PDF',
+            'btn_generar_boleta': '✅ Generar',
+            'btn_backup': '💾 Backup local',
+            'btn_restaurar': '📂 Restaurar local',
+            'btn_borrar_boletas': '🗑️ Borrar solo Boletas',
+            'btn_borrar_jornadas': '🗑️ Borrar solo Jornadas',
+            'btn_borrar_todo': '🚨 Borrar TODOS los Datos',
+            
+            // Mensajes
+            'msg_empleado_guardado': '✅ Empleado guardado',
+            'msg_cliente_guardado': '✅ Cliente guardado',
+            'msg_cliente_actualizado': '✅ Cliente actualizado correctamente',
+            'msg_cliente_agregado': '✅ Cliente agregado correctamente',
+            'msg_boleta_generada': '✅ Boleta generada',
+            'msg_dia_cancelado': '✅ Día cancelado',
+            'msg_dia_reactivado': '✅ Día reactivado',
+            'msg_config_guardada': '✅ Config guardada',
+            'msg_eliminar_empleado': '¿Eliminar este empleado?',
+            'msg_eliminar_cliente': '¿Eliminar este cliente?',
+            'msg_eliminar_jornada': '¿Eliminar esta jornada?',
+            'msg_sin_clientes': 'No hay clientes registrados. Agrega uno arriba.',
+            'msg_sin_historial': 'No hay historial.',
+            'msg_sin_trabajos': 'No tienes trabajos activos.',
+            'msg_no_clientes_hoy': '📭 No hay clientes programados para hoy',
+            'msg_selecciona_dias': '⚠️ Debes seleccionar al menos un día de servicio',
+            'msg_selecciona_empleado_semana': '⚠️ Selecciona empleado y semana',
+            'msg_efectivo_sin_desc': '💵 PAGO EN EFECTIVO — SIN DESCUENTOS',
+            'msg_cheque_con_desc': '📄 PAGO CON CHEQUE — CON DESCUENTOS DE LEY',
+            'msg_sin_descuentos': '✅ Sin descuentos<br><small>(Pago en efectivo)</small>',
+            'msg_total_pagar': '💰 TOTAL A PAGAR',
+            
+            // Boletas
+            'boleta_titulo': 'BOLETA DE PAGO',
+            'boleta_empleado': 'Empleado',
+            'boleta_semana': 'Semana',
+            'boleta_tipo_pago': 'Tipo de pago',
+            'boleta_detalle_horas': '📋 Detalle de Horas',
+            'boleta_descuentos': '📊 Descuentos de Ley',
+            'boleta_descuentos_simple': '📊 Descuentos',
+            'boleta_semana_label': 'Semana (elige cualquier fecha)',
+            'boleta_fecha': 'Fecha',
+            'boleta_cliente': 'Cliente',
+            'boleta_horas': 'Horas',
+            'boleta_monto': 'Monto',
+            'boleta_total_horas': 'Total Horas',
+            'boleta_subtotal': 'Subtotal',
+            'boleta_concepto': 'Concepto',
+            'boleta_porcentaje': '%',
+            'boleta_total_desc': 'Total Descuentos',
+            'boleta_neto': 'Neto a Pagar',
+            'boleta_sin_jornadas': '⚠️ No hay jornadas completadas en esta semana',
+            
+            // Empleados form
+            'emp_nombre': 'Nombre',
+            'emp_telefono': 'Teléfono',
+            'emp_email': 'Email',
+            'emp_tarifa': 'Tarifa/h ($)',
+            'emp_cargo': 'Cargo',
+            'emp_usuario': 'Usuario',
+            'emp_password': 'Contraseña',
+            'emp_estado': 'Estado',
+            'emp_activo': 'Activo',
+            'emp_inactivo': 'Inactivo',
+            'emp_adelantos': '💰 Adelantos a Empleados',
+            'emp_monto': 'Monto ($)',
+            'emp_fecha': 'Fecha',
+            'emp_registrar_adelanto': '💰 Registrar Adelanto',
+            
+            // Clientes form
+            'cli_nombre': 'Nombre',
+            'cli_direccion': 'Dirección',
+            'cli_telefono': 'Teléfono',
+            'cli_email': 'Email',
+            'cli_servicio': 'Tipo de Servicio Regular',
+            'cli_costo': 'Costo del Servicio ($)',
+            'cli_dias': '📆 Días de servicio',
+            'cli_frecuencia': '🔄 Frecuencia del servicio',
+            'cli_fecha_inicio': '📆 Fecha de inicio del servicio',
+            'cli_semana_quincenal': '📌 ¿Qué semana le toca?',
+            'cli_info_mensual': '📌 Información',
+            'cli_tipo_codigo': '🔑 Tipo de Código de Acceso',
+            'cli_codigo': '🔢 Código / Número',
+            'cli_instrucciones': '📝 Instrucciones especiales de ingreso',
+            'cli_frec_semanal': '📅 Semanal (todas las semanas)',
+            'cli_frec_quincenal': '📅 Quincenal (semana sí, semana no)',
+            'cli_frec_mensual': '📅 Mensual (una vez al mes)',
+            'cli_semana_impar': 'Semana IMPAR (1, 3, 5, 7...)',
+            'cli_semana_par': 'Semana PAR (2, 4, 6, 8...)',
+            'cli_nuevo': '➕ Nuevo Cliente',
+            'cli_editar': '✏️ Editando',
+            'cli_registrados': '📋 Clientes Registrados',
+            'cli_sin_codigo': '-- Sin código --',
+            'cli_sin_dias': 'Debes seleccionar al menos un día',
+            'cli_sin_frecuencia': '-- Sin especificar --',
+            
+            // Servicios
+            'serv_regular': 'Regular',
+            'serv_profunda': 'Profunda',
+            'serv_construccion': 'Construcción',
+            'serv_especial': 'Especial',
+            
+            // Estados
+            'estado_pendiente': 'Pendiente',
+            'estado_completado': 'Completado',
+            'estado_cancelado': 'Cancelado',
+            
+            // Días
+            'dia_lunes': 'Lun',
+            'dia_martes': 'Mar',
+            'dia_miercoles': 'Mié',
+            'dia_jueves': 'Jue',
+            'dia_viernes': 'Vie',
+            'dia_sabado': 'Sáb',
+            'dia_domingo': 'Dom',
+            'dia_lunes_full': 'Lunes',
+            'dia_martes_full': 'Martes',
+            'dia_miercoles_full': 'Miércoles',
+            'dia_jueves_full': 'Jueves',
+            'dia_viernes_full': 'Viernes',
+            'dia_sabado_full': 'Sábado',
+            'dia_domingo_full': 'Domingo',
+            
+            // Agenda
+            'agenda_titulo': '📅 Agenda Diaria',
+            'agenda_desc': 'Clientes que tocan según sus días y frecuencia programados.',
+            'agenda_fecha': '📆 Fecha:',
+            'agenda_anterior': '◀️ Anterior',
+            'agenda_hoy': '📌 Hoy',
+            'agenda_siguiente': 'Siguiente ▶️',
+            'agenda_clientes_hoy': '🏢 Clientes hoy:',
+            'agenda_completados': '✅ Completados:',
+            'agenda_proceso': '🔄 En proceso:',
+            'agenda_sin_tomar': '⏳ Sin tomar',
+            'agenda_sin_asignar': 'Sin asignar',
+            
+            // Semana
+            'semana_titulo': '🗓️ Vista Semanal de Clientes',
+            'semana_desc': 'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.',
+            'semana_de': '📆 Semana de:',
+            'semana_actual': '📌 Actual',
+            'semana_activo': 'Activo',
+            'semana_cancelado': 'Cancelado',
+            'semana_no_programado': 'No programado',
+            
+            // Mes
+            'mes_titulo': '📆 Vista Mensual',
+            'mes_desc': 'Calendario mensual con todos los clientes programados por día.',
+            'mes_label': '📆 Mes:',
+            'mes_dias': '📅 Días:',
+            'mes_trabajos': '🏢 Trabajos:',
+            'mes_cancelados': '❌ Cancelados:',
+            
+            // Config
+            'config_titulo': '⚙️ Configuración',
+            'config_empresa': 'Empresa',
+            'config_resumen': 'Total descuentos',
+            'config_gestion': '🗄️ Gestión de Datos',
+            'config_zona_peligro': '⚠️ Zona de Peligro',
+            'config_peligro_desc': 'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.',
+            'config_sincronizacion': '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.'
+        },
+        
+        en: {
+            // Header
+            'sync_ok': '☁️ Connected',
+            'sync_syncing': '⏳ Saving...',
+            'sync_error': '⚠️ No connection',
+            'btn_idioma': '🌐 English',
+            'btn_modo': '🌙 Mode',
+            'btn_salir': '🚪 Exit',
+            'app_nombre': 'CleanManager',
+            
+            // Login principal
+            'acceso_sistema': '🔐 System Access',
+            'selecciona_rol': 'Select your role',
+            'rol_admin': '👤 Admin',
+            'rol_empleado': '🧹 Employee',
+            
+            // Login admin
+            'acceso_admin': '👤 Admin Access',
+            'contrasena': 'Password',
+            'placeholder_admin': 'admin123',
+            'btn_entrar': '🔐 Login',
+            'btn_volver': '⬅️ Back',
+            'error_admin': '❌ Incorrect password',
+            
+            // Login empleado
+            'acceso_empleado': '🧹 Employee Access',
+            'usuario': 'Username',
+            'error_empleado': '❌ Wrong username/password',
+            
+            // Stats
+            'stat_empleados': '👤 Employees',
+            'stat_clientes': '🏢 Clients',
+            'stat_jornadas': '📋 Jobs',
+            'stat_ingresos': '💰 Income',
+            
+            // Tabs admin
+            'tab_agenda': '📅 Daily Schedule',
+            'tab_semana': '🗓️ Weekly View',
+            'tab_mes': '📆 Monthly View',
+            'tab_empleados': '👤 Employees',
+            'tab_clientes': '🏢 Clients',
+            'tab_jornadas': '📋 Jobs',
+            'tab_boletas': '📄 Paystubs',
+            'tab_config': '⚙️ Settings',
+            
+            // Tabs empleado
+            'tab_emp_hoy': "📅 Today's Jobs",
+            'tab_emp_activos': '📋 My Active Jobs',
+            'tab_emp_historial': '📜 History',
+            
+            // Botones comunes
+            'btn_guardar': '💾 Save',
+            'btn_guardar_cliente': '💾 Save',
+            'btn_actualizar_cliente': '💾 Update Client',
+            'btn_limpiar': '🔄 Clear',
+            'btn_limpiar_nuevo': '🔄 Clear / New',
+            'btn_editar': '✏️',
+            'btn_eliminar': '🗑️',
+            'btn_ver': '💰',
+            'btn_cancelar': '❌ Cancel',
+            'btn_reactivar': '✅ Reactivate',
+            'btn_maps': '🗺️ Maps',
+            'btn_entrada': '✅ Check-in + Geo',
+            'btn_salida': '⏹️ Check-out + Geo',
+            'btn_export_excel': '📊 Export Excel',
+            'btn_export_pdf': '📄 PDF',
+            'btn_generar_boleta': '✅ Generate',
+            'btn_backup': '💾 Local Backup',
+            'btn_restaurar': '📂 Restore Local',
+            'btn_borrar_boletas': '🗑️ Delete Paystubs Only',
+            'btn_borrar_jornadas': '🗑️ Delete Jobs Only',
+            'btn_borrar_todo': '🚨 Delete ALL Data',
+            
+            // Mensajes
+            'msg_empleado_guardado': '✅ Employee saved',
+            'msg_cliente_guardado': '✅ Client saved',
+            'msg_cliente_actualizado': '✅ Client updated successfully',
+            'msg_cliente_agregado': '✅ Client added successfully',
+            'msg_boleta_generada': '✅ Paystub generated',
+            'msg_dia_cancelado': '✅ Day canceled',
+            'msg_dia_reactivado': '✅ Day reactivated',
+            'msg_config_guardada': '✅ Settings saved',
+            'msg_eliminar_empleado': 'Delete this employee?',
+            'msg_eliminar_cliente': 'Delete this client?',
+            'msg_eliminar_jornada': 'Delete this job?',
+            'msg_sin_clientes': 'No clients registered. Add one above.',
+            'msg_sin_historial': 'No history.',
+            'msg_sin_trabajos': 'No active jobs.',
+            'msg_no_clientes_hoy': '📭 No clients scheduled for today',
+            'msg_selecciona_dias': '⚠️ You must select at least one service day',
+            'msg_selecciona_empleado_semana': '⚠️ Select employee and week',
+            'msg_efectivo_sin_desc': '💵 CASH PAYMENT — NO DEDUCTIONS',
+            'msg_cheque_con_desc': '📄 CHECK PAYMENT — WITH LEGAL DEDUCTIONS',
+            'msg_sin_descuentos': '✅ No deductions<br><small>(Cash payment)</small>',
+            'msg_total_pagar': '💰 TOTAL TO PAY',
+            
+            // Boletas
+            'boleta_titulo': 'PAYSTUB',
+            'boleta_empleado': 'Employee',
+            'boleta_semana': 'Week',
+            'boleta_tipo_pago': 'Payment type',
+            'boleta_detalle_horas': '📋 Hours Detail',
+            'boleta_descuentos': '📊 Legal Deductions',
+            'boleta_descuentos_simple': '📊 Deductions',
+            'boleta_semana_label': 'Week (pick any date)',
+            'boleta_fecha': 'Date',
+            'boleta_cliente': 'Client',
+            'boleta_horas': 'Hours',
+            'boleta_monto': 'Amount',
+            'boleta_total_horas': 'Total Hours',
+            'boleta_subtotal': 'Subtotal',
+            'boleta_concepto': 'Concept',
+            'boleta_porcentaje': '%',
+            'boleta_total_desc': 'Total Deductions',
+            'boleta_neto': 'Net Pay',
+            'boleta_sin_jornadas': '⚠️ No completed jobs this week',
+            
+            // Empleados form
+            'emp_nombre': 'Name',
+            'emp_telefono': 'Phone',
+            'emp_email': 'Email',
+            'emp_tarifa': 'Hourly rate ($)',
+            'emp_cargo': 'Position',
+            'emp_usuario': 'Username',
+            'emp_password': 'Password',
+            'emp_estado': 'Status',
+            'emp_activo': 'Active',
+            'emp_inactivo': 'Inactive',
+            'emp_adelantos': '💰 Employee Advances',
+            'emp_monto': 'Amount ($)',
+            'emp_fecha': 'Date',
+            'emp_registrar_adelanto': '💰 Register Advance',
+            
+            // Clientes form
+            'cli_nombre': 'Name',
+            'cli_direccion': 'Address',
+            'cli_telefono': 'Phone',
+            'cli_email': 'Email',
+            'cli_servicio': 'Regular Service Type',
+            'cli_costo': 'Service Cost ($)',
+            'cli_dias': '📆 Service days',
+            'cli_frecuencia': '🔄 Service frequency',
+            'cli_fecha_inicio': '📆 Service start date',
+            'cli_semana_quincenal': '📌 Which week?',
+            'cli_info_mensual': '📌 Information',
+            'cli_tipo_codigo': '🔑 Access Code Type',
+            'cli_codigo': '🔢 Code / Number',
+            'cli_instrucciones': '📝 Special entry instructions',
+            'cli_frec_semanal': '📅 Weekly (every week)',
+            'cli_frec_quincenal': '📅 Bi-weekly (every other week)',
+            'cli_frec_mensual': '📅 Monthly (once a month)',
+            'cli_semana_impar': 'ODD week (1, 3, 5, 7...)',
+            'cli_semana_par': 'EVEN week (2, 4, 6, 8...)',
+            'cli_nuevo': '➕ New Client',
+            'cli_editar': '✏️ Editing',
+            'cli_registrados': '📋 Registered Clients',
+            'cli_sin_codigo': '-- No code --',
+            'cli_sin_dias': 'You must select at least one day',
+            'cli_sin_frecuencia': '-- Not specified --',
+            
+            // Servicios
+            'serv_regular': 'Regular',
+            'serv_profunda': 'Deep Clean',
+            'serv_construccion': 'Construction',
+            'serv_especial': 'Special',
+            
+            // Estados
+            'estado_pendiente': 'Pending',
+            'estado_completado': 'Completed',
+            'estado_cancelado': 'Canceled',
+            
+            // Días
+            'dia_lunes': 'Mon',
+            'dia_martes': 'Tue',
+            'dia_miercoles': 'Wed',
+            'dia_jueves': 'Thu',
+            'dia_viernes': 'Fri',
+            'dia_sabado': 'Sat',
+            'dia_domingo': 'Sun',
+            'dia_lunes_full': 'Monday',
+            'dia_martes_full': 'Tuesday',
+            'dia_miercoles_full': 'Wednesday',
+            'dia_jueves_full': 'Thursday',
+            'dia_viernes_full': 'Friday',
+            'dia_sabado_full': 'Saturday',
+            'dia_domingo_full': 'Sunday',
+            
+            // Agenda
+            'agenda_titulo': '📅 Daily Schedule',
+            'agenda_desc': 'Clients scheduled according to their days and frequency.',
+            'agenda_fecha': '📆 Date:',
+            'agenda_anterior': '◀️ Previous',
+            'agenda_hoy': '📌 Today',
+            'agenda_siguiente': 'Next ▶️',
+            'agenda_clientes_hoy': '🏢 Clients today:',
+            'agenda_completados': '✅ Completed:',
+            'agenda_proceso': '🔄 In progress:',
+            'agenda_sin_tomar': '⏳ Not taken',
+            'agenda_sin_asignar': 'Unassigned',
+            
+            // Semana
+            'semana_titulo': '🗓️ Weekly Client View',
+            'semana_desc': 'Scheduled days for each client. Click any day to activate/cancel.',
+            'semana_de': '📆 Week of:',
+            'semana_actual': '📌 Current',
+            'semana_activo': 'Active',
+            'semana_cancelado': 'Canceled',
+            'semana_no_programado': 'Not scheduled',
+            
+            // Mes
+            'mes_titulo': '📆 Monthly View',
+            'mes_desc': 'Monthly calendar with all scheduled clients per day.',
+            'mes_label': '📆 Month:',
+            'mes_dias': '📅 Days:',
+            'mes_trabajos': '🏢 Jobs:',
+            'mes_cancelados': '❌ Canceled:',
+            
+            // Config
+            'config_titulo': '⚙️ Settings',
+            'config_empresa': 'Company',
+            'config_resumen': 'Total deductions',
+            'config_gestion': '🗄️ Data Management',
+            'config_zona_peligro': '⚠️ Danger Zone',
+            'config_peligro_desc': 'These actions cannot be undone. Settings (company name and % deductions) are preserved.',
+            'config_sincronizacion': '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.'
+        }
+    };
 
+    // Idioma actual (español por defecto)
+    let idiomaActual = localStorage.getItem('clean_idioma') || 'es';
+
+    // Función para obtener traducción
+    function t(key) {
+        return TRADUCCIONES[idiomaActual] && TRADUCCIONES[idiomaActual][key] 
+            ? TRADUCCIONES[idiomaActual][key] 
+            : (TRADUCCIONES['es'][key] || key);
+    }
+
+    // Función para cambiar idioma
+    function cambiarIdioma() {
+        idiomaActual = idiomaActual === 'es' ? 'en' : 'es';
+        localStorage.setItem('clean_idioma', idiomaActual);
+        aplicarIdioma();
+    }
+
+    // Función para aplicar el idioma a toda la interfaz
+    function aplicarIdioma() {
+        // Actualizar botón
+        const btnIdioma = document.getElementById('btnIdioma');
+        if (btnIdioma) btnIdioma.textContent = t('btn_idioma');
+        
+        // Header
+        const btnSalir = document.getElementById('btnSalir');
+        if (btnSalir) btnSalir.textContent = t('btn_salir');
+        
+        // Login principal
+        const modoSel = document.getElementById('modoSeleccion');
+        if (modoSel) {
+            const h2 = modoSel.querySelector('h2');
+            if (h2) h2.textContent = t('acceso_sistema');
+            const p = modoSel.querySelector('p');
+            if (p) p.textContent = t('selecciona_rol');
+            const btns = modoSel.querySelectorAll('.btn');
+            if (btns[0]) btns[0].textContent = t('rol_admin');
+            if (btns[1]) btns[1].textContent = t('rol_empleado');
+        }
+        
+        // Login admin
+        const loginAdmin = document.getElementById('loginAdmin');
+        if (loginAdmin) {
+            const h2 = loginAdmin.querySelector('h2');
+            if (h2) h2.textContent = t('acceso_admin');
+            const label = loginAdmin.querySelector('label');
+            if (label) label.textContent = t('contrasena');
+            const btnEntrar = loginAdmin.querySelector('.btn-primary');
+            if (btnEntrar) btnEntrar.textContent = t('btn_entrar');
+            const btnVolver = loginAdmin.querySelector('.btn-secondary');
+            if (btnVolver) btnVolver.textContent = t('btn_volver');
+            const errorDiv = document.getElementById('adminError');
+            if (errorDiv) errorDiv.textContent = t('error_admin');
+        }
+        
+        // Login empleado
+        const loginEmp = document.getElementById('loginEmpleado');
+        if (loginEmp) {
+            const h2 = loginEmp.querySelector('h2');
+            if (h2) h2.textContent = t('acceso_empleado');
+            const labels = loginEmp.querySelectorAll('label');
+            if (labels[0]) labels[0].textContent = t('usuario');
+            if (labels[1]) labels[1].textContent = t('contrasena');
+            const btnEntrar = loginEmp.querySelector('.btn-primary');
+            if (btnEntrar) btnEntrar.textContent = t('btn_entrar');
+            const btnVolver = loginEmp.querySelector('.btn-secondary');
+            if (btnVolver) btnVolver.textContent = t('btn_volver');
+            const errorDiv = document.getElementById('empleadoError');
+            if (errorDiv) errorDiv.textContent = t('error_empleado');
+        }
+        
+        // Tabs del admin
+        const tabBtnsAdmin = document.querySelectorAll('.admin-dashboard .tab-btn');
+        const tabsMap = ['tab_agenda', 'tab_semana', 'tab_mes', 'tab_empleados', 'tab_clientes', 'tab_jornadas', 'tab_boletas', 'tab_config'];
+        tabBtnsAdmin.forEach((btn, i) => {
+            if (tabsMap[i]) btn.textContent = t(tabsMap[i]);
+        });
+        
+        // Tabs del empleado
+        const tabBtnsEmp = document.querySelectorAll('.empleado-dashboard .tab-btn');
+        const tabsEmpMap = ['tab_emp_hoy', 'tab_emp_activos', 'tab_emp_historial'];
+        tabBtnsEmp.forEach((btn, i) => {
+            if (tabsEmpMap[i]) btn.textContent = t(tabsEmpMap[i]);
+        });
+        
+        // Stats
+        const statsCards = document.querySelectorAll('.admin-dashboard .stat-card');
+        const statsMap = ['stat_empleados', 'stat_clientes', 'stat_jornadas', 'stat_ingresos'];
+        statsCards.forEach((card, i) => {
+            const label = card.querySelector('.label');
+            if (label && statsMap[i]) label.textContent = t(statsMap[i]);
+        });
+        
+        console.log('🌐 Idioma aplicado:', idiomaActual);
+    }
     let datosGlobales = {
         empleados: [],
         clientes: [],
