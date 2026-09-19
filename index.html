@@ -1706,7 +1706,7 @@
         };
         
         // Recorrer TODO el DOM y traducir los textos exactos
-        function traducirNodos(node) {
+               function traducirNodos(node) {
             if (node.nodeType === 3) { // Nodo de texto
                 const texto = node.nodeValue.trim();
                 if (texto && MAPA[texto]) {
@@ -1718,17 +1718,66 @@
                     node.placeholder = MAPA[node.placeholder];
                 }
                 // Traducir options de selects
-                if (node.tagName === 'OPTION' && MAPA[node.textContent.trim()]) {
-                    node.textContent = MAPA[node.textContent.trim()];
+                if (node.tagName === 'OPTION') {
+                    const txt = node.textContent.trim();
+                    if (MAPA[txt]) node.textContent = MAPA[txt];
                 }
-                // Recorrer hijos
-                node.childNodes.forEach(traducirNodos);
+                // Traducir botones
+                if (node.tagName === 'BUTTON') {
+                    const txt = node.textContent.trim();
+                    if (MAPA[txt]) node.textContent = MAPA[txt];
+                }
+                // Recorrer TODOS los hijos
+                Array.from(node.childNodes).forEach(traducirNodos);
             }
         }
         
-        // Solo traducir dentro del container principal (no todo el body)
-        const container = document.querySelector('.container');
-        if (container) traducirNodos(container);
+               // Traducir TODO el body (más completo)
+        traducirNodos(document.body);
+        
+        // Traducción forzada de TODOS los selects
+        document.querySelectorAll('select').forEach(sel => {
+            Array.from(sel.options).forEach(opt => {
+                const txt = opt.textContent.trim();
+                if (MAPA[txt]) opt.textContent = MAPA[txt];
+            });
+        });
+        
+        // Traducción forzada de TODOS los placeholders
+        document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(el => {
+            const ph = el.placeholder;
+            if (MAPA[ph]) el.placeholder = MAPA[ph];
+        });
+        
+        // Traducción forzada de textos dentro de botones
+        document.querySelectorAll('button').forEach(btn => {
+            const txt = btn.textContent.trim();
+            if (MAPA[txt]) btn.textContent = MAPA[txt];
+        });
+        
+        // Traducción forzada de labels
+        document.querySelectorAll('label').forEach(lbl => {
+            const txt = lbl.textContent.trim();
+            if (MAPA[txt]) lbl.textContent = MAPA[txt];
+        });
+        
+        // Traducción forzada de párrafos
+        document.querySelectorAll('p').forEach(p => {
+            const txt = p.textContent.trim();
+            if (MAPA[txt]) p.textContent = MAPA[txt];
+        });
+        
+        // Traducción forzada de títulos
+        document.querySelectorAll('h1, h2, h3, h4, h5').forEach(h => {
+            const txt = h.textContent.trim();
+            if (MAPA[txt]) h.textContent = MAPA[txt];
+        });
+        
+        // Traducción forzada de celdas de tabla
+        document.querySelectorAll('th').forEach(th => {
+            const txt = th.textContent.trim();
+            if (MAPA[txt]) th.textContent = MAPA[txt];
+        });
         
         // === RE-RENDERIZAR TODO LO DINÁMICO ===
         if (firebaseListo) {
