@@ -1133,312 +1133,416 @@
 
     // Función para aplicar el idioma a toda la interfaz
         function aplicarIdioma() {
-        // Actualizar botón
+        // === BOTONES DEL HEADER ===
         const btnIdioma = document.getElementById('btnIdioma');
         if (btnIdioma) btnIdioma.textContent = t('btn_idioma');
-        
-        // Header
         const btnSalir = document.getElementById('btnSalir');
         if (btnSalir) btnSalir.textContent = t('btn_salir');
-            const btnModo = document.getElementById('btnModo');
-if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 Modo';
-                    // Traducir sync badge
+        const btnModo = document.getElementById('btnModo');
+        if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 Modo';
+        
+        // Sync badge
         const syncBadge = document.getElementById('syncStatus');
         if (syncBadge) {
-            const textoActual = syncBadge.textContent;
-            // Detectar el estado actual según el texto o clase
-            if (syncBadge.classList.contains('error')) {
-                syncBadge.textContent = t('sync_error');
-            } else if (syncBadge.classList.contains('syncing')) {
-                syncBadge.textContent = t('sync_syncing');
-            } else {
-                syncBadge.textContent = t('sync_ok');
-            }
+            if (syncBadge.classList.contains('error')) syncBadge.textContent = t('sync_error');
+            else if (syncBadge.classList.contains('syncing')) syncBadge.textContent = t('sync_syncing');
+            else syncBadge.textContent = t('sync_ok');
         }
         
-        // Login principal
+        // === LOGIN ===
         const modoSel = document.getElementById('modoSeleccion');
         if (modoSel) {
-            const h2 = modoSel.querySelector('h2');
-            if (h2) h2.textContent = t('acceso_sistema');
-            const p = modoSel.querySelector('p');
-            if (p) p.textContent = t('selecciona_rol');
+            const h2 = modoSel.querySelector('h2'); if (h2) h2.textContent = t('acceso_sistema');
+            const p = modoSel.querySelector('p'); if (p) p.textContent = t('selecciona_rol');
             const btns = modoSel.querySelectorAll('.btn');
             if (btns[0]) btns[0].textContent = t('rol_admin');
             if (btns[1]) btns[1].textContent = t('rol_empleado');
         }
-        
-        // Login admin
         const loginAdmin = document.getElementById('loginAdmin');
         if (loginAdmin) {
-            const h2 = loginAdmin.querySelector('h2');
-            if (h2) h2.textContent = t('acceso_admin');
-            const label = loginAdmin.querySelector('label');
-            if (label) label.textContent = t('contrasena');
-            const btnEntrar = loginAdmin.querySelector('.btn-primary');
-            if (btnEntrar) btnEntrar.textContent = t('btn_entrar');
-            const btnVolver = loginAdmin.querySelector('.btn-secondary');
-            if (btnVolver) btnVolver.textContent = t('btn_volver');
-            const errorDiv = document.getElementById('adminError');
-            if (errorDiv) errorDiv.textContent = t('error_admin');
+            const h2 = loginAdmin.querySelector('h2'); if (h2) h2.textContent = t('acceso_admin');
+            const label = loginAdmin.querySelector('label'); if (label) label.textContent = t('contrasena');
+            const btnEntrar = loginAdmin.querySelector('.btn-primary'); if (btnEntrar) btnEntrar.textContent = t('btn_entrar');
+            const btnVolver = loginAdmin.querySelector('.btn-secondary'); if (btnVolver) btnVolver.textContent = t('btn_volver');
+            const errorDiv = document.getElementById('adminError'); if (errorDiv) errorDiv.textContent = t('error_admin');
         }
-        
-        // Login empleado
         const loginEmp = document.getElementById('loginEmpleado');
         if (loginEmp) {
-            const h2 = loginEmp.querySelector('h2');
-            if (h2) h2.textContent = t('acceso_empleado');
+            const h2 = loginEmp.querySelector('h2'); if (h2) h2.textContent = t('acceso_empleado');
             const labels = loginEmp.querySelectorAll('label');
             if (labels[0]) labels[0].textContent = t('usuario');
             if (labels[1]) labels[1].textContent = t('contrasena');
-            const btnEntrar = loginEmp.querySelector('.btn-primary');
-            if (btnEntrar) btnEntrar.textContent = t('btn_entrar');
-            const btnVolver = loginEmp.querySelector('.btn-secondary');
-            if (btnVolver) btnVolver.textContent = t('btn_volver');
-            const errorDiv = document.getElementById('empleadoError');
-            if (errorDiv) errorDiv.textContent = t('error_empleado');
+            const btnEntrar = loginEmp.querySelector('.btn-primary'); if (btnEntrar) btnEntrar.textContent = t('btn_entrar');
+            const btnVolver = loginEmp.querySelector('.btn-secondary'); if (btnVolver) btnVolver.textContent = t('btn_volver');
+            const errorDiv = document.getElementById('empleadoError'); if (errorDiv) errorDiv.textContent = t('error_empleado');
         }
         
-        // Tabs del admin
+        // === TABS DEL ADMIN ===
         const tabBtnsAdmin = document.querySelectorAll('.admin-dashboard .tab-btn');
         const tabsMap = ['tab_agenda', 'tab_semana', 'tab_mes', 'tab_empleados', 'tab_clientes', 'tab_jornadas', 'tab_boletas', 'tab_config'];
-        tabBtnsAdmin.forEach((btn, i) => {
-            if (tabsMap[i]) btn.textContent = t(tabsMap[i]);
-        });
+        tabBtnsAdmin.forEach((btn, i) => { if (tabsMap[i]) btn.textContent = t(tabsMap[i]); });
         
-        // Tabs del empleado
+        // === TABS DEL EMPLEADO ===
         const tabBtnsEmp = document.querySelectorAll('.empleado-dashboard .tab-btn');
         const tabsEmpMap = ['tab_emp_hoy', 'tab_emp_activos', 'tab_emp_historial'];
-        tabBtnsEmp.forEach((btn, i) => {
-            if (tabsEmpMap[i]) btn.textContent = t(tabsEmpMap[i]);
-        });
+        tabBtnsEmp.forEach((btn, i) => { if (tabsEmpMap[i]) btn.textContent = t(tabsEmpMap[i]); });
         
-        // Stats
+        // === STATS ===
         const statsCards = document.querySelectorAll('.stat-card .label');
         const statsMap = ['stat_empleados', 'stat_clientes', 'stat_jornadas', 'stat_ingresos'];
-        statsCards.forEach((label, i) => {
-            if (label && statsMap[i]) label.textContent = t(statsMap[i]);
-        });
+        statsCards.forEach((label, i) => { if (label && statsMap[i]) label.textContent = t(statsMap[i]); });
         
-        // === AGENDA DIARIA ===
-        const labelAgendaFecha = document.getElementById('labelAgendaFecha');
-        if (labelAgendaFecha) labelAgendaFecha.textContent = t('agenda_fecha');
-        const btnAgendaAnterior = document.getElementById('btnAgendaAnterior');
-        if (btnAgendaAnterior) btnAgendaAnterior.textContent = t('agenda_anterior');
-        const btnAgendaHoy = document.getElementById('btnAgendaHoy');
-        if (btnAgendaHoy) btnAgendaHoy.textContent = t('agenda_hoy');
-        const btnAgendaSiguiente = document.getElementById('btnAgendaSiguiente');
-        if (btnAgendaSiguiente) btnAgendaSiguiente.textContent = t('agenda_siguiente');
-        
-        // Títulos de secciones principales
-        const titulosTraducir = [
-            { id: 'tab-admin-agenda', key: 'agenda_titulo' },
-            { id: 'tab-admin-semana', key: 'semana_titulo' },
-            { id: 'tab-admin-mes', key: 'mes_titulo' },
-            { id: 'tab-admin-boletas', key: 'boleta_titulo' },
-            { id: 'tab-admin-config', key: 'config_titulo' }
-        ];
-        
-        titulosTraducir.forEach(item => {
-            const tab = document.getElementById(item.id);
-            if (tab) {
-                const h2 = tab.querySelector('h2');
-                if (h2) h2.textContent = t(item.key);
-            }
-        });
-                // === TÍTULOS DE SECCIONES ===
-        const tituloEmpleados = document.getElementById('tituloEmpleados');
-        if (tituloEmpleados) tituloEmpleados.textContent = idiomaActual === 'en' ? '👤 Employee Management' : '👤 Gestión de Empleados';
-        
-        const tituloClientes = document.getElementById('tituloClientes');
-        if (tituloClientes) tituloClientes.textContent = idiomaActual === 'en' ? '🏢 Client Management' : '🏢 Gestión de Clientes';
-        
-        const tituloJornadas = document.getElementById('tituloJornadas');
-        if (tituloJornadas) tituloJornadas.textContent = idiomaActual === 'en' ? '📋 Job Monitoring' : '📋 Monitoreo de Jornadas';
-        
-        // === SEMANA ===
-        const labelSemana = document.getElementById('labelSemana');
-        if (labelSemana) labelSemana.textContent = idiomaActual === 'en' ? '📆 Week of:' : '📆 Semana de:';
-        const btnSemanaAnterior = document.getElementById('btnSemanaAnterior');
-        if (btnSemanaAnterior) btnSemanaAnterior.textContent = idiomaActual === 'en' ? '◀️ Previous' : '◀️ Anterior';
-        const btnSemanaActual = document.getElementById('btnSemanaActual');
-        if (btnSemanaActual) btnSemanaActual.textContent = idiomaActual === 'en' ? '📌 Current' : '📌 Actual';
-        const btnSemanaSiguiente = document.getElementById('btnSemanaSiguiente');
-        if (btnSemanaSiguiente) btnSemanaSiguiente.textContent = idiomaActual === 'en' ? 'Next ▶️' : 'Siguiente ▶️';
-        
-        // === MES ===
-        const labelMes = document.getElementById('labelMes');
-        if (labelMes) labelMes.textContent = idiomaActual === 'en' ? '📆 Month:' : '📆 Mes:';
-        const btnMesAnterior = document.getElementById('btnMesAnterior');
-        if (btnMesAnterior) btnMesAnterior.textContent = idiomaActual === 'en' ? '◀️ Previous' : '◀️ Anterior';
-        const btnMesActual = document.getElementById('btnMesActual');
-        if (btnMesActual) btnMesActual.textContent = idiomaActual === 'en' ? '📌 Current' : '📌 Actual';
-        const btnMesSiguiente = document.getElementById('btnMesSiguiente');
-        if (btnMesSiguiente) btnMesSiguiente.textContent = idiomaActual === 'en' ? 'Next ▶️' : 'Siguiente ▶️';
-        
-                // === ESTADOS DE VISTA SEMANAL ===
-        const labelSemanalActivo = document.getElementById('labelSemanalActivo');
-        if (labelSemanalActivo) labelSemanalActivo.textContent = idiomaActual === 'en' ? 'Active' : 'Activo';
-        
-        const labelSemanalCancelado = document.getElementById('labelSemanalCancelado');
-        if (labelSemanalCancelado) labelSemanalCancelado.textContent = idiomaActual === 'en' ? 'Canceled' : 'Cancelado';
-        
-        const labelSemanalNoProg = document.getElementById('labelSemanalNoProg');
-        if (labelSemanalNoProg) labelSemanalNoProg.textContent = idiomaActual === 'en' ? 'Not scheduled' : 'No programado';
-        
-        // === BOLETAS ===
-        const labelsBoleta = document.querySelectorAll('#tab-admin-boletas label');
-        if (labelsBoleta[0]) labelsBoleta[0].textContent = idiomaActual === 'en' ? 'Employee' : 'Empleado';
-        if (labelsBoleta[1]) labelsBoleta[1].textContent = idiomaActual === 'en' ? 'Week (pick any date)' : 'Semana (elige cualquier fecha)';
-        if (labelsBoleta[2]) labelsBoleta[2].textContent = idiomaActual === 'en' ? 'Payment type' : 'Tipo de Pago';
-        
-        // Traducir opciones del select de tipo de pago
-        const selectPago = document.getElementById('boletaTipoPago');
-        if (selectPago) {
-            const opciones = selectPago.querySelectorAll('option');
-            if (opciones[0]) opciones[0].textContent = idiomaActual === 'en' ? '💵 Cash (no deductions)' : '💵 Efectivo (sin descuentos)';
-            if (opciones[1]) opciones[1].textContent = idiomaActual === 'en' ? '📄 Check (with deductions)' : '📄 Cheque (con descuentos)';
-        }
-        
-        // === FORMULARIO EMPLEADOS ===
-        const labelsEmp = document.querySelectorAll('#formEmpleado label');
-        if (labelsEmp[0]) labelsEmp[0].textContent = idiomaActual === 'en' ? 'Name *' : 'Nombre *';
-        if (labelsEmp[1]) labelsEmp[1].textContent = idiomaActual === 'en' ? 'Phone *' : 'Teléfono *';
-        if (labelsEmp[2]) labelsEmp[2].textContent = idiomaActual === 'en' ? 'Email' : 'Email';
-        if (labelsEmp[3]) labelsEmp[3].textContent = idiomaActual === 'en' ? 'Hourly rate ($) *' : 'Tarifa/h ($) *';
-        if (labelsEmp[4]) labelsEmp[4].textContent = idiomaActual === 'en' ? 'Position *' : 'Cargo *';
-        if (labelsEmp[5]) labelsEmp[5].textContent = idiomaActual === 'en' ? 'Username *' : 'Usuario *';
-        if (labelsEmp[6]) labelsEmp[6].textContent = idiomaActual === 'en' ? 'Password *' : 'Contraseña *';
-        if (labelsEmp[7]) labelsEmp[7].textContent = idiomaActual === 'en' ? 'Status' : 'Estado';
-        
-        // Opciones de estado del empleado
-        const selectEmpEstado = document.getElementById('empEstado');
-        if (selectEmpEstado) {
-            const opcs = selectEmpEstado.querySelectorAll('option');
-            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? 'Active' : 'Activo';
-            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? 'Inactive' : 'Inactivo';
-        }
-        
-        // === FORMULARIO CLIENTES ===
-        const labelsCli = document.querySelectorAll('#formCliente label');
-        if (labelsCli[0]) labelsCli[0].textContent = idiomaActual === 'en' ? 'Name *' : 'Nombre *';
-        if (labelsCli[1]) labelsCli[1].textContent = idiomaActual === 'en' ? 'Address *' : 'Dirección *';
-        if (labelsCli[2]) labelsCli[2].textContent = idiomaActual === 'en' ? 'Phone *' : 'Teléfono *';
-        if (labelsCli[3]) labelsCli[3].textContent = idiomaActual === 'en' ? 'Email' : 'Email';
-        if (labelsCli[4]) labelsCli[4].textContent = idiomaActual === 'en' ? 'Regular Service Type' : 'Tipo de Servicio Regular';
-        if (labelsCli[5]) labelsCli[5].textContent = idiomaActual === 'en' ? 'Service Cost ($)' : 'Costo del Servicio ($)';
-        
-        // Título del form de cliente
-        const tituloFormCliente = document.getElementById('clienteFormTitulo');
-        if (tituloFormCliente && !document.getElementById('cliEditId').value) {
-            tituloFormCliente.textContent = idiomaActual === 'en' ? '➕ New Client' : '➕ Nuevo Cliente';
-        }
-                    // === LABELS DEL FORMULARIO DE EMPLEADOS ===
-        const lbls = {
-            lblEmpNombre: { es: 'Nombre *', en: 'Name *' },
-            lblEmpTelefono: { es: 'Teléfono *', en: 'Phone *' },
-            lblEmpEmail: { es: 'Email', en: 'Email' },
-            lblEmpTarifa: { es: 'Tarifa/h ($) *', en: 'Hourly rate ($) *' },
-            lblEmpCargo: { es: 'Cargo *', en: 'Position *' },
-            lblEmpUsuario: { es: 'Usuario *', en: 'Username *' },
-            lblEmpPassword: { es: 'Contraseña *', en: 'Password *' },
-            lblEmpEstado: { es: 'Estado', en: 'Status' },
-            // Clientes
-            lblCliNombre: { es: 'Nombre *', en: 'Name *' },
-            lblCliDireccion: { es: 'Dirección *', en: 'Address *' },
-            lblCliTelefono: { es: 'Teléfono *', en: 'Phone *' },
-            lblCliEmail: { es: 'Email', en: 'Email' },
-            lblCliServicio: { es: 'Tipo de Servicio Regular', en: 'Regular Service Type' },
-            lblCliCosto: { es: 'Costo del Servicio ($)', en: 'Service Cost ($)' },
-            lblCliDias: { es: '📆 Días de servicio', en: '📆 Service days' },
-            lblCliFrecuencia: { es: '🔄 Frecuencia del servicio', en: '🔄 Service frequency' },
-            lblCliFechaInicio: { es: '📆 Fecha de inicio del servicio', en: '📆 Service start date' },
-            lblCliSemanaQuincenal: { es: '📌 ¿Qué semana le toca?', en: '📌 Which week?' },
-            lblCliInfoMensual: { es: '📌 Información', en: '📌 Information' },
-            lblCliTipoCodigo: { es: '🔑 Tipo de Código de Acceso', en: '🔑 Access Code Type' },
-            lblCliCodigo: { es: '🔢 Código / Número', en: '🔢 Code / Number' },
-            lblCliInstrucciones: { es: '📝 Instrucciones especiales de ingreso', en: '📝 Special entry instructions' }
+        // === SISTEMA AUTOMÁTICO DE TRADUCCIÓN POR TEXTO ===
+        // Este sistema reemplaza textos exactos en todo el DOM
+        const MAPA = idiomaActual === 'en' ? {
+            // Formularios y labels
+            '👤 Gestión de Empleados': '👤 Employee Management',
+            '🏢 Gestión de Clientes': '🏢 Client Management',
+            '📋 Monitoreo de Jornadas': '📋 Job Monitoring',
+            '📄 Boletas de Pago': '📄 Paystubs',
+            '⚙️ Configuración': '⚙️ Settings',
+            'Nombre *': 'Name *',
+            'Teléfono *': 'Phone *',
+            'Email': 'Email',
+            'Tarifa/h ($) *': 'Hourly rate ($) *',
+            'Cargo *': 'Position *',
+            'Usuario *': 'Username *',
+            'Contraseña *': 'Password *',
+            'Estado': 'Status',
+            'Activo': 'Active',
+            'Inactivo': 'Inactive',
+            'Dirección *': 'Address *',
+            'Tipo de Servicio Regular': 'Regular Service Type',
+            'Costo del Servicio ($)': 'Service Cost ($)',
+            'Regular': 'Regular',
+            'Profunda': 'Deep Clean',
+            'Construcción': 'Construction',
+            'Especial': 'Special',
+            '📆 Días de servicio': '📆 Service days',
+            '🔄 Frecuencia del servicio': '🔄 Service frequency',
+            '📅 Semanal (todas las semanas)': '📅 Weekly (every week)',
+            '📅 Quincenal (semana sí, semana no)': '📅 Bi-weekly (every other week)',
+            '📅 Mensual (una vez al mes)': '📅 Monthly (once a month)',
+            '📆 Fecha de inicio del servicio': '📆 Service start date',
+            'Desde cuándo se cuenta el ciclo': 'When the cycle starts',
+            '📌 ¿Qué semana le toca?': '📌 Which week?',
+            'Semana IMPAR (1, 3, 5, 7...)': 'ODD week (1, 3, 5, 7...)',
+            'Semana PAR (2, 4, 6, 8...)': 'EVEN week (2, 4, 6, 8...)',
+            'Para frecuencias quincenales': 'For bi-weekly frequencies',
+            '📌 Información': '📌 Information',
+            '🔑 Tipo de Código de Acceso': '🔑 Access Code Type',
+            '-- Sin código --': '-- No code --',
+            'Alarma': 'Alarm',
+            'Cerradura con clave': 'Lock code',
+            'Lockbox (caja de llaves)': 'Lockbox',
+            'Llave física': 'Physical key',
+            'Portero/Recepción': 'Doorman/Reception',
+            'Otro': 'Other',
+            '🔢 Código / Número': '🔢 Code / Number',
+            '📝 Instrucciones especiales de ingreso': '📝 Special entry instructions',
+            'Ej: 1234#, #5678, Caja 5': 'Ex: 1234#, #5678, Box 5',
+            'Ej: Tocar timbre 2 veces, la llave está debajo del macetero...': 'Ex: Ring bell 2 times, key is under the flowerpot...',
+            '💾 Guardar': '💾 Save',
+            '🔄 Limpiar': '🔄 Clear',
+            '🔄 Limpiar / Nuevo': '🔄 Clear / New',
+            '➕ Nuevo Cliente': '➕ New Client',
+            '📋 Clientes Registrados': '📋 Registered Clients',
+            'Nombre': 'Name',
+            'Dirección': 'Address',
+            'Teléfono': 'Phone',
+            'Servicio': 'Service',
+            'Costo': 'Cost',
+            'Días': 'Days',
+            'Frecuencia': 'Frequency',
+            'Código': 'Code',
+            'Acciones': 'Actions',
+            '💰 Registro de Pagos por Cliente': '💰 Client Payment Records',
+            'Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.': 'Edit dates, amounts, and mark payments as completed. Pagination of 10 per page.',
+            'Filtrar por cliente': 'Filter by client',
+            '-- Todos los clientes --': '-- All clients --',
+            'Filtrar por estado': 'Filter by status',
+            '-- Todos --': '-- All --',
+            'Pendientes': 'Pending',
+            'Pagados': 'Paid',
+            '✅ Total Pagado': '✅ Total Paid',
+            '⏳ Total Pendiente': '⏳ Total Pending',
+            '⚠️ Vencido': '⚠️ Overdue',
+            'Cliente': 'Client',
+            'Fecha Programada': 'Scheduled Date',
+            'Monto': 'Amount',
+            'Pendiente': 'Pending',
+            'Pagado': 'Paid',
+            'Fecha Pago': 'Payment Date',
+            'Método': 'Method',
+            '💵 Efectivo': '💵 Cash',
+            '📄 Cheque': '📄 Check',
+            '🏦 Transferencia': '🏦 Transfer',
+            '💳 Tarjeta': '💳 Card',
+            '« Primera': '« First',
+            '‹ Anterior': '‹ Previous',
+            'Siguiente ›': 'Next ›',
+            'Última »': 'Last »',
+            'Página': 'Page',
+            'de': 'of',
+            'registros': 'records',
+            '💰 Pagos/Adelantos Manuales': '💰 Manual Payments/Advances',
+            'Concepto': 'Concept',
+            'Adelanto': 'Advance',
+            'Pago directo': 'Direct payment',
+            'Servicio extra': 'Extra service',
+            'Fecha': 'Date',
+            'Notas': 'Notes',
+            'Opcional': 'Optional',
+            '💰 Registrar Pago Manual': '💰 Register Manual Payment',
+            '💰 Adelantos a Empleados': '💰 Employee Advances',
+            'Monto ($)': 'Amount ($)',
+            '💰 Registrar Adelanto': '💰 Register Advance',
+            'Los empleados marcan entrada/salida con geolocalización. Puedes modificar las horas aquí.': 'Employees clock in/out with geolocation. You can modify hours here.',
+            '📊 Exportar Excel': '📊 Export Excel',
+            'Empleado': 'Employee',
+            'Fecha': 'Date',
+            'Entrada': 'Check-in',
+            'Salida': 'Check-out',
+            'Horas': 'Hours',
+            'Total': 'Total',
+            'Estado': 'Status',
+            'Completado': 'Completed',
+            'Solo el administrador genera boletas. Descuentos solo cuando el pago es con cheque.': 'Only admin generates paystubs. Deductions only when paid by check.',
+            'Semana (elige cualquier fecha)': 'Week (pick any date)',
+            'Tipo de Pago': 'Payment type',
+            '💵 Efectivo (sin descuentos)': '💵 Cash (no deductions)',
+            '📄 Cheque (con descuentos)': '📄 Check (with deductions)',
+            '🧾 Vista Previa': '🧾 Preview',
+            '✅ Generar': '✅ Generate',
+            '📄 PDF': '📄 PDF',
+            '📋 Boletas Generadas': '📋 Generated Paystubs',
+            'Bruto': 'Gross',
+            'Descuentos': 'Deductions',
+            'Neto': 'Net',
+            'Pago': 'Payment',
+            'Gestión de Datos': '🗄️ Data Management',
+            '💾 Backup local': '💾 Local Backup',
+            '📂 Restaurar local': '📂 Restore Local',
+            '⚠️ Zona de Peligro': '⚠️ Danger Zone',
+            'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.': 'These actions cannot be undone. Settings (company name and % deductions) are preserved.',
+            '🗑️ Borrar solo Boletas': '🗑️ Delete Paystubs Only',
+            '🗑️ Borrar solo Jornadas': '🗑️ Delete Jobs Only',
+            '🚨 Borrar TODOS los Datos': '🚨 Delete ALL Data',
+            '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.': '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.',
+            '📅 Agenda Diaria': '📅 Daily Schedule',
+            'Clientes que tocan según sus días y frecuencia programados.': 'Clients scheduled according to their days and frequency.',
+            '📆 Fecha:': '📆 Date:',
+            '◀️ Anterior': '◀️ Previous',
+            '📌 Hoy': '📌 Today',
+            'Siguiente ▶️': 'Next ▶️',
+            '🏢 Clientes hoy:': '🏢 Clients today:',
+            '✅ Completados:': '✅ Completed:',
+            '🔄 En proceso:': '🔄 In progress:',
+            '⏳ Sin tomar': '⏳ Not taken',
+            'Sin asignar': 'Unassigned',
+            '❌ Cancelar': '❌ Cancel',
+            '✅ Reactivar': '✅ Reactivate',
+            '🗓️ Vista Semanal de Clientes': '🗓️ Weekly Client View',
+            'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.': 'Scheduled days for each client. Click any day to activate/cancel.',
+            '📆 Semana de:': '📆 Week of:',
+            '📌 Actual': '📌 Current',
+            'Cancelado': 'Canceled',
+            'No programado': 'Not scheduled',
+            '📆 Vista Mensual': '📆 Monthly View',
+            'Calendario mensual con todos los clientes programados por día.': 'Monthly calendar with all scheduled clients per day.',
+            '📆 Mes:': '📆 Month:',
+            '📅 Días:': '📅 Days:',
+            '🏢 Trabajos:': '🏢 Jobs:',
+            '❌ Cancelados:': '❌ Canceled:',
+            '📋 Trabajos de Hoy': "📋 Today's Jobs",
+            'Clientes para hoy': "Today's Clients",
+            'Elige un cliente para comenzar a trabajar.': 'Choose a client to start working.',
+            '📋 Mis Trabajos Activos': '📋 My Active Jobs',
+            '📋 Mis trabajos activos': '📋 My Active Jobs',
+            'No tienes trabajos activos.': 'No active jobs.',
+            '📜 Historial': '📜 History',
+            '📜 Mi Historial': '📜 My History',
+            'No hay historial.': 'No history.',
+            '🚀 Comenzar este trabajo': '🚀 Start this job',
+            '✅ Entrada + Geo': '✅ Check-in + Geo',
+            '⏹️ Salida + Geo': '⏹️ Check-out + Geo',
+            '🗺️ Maps': '🗺️ Maps',
+            '✅ Completado': '✅ Completed'
+        } : {
+            // Español: reemplazar los textos en inglés por español
+            '👤 Employee Management': '👤 Gestión de Empleados',
+            '🏢 Client Management': '🏢 Gestión de Clientes',
+            '📋 Job Monitoring': '📋 Monitoreo de Jornadas',
+            '📄 Paystubs': '📄 Boletas de Pago',
+            '⚙️ Settings': '⚙️ Configuración',
+            'Name *': 'Nombre *',
+            'Phone *': 'Teléfono *',
+            'Hourly rate ($) *': 'Tarifa/h ($) *',
+            'Position *': 'Cargo *',
+            'Username *': 'Usuario *',
+            'Password *': 'Contraseña *',
+            'Status': 'Estado',
+            'Active': 'Activo',
+            'Inactive': 'Inactivo',
+            'Address *': 'Dirección *',
+            'Regular Service Type': 'Tipo de Servicio Regular',
+            'Service Cost ($)': 'Costo del Servicio ($)',
+            'Deep Clean': 'Profunda',
+            'Construction': 'Construcción',
+            'Special': 'Especial',
+            '📆 Service days': '📆 Días de servicio',
+            '🔄 Service frequency': '🔄 Frecuencia del servicio',
+            '📅 Weekly (every week)': '📅 Semanal (todas las semanas)',
+            '📅 Bi-weekly (every other week)': '📅 Quincenal (semana sí, semana no)',
+            '📅 Monthly (once a month)': '📅 Mensual (una vez al mes)',
+            '📆 Service start date': '📆 Fecha de inicio del servicio',
+            'When the cycle starts': 'Desde cuándo se cuenta el ciclo',
+            '📌 Which week?': '📌 ¿Qué semana le toca?',
+            'ODD week (1, 3, 5, 7...)': 'Semana IMPAR (1, 3, 5, 7...)',
+            'EVEN week (2, 4, 6, 8...)': 'Semana PAR (2, 4, 6, 8...)',
+            'For bi-weekly frequencies': 'Para frecuencias quincenales',
+            '📌 Information': '📌 Información',
+            '🔑 Access Code Type': '🔑 Tipo de Código de Acceso',
+            '-- No code --': '-- Sin código --',
+            'Alarm': 'Alarma',
+            'Lock code': 'Cerradura con clave',
+            'Lockbox': 'Lockbox (caja de llaves)',
+            'Physical key': 'Llave física',
+            'Doorman/Reception': 'Portero/Recepción',
+            'Other': 'Otro',
+            '🔢 Code / Number': '🔢 Código / Número',
+            '📝 Special entry instructions': '📝 Instrucciones especiales de ingreso',
+            '💾 Save': '💾 Guardar',
+            '🔄 Clear': '🔄 Limpiar',
+            '🔄 Clear / New': '🔄 Limpiar / Nuevo',
+            '➕ New Client': '➕ Nuevo Cliente',
+            '📋 Registered Clients': '📋 Clientes Registrados',
+            'Actions': 'Acciones',
+            '💰 Client Payment Records': '💰 Registro de Pagos por Cliente',
+            'Filter by client': 'Filtrar por cliente',
+            '-- All clients --': '-- Todos los clientes --',
+            'Filter by status': 'Filtrar por estado',
+            '-- All --': '-- Todos --',
+            'Pending': 'Pendiente',
+            'Paid': 'Pagado',
+            '✅ Total Paid': '✅ Total Pagado',
+            '⏳ Total Pending': '⏳ Total Pendiente',
+            '⚠️ Overdue': '⚠️ Vencido',
+            'Client': 'Cliente',
+            'Scheduled Date': 'Fecha Programada',
+            'Amount': 'Monto',
+            'Payment Date': 'Fecha Pago',
+            'Method': 'Método',
+            '💵 Cash': '💵 Efectivo',
+            '📄 Check': '📄 Cheque',
+            '🏦 Transfer': '🏦 Transferencia',
+            '💳 Card': '💳 Tarjeta',
+            '« First': '« Primera',
+            '‹ Previous': '‹ Anterior',
+            'Next ›': 'Siguiente ›',
+            'Last »': 'Última »',
+            'Page': 'Página',
+            'of': 'de',
+            'records': 'registros',
+            '💰 Manual Payments/Advances': '💰 Pagos/Adelantos Manuales',
+            'Concept': 'Concepto',
+            'Advance': 'Adelanto',
+            'Direct payment': 'Pago directo',
+            'Extra service': 'Servicio extra',
+            'Date': 'Fecha',
+            'Notes': 'Notas',
+            'Optional': 'Opcional',
+            '💰 Register Manual Payment': '💰 Registrar Pago Manual',
+            '💰 Employee Advances': '💰 Adelantos a Empleados',
+            'Amount ($)': 'Monto ($)',
+            '💰 Register Advance': '💰 Registrar Adelanto',
+            '📊 Export Excel': '📊 Exportar Excel',
+            'Employee': 'Empleado',
+            'Check-in': 'Entrada',
+            'Check-out': 'Salida',
+            'Hours': 'Horas',
+            'Total': 'Total',
+            'Completed': 'Completado',
+            'Week (pick any date)': 'Semana (elige cualquier fecha)',
+            'Payment type': 'Tipo de Pago',
+            '💵 Cash (no deductions)': '💵 Efectivo (sin descuentos)',
+            '📄 Check (with deductions)': '📄 Cheque (con descuentos)',
+            '🧾 Preview': '🧾 Vista Previa',
+            '✅ Generate': '✅ Generar',
+            '📋 Generated Paystubs': '📋 Boletas Generadas',
+            'Gross': 'Bruto',
+            'Deductions': 'Descuentos',
+            'Net': 'Net',
+            'Payment': 'Pago',
+            '🗄️ Data Management': '🗄️ Gestión de Datos',
+            '💾 Local Backup': '💾 Backup local',
+            '📂 Restore Local': '📂 Restaurar local',
+            '⚠️ Danger Zone': '⚠️ Zona de Peligro',
+            '🗑️ Delete Paystubs Only': '🗑️ Borrar solo Boletas',
+            '🗑️ Delete Jobs Only': '🗑️ Borrar solo Jornadas',
+            '🚨 Delete ALL Data': '🚨 Borrar TODOS los Datos',
+            '📅 Daily Schedule': '📅 Agenda Diaria',
+            '📆 Date:': '📆 Fecha:',
+            '◀️ Previous': '◀️ Anterior',
+            '📌 Today': '📌 Hoy',
+            'Next ▶️': 'Siguiente ▶️',
+            '🏢 Clients today:': '🏢 Clientes hoy:',
+            '✅ Completed:': '✅ Completados:',
+            '🔄 In progress:': '🔄 En proceso:',
+            '⏳ Not taken': '⏳ Sin tomar',
+            'Unassigned': 'Sin asignar',
+            '❌ Cancel': '❌ Cancelar',
+            '✅ Reactivate': '✅ Reactivar',
+            '🗓️ Weekly Client View': '🗓️ Vista Semanal de Clientes',
+            '📆 Week of:': '📆 Semana de:',
+            '📌 Current': '📌 Actual',
+            'Canceled': 'Cancelado',
+            'Not scheduled': 'No programado',
+            '📆 Monthly View': '📆 Vista Mensual',
+            '📆 Month:': '📆 Mes:',
+            '📅 Days:': '📅 Días:',
+            '🏢 Jobs:': '🏢 Trabajos:',
+            '❌ Canceled:': '❌ Cancelados:',
+            "📋 Today's Jobs": '📋 Trabajos de Hoy',
+            "Today's Clients": 'Clientes para hoy',
+            'Choose a client to start working.': 'Elige un cliente para comenzar a trabajar.',
+            '📋 My Active Jobs': '📋 Mis Trabajos Activos',
+            'No active jobs.': 'No tienes trabajos activos.',
+            '📜 History': '📜 Historial',
+            '📜 My History': '📜 Mi Historial',
+            'No history.': 'No hay historial.',
+            '🚀 Start this job': '🚀 Comenzar este trabajo',
+            '✅ Check-in + Geo': '✅ Entrada + Geo',
+            '⏹️ Check-out + Geo': '⏹️ Salida + Geo',
+            '✅ Completed': '✅ Completado'
         };
         
-        Object.keys(lbls).forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = idiomaActual === 'en' ? lbls[id].en : lbls[id].es;
-        });
-        
-        // Traducir opciones del select de servicio
-        const selServicio = document.getElementById('cliServicio');
-        if (selServicio) {
-            const opcs = selServicio.querySelectorAll('option');
-            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? 'Regular' : 'Regular';
-            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? 'Deep Clean' : 'Profunda';
-            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? 'Construction' : 'Construcción';
-            if (opcs[3]) opcs[3].textContent = idiomaActual === 'en' ? 'Special' : 'Especial';
-        }
-        
-        // Traducir opciones de frecuencia del cliente
-        const selFrecuencia = document.getElementById('cliFrecuencia');
-        if (selFrecuencia) {
-            const opcs = selFrecuencia.querySelectorAll('option');
-            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? '📅 Weekly (every week)' : '📅 Semanal (todas las semanas)';
-            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? '📅 Bi-weekly (every other week)' : '📅 Quincenal (semana sí, semana no)';
-            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? '📅 Monthly (once a month)' : '📅 Mensual (una vez al mes)';
-        }
-        
-        // Traducir opciones del tipo de código de acceso
-        const selTipoCodigo = document.getElementById('cliTipoCodigo');
-        if (selTipoCodigo) {
-            const opcs = selTipoCodigo.querySelectorAll('option');
-            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? '-- No code --' : '-- Sin código --';
-            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? 'Alarm' : 'Alarma';
-            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? 'Lock code' : 'Cerradura con clave';
-            if (opcs[3]) opcs[3].textContent = idiomaActual === 'en' ? 'Lockbox' : 'Lockbox (caja de llaves)';
-            if (opcs[4]) opcs[4].textContent = idiomaActual === 'en' ? 'Physical key' : 'Llave física';
-            if (opcs[5]) opcs[5].textContent = idiomaActual === 'en' ? 'Doorman/Reception' : 'Portero/Recepción';
-            if (opcs[6]) opcs[6].textContent = idiomaActual === 'en' ? 'Other' : 'Otro';
-        }
-        
-        // Botones de guardar/limpiar en formularios
-        const btnGuardarEmp = document.querySelector('#formEmpleado button[type="submit"]');
-        if (btnGuardarEmp) btnGuardarEmp.textContent = t('btn_guardar');
-        const btnLimpiarEmp = document.querySelector('#formEmpleado button[type="reset"]');
-        if (btnLimpiarEmp) btnLimpiarEmp.textContent = t('btn_limpiar');
-        
-        const btnGuardarCli = document.getElementById('btnGuardarCliente');
-        if (btnGuardarCli) {
-            const estaEditando = document.getElementById('cliEditId').value;
-            if (estaEditando) {
-                btnGuardarCli.textContent = t('btn_actualizar_cliente');
-            } else {
-                btnGuardarCli.textContent = t('btn_guardar');
+        // Recorrer TODO el DOM y traducir los textos exactos
+        function traducirNodos(node) {
+            if (node.nodeType === 3) { // Nodo de texto
+                const texto = node.nodeValue.trim();
+                if (texto && MAPA[texto]) {
+                    node.nodeValue = node.nodeValue.replace(texto, MAPA[texto]);
+                }
+            } else if (node.nodeType === 1) { // Elemento
+                // Traducir placeholder
+                if (node.placeholder && MAPA[node.placeholder]) {
+                    node.placeholder = MAPA[node.placeholder];
+                }
+                // Traducir options de selects
+                if (node.tagName === 'OPTION' && MAPA[node.textContent.trim()]) {
+                    node.textContent = MAPA[node.textContent.trim()];
+                }
+                // Recorrer hijos
+                node.childNodes.forEach(traducirNodos);
             }
         }
-        const btnLimpiarCli = document.querySelector('#formCliente button[type="button"]');
-        if (btnLimpiarCli) btnLimpiarCli.textContent = t('btn_limpiar_nuevo');
-                // === TÍTULOS DEL EMPLEADO ===
-        const tituloEmpHoy = document.getElementById('tituloEmpHoy');
-        if (tituloEmpHoy) {
-            const fechaSpan = document.getElementById('fechaHoyDisplay');
-            const fechaTexto = fechaSpan ? fechaSpan.outerHTML : '';
-            tituloEmpHoy.innerHTML = (idiomaActual === 'en' ? "📅 Today's Clients " : '📅 Clientes para hoy ') + fechaTexto;
-        }
         
-        const tituloEmpActivos = document.getElementById('tituloEmpActivos');
-        if (tituloEmpActivos) tituloEmpActivos.textContent = idiomaActual === 'en' ? '📋 My Active Jobs' : '📋 Mis trabajos activos';
+        // Solo traducir dentro del container principal (no todo el body)
+        const container = document.querySelector('.container');
+        if (container) traducirNodos(container);
         
-        const tituloEmpHistorial = document.getElementById('tituloEmpHistorial');
-        if (tituloEmpHistorial) tituloEmpHistorial.textContent = idiomaActual === 'en' ? '📜 My History' : '📜 Mi Historial';
-        
-        Object.keys(lbls).forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.textContent = idiomaActual === 'en' ? lbls[id].en : lbls[id].es;
-        });
-        
-        
-        
-       
-        
-       
-        // Re-renderizar todo lo dinámico
+        // === RE-RENDERIZAR TODO LO DINÁMICO ===
         if (firebaseListo) {
             renderAgendaDiaria();
             renderSemana();
@@ -1448,6 +1552,12 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
             renderClientes(getData());
             renderJornadas(getData());
             renderBoletas(getData());
+            // También renderizar paneles del empleado si está logueado
+            if (empleadoActual) {
+                cargarTrabajosHoy();
+                cargarTrabajosEmpleado();
+                cargarHistorialEmpleado();
+            }
         }
         
         console.log('🌐 Idioma aplicado:', idiomaActual);
