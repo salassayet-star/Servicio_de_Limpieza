@@ -230,12 +230,12 @@
             
             <div class="agenda-header">
                 <div class="agenda-fecha">
-                    <label style="font-weight:600;">📆 Fecha:</label>
-                    <input type="date" id="agendaFecha" onchange="renderAgendaDiaria()">
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(-1)">◀️ Anterior</button>
-                    <button class="btn btn-primary btn-sm" onclick="irHoy()">📌 Hoy</button>
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(1)">Siguiente ▶️</button>
-                </div>
+    <label style="font-weight:600;" id="labelAgendaFecha">📆 Fecha:</label>
+    <input type="date" id="agendaFecha" onchange="renderAgendaDiaria()">
+    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(-1)" id="btnAgendaAnterior">◀️ Anterior</button>
+    <button class="btn btn-primary btn-sm" onclick="irHoy()" id="btnAgendaHoy">📌 Hoy</button>
+    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(1)" id="btnAgendaSiguiente">Siguiente ▶️</button>
+</div>
                 <div class="agenda-resumen" id="agendaResumen"></div>
             </div>
 
@@ -1123,7 +1123,7 @@
     }
 
     // Función para aplicar el idioma a toda la interfaz
-    function aplicarIdioma() {
+        function aplicarIdioma() {
         // Actualizar botón
         const btnIdioma = document.getElementById('btnIdioma');
         if (btnIdioma) btnIdioma.textContent = t('btn_idioma');
@@ -1190,12 +1190,50 @@
         });
         
         // Stats
-        const statsCards = document.querySelectorAll('.admin-dashboard .stat-card');
+        const statsCards = document.querySelectorAll('.admin-dashboard .stat-card .label');
         const statsMap = ['stat_empleados', 'stat_clientes', 'stat_jornadas', 'stat_ingresos'];
-        statsCards.forEach((card, i) => {
-            const label = card.querySelector('.label');
+        statsCards.forEach((label, i) => {
             if (label && statsMap[i]) label.textContent = t(statsMap[i]);
         });
+        
+        // === AGENDA DIARIA ===
+        const labelAgendaFecha = document.getElementById('labelAgendaFecha');
+        if (labelAgendaFecha) labelAgendaFecha.textContent = t('agenda_fecha');
+        const btnAgendaAnterior = document.getElementById('btnAgendaAnterior');
+        if (btnAgendaAnterior) btnAgendaAnterior.textContent = t('agenda_anterior');
+        const btnAgendaHoy = document.getElementById('btnAgendaHoy');
+        if (btnAgendaHoy) btnAgendaHoy.textContent = t('agenda_hoy');
+        const btnAgendaSiguiente = document.getElementById('btnAgendaSiguiente');
+        if (btnAgendaSiguiente) btnAgendaSiguiente.textContent = t('agenda_siguiente');
+        
+        // Títulos de secciones principales
+        const titulosTraducir = [
+            { id: 'tab-admin-agenda', key: 'agenda_titulo' },
+            { id: 'tab-admin-semana', key: 'semana_titulo' },
+            { id: 'tab-admin-mes', key: 'mes_titulo' },
+            { id: 'tab-admin-boletas', key: 'boleta_titulo' },
+            { id: 'tab-admin-config', key: 'config_titulo' }
+        ];
+        
+        titulosTraducir.forEach(item => {
+            const tab = document.getElementById(item.id);
+            if (tab) {
+                const h2 = tab.querySelector('h2');
+                if (h2) h2.textContent = t(item.key);
+            }
+        });
+        
+        // Re-renderizar todo lo dinámico
+        if (firebaseListo) {
+            renderAgendaDiaria();
+            renderSemana();
+            renderMes();
+            renderPagosClientes();
+            renderEmpleados(getData());
+            renderClientes(getData());
+            renderJornadas(getData());
+            renderBoletas(getData());
+        }
         
         console.log('🌐 Idioma aplicado:', idiomaActual);
     }
@@ -1728,27 +1766,35 @@
     // AGENDA DIARIA
     // ============================================================
     function renderAgendaDiaria() {
-        const data = getData();
-        const fechaInput = document.getElementById('agendaFecha');
-        if (!fechaInput) return;
-        if (!fechaInput.value) {
-            fechaInput.value = new Date().toISOString().slice(0,10);
-        }
-        const fecha = fechaInput.value;
+    const data = getData();
+    const fechaInput = document.getElementById('agendaFecha');
+    if (!fechaInput) return;
+    if (!fechaInput.value) {
+        fechaInput.value = new Date().toISOString().slice(0,10);
+    }
+    const fecha = fechaInput.value;
 
-        const clientesHoy = data.clientes.filter(c => clienteTrabajaEnFecha(c, fecha));
-        const jornadasHoy = data.jornadas.filter(j => j.fecha === fecha);
+    const clientesHoy = data.clientes.filter(c => clienteTrabajaEnFecha(c, fecha));
+    const jornadasHoy = data.jornadas.filter(j => j.fecha === fecha);
 
-        const completados = jornadasHoy.filter(j => j.estado === 'completado').length;
-        const enProceso = jornadasHoy.filter(j => j.estado === 'pendiente' && j.horaEntrada).length;
+    const completados = jornadasHoy.filter(j => j.estado === 'completado').length;
+    const enProceso = jornadasHoy.filter(j => j.estado === 'pendiente' && j.horaEntrada).length;
 
-        document.getElementById('agendaResumen').innerHTML = `
-            <div class="item">🏢 Clientes hoy: <strong>${clientesHoy.length}</strong></div>
-            <div class="item">✅ Completados: <strong>${completados}</strong></div>
-            <div class="item">🔄 En proceso: <strong>${enProceso}</strong></div>
-        `;
+    document.getElementById('agendaResumen').innerHTML = `
+        <div class="item">${t('agenda_clientes_hoy')} <strong>${clientesHoy.length}</strong></div>
+        <div class="item">${t('agenda_completados')} <strong>${completados}</strong></div>
+        <div class="item">${t('agenda_proceso')} <strong>${enProceso}</strong></div>
+    `;
 
-        const container = document.getElementById('agendaContenido');
+    const container = document.getElementById('agendaContenido');
+
+    if (clientesHoy.length === 0) {
+        container.innerHTML = `<div class="sin-trabajos">
+            <h3>${t('msg_no_clientes_hoy')} ${formatoFecha(fecha)}</h3>
+            <p>${nombreDia(fecha)}</p>
+        </div>`;
+        return;
+    }
 
         if (clientesHoy.length === 0) {
             container.innerHTML = `<div class="sin-trabajos">
@@ -1766,20 +1812,20 @@
                 const jornada = jornadasHoy.find(j => j.clienteId === cli.id);
                 const emp = jornada ? data.empleados.find(e => e.id === jornada.empleadoId) : null;
                 
-                let claseEstado = 'pendiente';
-                let estadoBadge = '<span class="badge badge-primary">⏳ Sin tomar</span>';
+                                let claseEstado = 'pendiente';
+                let estadoBadge = `<span class="badge badge-primary">${t('agenda_sin_tomar')}</span>`;
                 if (cancelado) {
                     claseEstado = 'cancelado';
-                    estadoBadge = '<span class="badge badge-danger">❌ Cancelado</span>';
+                    estadoBadge = `<span class="badge badge-danger">${t('estado_cancelado')}</span>`;
                 } else if (jornada && jornada.estado === 'completado') {
                     claseEstado = 'completado';
-                    estadoBadge = '<span class="badge badge-success">✅ Completado</span>';
+                    estadoBadge = `<span class="badge badge-success">${t('estado_completado')}</span>`;
                 } else if (jornada && jornada.horaEntrada) {
                     claseEstado = 'en-proceso';
-                    estadoBadge = '<span class="badge badge-warning">🔄 En proceso</span>';
+                    estadoBadge = `<span class="badge badge-warning">${t('agenda_proceso')}</span>`;
                 } else if (jornada) {
                     claseEstado = 'en-proceso';
-                    estadoBadge = '<span class="badge badge-info">👤 Tomado</span>';
+                    estadoBadge = '<span class="badge badge-info">👤 Taken</span>';
                 }
 
                 let codigoHtml = '';
@@ -1796,15 +1842,15 @@
                 return `<div class="trabajo-card ${claseEstado}">
                     <div class="trabajo-hora">${cancelado ? '❌' : (jornada && jornada.horaEntrada ? '🕐 ' + jornada.horaEntrada : '📌')}</div>
                     <div class="trabajo-info">
-                        <h4>🏢 ${cli.nombre} <span class="badge badge-info" style="font-size:0.65rem;">${frecLabel}</span></h4>
+                                                <h4>🏢 ${cli.nombre} <span class="badge badge-info" style="font-size:0.65rem;">${frecLabel}</span></h4>
                         <p>📍 ${cli.direccion}</p>
-                        <p>👤 ${emp ? emp.nombre : 'Sin asignar'} ${jornada && jornada.horaSalida ? '· Salida: ' + jornada.horaSalida : ''}</p>
+                        <p>👤 ${emp ? emp.nombre : t('agenda_sin_asignar')} ${jornada && jornada.horaSalida ? '· ' + jornada.horaSalida : ''}</p>
                         ${codigoHtml}
                     </div>
                     <div class="trabajo-estado">
                         ${estadoBadge}<br><br>
                         ${cli.direccion ? `<button class="btn btn-info btn-sm" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cli.direccion)}','_blank')">🗺️ Maps</button>` : ''}
-                        ${!cancelado ? `<button class="btn btn-danger btn-sm" onclick="cancelarDia('${cli.id}', '${fecha}')">❌ Cancelar</button>` : `<button class="btn btn-success btn-sm" onclick="reactivarDia('${cli.id}', '${fecha}')">✅ Reactivar</button>`}
+                                                                        ${!cancelado ? `<button class="btn btn-danger btn-sm" onclick="cancelarDia('${cli.id}', '${fecha}')">${t('btn_cancelar')}</button>` : `<button class="btn btn-success btn-sm" onclick="reactivarDia('${cli.id}', '${fecha}')">${t('btn_reactivar')}</button>`}
                     </div>
                 </div>`;
             }).join('')}
