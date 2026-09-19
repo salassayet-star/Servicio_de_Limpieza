@@ -297,22 +297,17 @@
    <!-- TAB EMPLEADOS -->
         <div class="tab-content" id="tab-admin-empleados">
             <h2 id="tituloEmpleados">👤 Gestión de Empleados</h2>
-            <form id="formEmpleado" onsubmit="guardarEmpleado(event)">
-                <div class="form-grid">
-                    <div class="form-group"><label>Nombre *</label><input type="text" id="empNombre" required></div>
-                    <div class="form-group"><label>Teléfono *</label><input type="tel" id="empTelefono" required></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="empEmail"></div>
-                    <div class="form-group"><label>Tarifa/h ($) *</label><input type="number" id="empTarifa" step="0.01" required></div>
-                    <div class="form-group"><label>Cargo *</label><input type="text" id="empCargo" required></div>
-                    <div class="form-group"><label>Usuario *</label><input type="text" id="empUsuario" required></div>
-                    <div class="form-group"><label>Contraseña *</label><input type="text" id="empPassword" required></div>
-                    <div class="form-group"><label>Estado</label><select id="empEstado"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select></div>
-                </div>
-                <input type="hidden" id="empEditId">
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">💾 Guardar</button>
-                    <button type="reset" class="btn btn-secondary" onclick="limpiarFormEmpleado()">🔄 Limpiar</button>
-                </div>
+           <form id="formEmpleado" onsubmit="guardarEmpleado(event)">
+    <div class="form-grid">
+        <div class="form-group"><label id="lblEmpNombre">Nombre *</label><input type="text" id="empNombre" required></div>
+        <div class="form-group"><label id="lblEmpTelefono">Teléfono *</label><input type="tel" id="empTelefono" required></div>
+        <div class="form-group"><label id="lblEmpEmail">Email</label><input type="email" id="empEmail"></div>
+        <div class="form-group"><label id="lblEmpTarifa">Tarifa/h ($) *</label><input type="number" id="empTarifa" step="0.01" required></div>
+        <div class="form-group"><label id="lblEmpCargo">Cargo *</label><input type="text" id="empCargo" required></div>
+        <div class="form-group"><label id="lblEmpUsuario">Usuario *</label><input type="text" id="empUsuario" required></div>
+        <div class="form-group"><label id="lblEmpPassword">Contraseña *</label><input type="text" id="empPassword" required></div>
+        <div class="form-group"><label id="lblEmpEstado">Estado</label><select id="empEstado"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select></div>
+    </div>
             </form>
             <div style="margin:15px 0;"><h4>💰 Adelantos a Empleados</h4>
                 <div class="form-grid">
@@ -340,18 +335,20 @@
                 <div id="clienteFormTitulo" style="background:#e3f2fd; padding:10px 15px; border-radius:8px; margin-bottom:15px; color:#1a4a7a; font-weight:600;">
                     ➕ Nuevo Cliente
                 </div>
-                <div class="form-grid">
-                    <div class="form-group"><label>Nombre *</label><input type="text" id="cliNombre" required></div>
-                    <div class="form-group"><label>Dirección *</label><input type="text" id="cliDireccion" required></div>
-                    <div class="form-group"><label>Teléfono *</label><input type="tel" id="cliTelefono" required></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="cliEmail"></div>
-                    <div class="form-group"><label>Tipo de Servicio Regular</label>
-                        <select id="cliServicio"><option value="regular">Regular</option><option value="profunda">Profunda</option><option value="construccion">Construcción</option><option value="especial">Especial</option></select>
-                    </div>
+               <div class="form-grid">
+    <div class="form-group"><label id="lblCliNombre">Nombre *</label><input type="text" id="cliNombre" required></div>
+    <div class="form-group"><label id="lblCliDireccion">Dirección *</label><input type="text" id="cliDireccion" required></div>
+    <div class="form-group"><label id="lblCliTelefono">Teléfono *</label><input type="tel" id="cliTelefono" required></div>
+    <div class="form-group"><label id="lblCliEmail">Email</label><input type="email" id="cliEmail"></div>
+    <div class="form-group"><label id="lblCliServicio">Tipo de Servicio Regular</label>
+        <select id="cliServicio">...</select>
+    </div>
+    <div class="form-group"><label id="lblCliCosto">Costo del Servicio ($)</label><input type="number" id="cliCosto" step="0.01"></div>
+</div>
                     <div class="form-group"><label>Costo del Servicio ($)</label><input type="number" id="cliCosto" step="0.01"></div>
                 </div>
                 <div style="margin:15px 0;">
-                    <label style="font-weight:600; display:block; margin-bottom:8px;">📆 Días de servicio</label>
+                    <label id="lblCliDias" style="font-weight:600; display:block; margin-bottom:8px;">📆 Días de servicio</label>
                     <div class="dias-grid" id="diasGrid">
                         <label class="dia-check" data-dia="lunes"><input type="checkbox" value="lunes">Lun</label>
                         <label class="dia-check" data-dia="martes"><input type="checkbox" value="martes">Mar</label>
@@ -365,7 +362,7 @@
 
                 <div class="form-grid" style="background:#f7fafc; padding:15px; border-radius:10px; margin-bottom:15px;">
                     <div class="form-group">
-                        <label>🔄 Frecuencia del servicio</label>
+                <label id="lblCliFrecuencia">🔄 Frecuencia del servicio</label>
                         <select id="cliFrecuencia" onchange="actualizarCamposFrecuencia()">
                             <option value="semanal">📅 Semanal (todas las semanas)</option>
                             <option value="quincenal">📅 Quincenal (semana sí, semana no)</option>
@@ -373,12 +370,12 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>📆 Fecha de inicio del servicio</label>
+                       <label id="lblCliFechaInicio">📆 Fecha de inicio del servicio</label>
                         <input type="date" id="cliFechaInicio">
                         <small>Desde cuándo se cuenta el ciclo</small>
                     </div>
                     <div class="form-group" id="grupoSemanaQuincenal" style="display:none;">
-                        <label>📌 ¿Qué semana le toca?</label>
+                       <label id="lblCliSemanaQuincenal">📌 ¿Qué semana le toca?</label>
                         <select id="cliSemanaQuincenal">
                             <option value="impar">Semana IMPAR (1, 3, 5, 7...)</option>
                             <option value="par">Semana PAR (2, 4, 6, 8...)</option>
@@ -386,7 +383,7 @@
                         <small>Para frecuencias quincenales</small>
                     </div>
                     <div class="form-group" id="grupoDiaMes" style="display:none;">
-                        <label>📌 Información</label>
+                        <label id="lblCliInfoMensual">📌 Información</label>
                         <div style="background:#e8f5e9; padding:10px; border-radius:6px; font-size:0.85rem; color:#0d7a3e; border-left:3px solid #0d7a3e;">
                             Se limpiará el <strong>primer día del mes</strong> que coincida con los días marcados arriba.<br>
                             <small>Ej: Si marcaste "Martes", se limpiará el primer martes de cada mes.</small>
@@ -396,7 +393,7 @@
 
                 <div class="form-grid">
                     <div class="form-group">
-                        <label>🔑 Tipo de Código de Acceso</label>
+                       <label id="lblCliTipoCodigo">🔑 Tipo de Código de Acceso</label>
                         <select id="cliTipoCodigo">
                             <option value="">-- Sin código --</option>
                             <option value="alarma">Alarma</option>
@@ -408,11 +405,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>🔢 Código / Número</label>
+                        <label id="lblCliCodigo">🔢 Código / Número</label>
                         <input type="text" id="cliCodigoAcceso" placeholder="Ej: 1234#, #5678, Caja 5">
                     </div>
                     <div class="form-group" style="grid-column: span 2;">
-                        <label>📝 Instrucciones especiales de ingreso</label>
+                        <label id="lblCliInstrucciones">📝 Instrucciones especiales de ingreso</label>
                         <textarea id="cliInstrucciones" placeholder="Ej: Tocar timbre 2 veces, la llave está debajo del macetero..."></textarea>
                     </div>
                 </div>
@@ -1324,6 +1321,87 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         if (tituloFormCliente && !document.getElementById('cliEditId').value) {
             tituloFormCliente.textContent = idiomaActual === 'en' ? '➕ New Client' : '➕ Nuevo Cliente';
         }
+                    // === LABELS DEL FORMULARIO DE EMPLEADOS ===
+        const lbls = {
+            lblEmpNombre: { es: 'Nombre *', en: 'Name *' },
+            lblEmpTelefono: { es: 'Teléfono *', en: 'Phone *' },
+            lblEmpEmail: { es: 'Email', en: 'Email' },
+            lblEmpTarifa: { es: 'Tarifa/h ($) *', en: 'Hourly rate ($) *' },
+            lblEmpCargo: { es: 'Cargo *', en: 'Position *' },
+            lblEmpUsuario: { es: 'Usuario *', en: 'Username *' },
+            lblEmpPassword: { es: 'Contraseña *', en: 'Password *' },
+            lblEmpEstado: { es: 'Estado', en: 'Status' },
+            // Clientes
+            lblCliNombre: { es: 'Nombre *', en: 'Name *' },
+            lblCliDireccion: { es: 'Dirección *', en: 'Address *' },
+            lblCliTelefono: { es: 'Teléfono *', en: 'Phone *' },
+            lblCliEmail: { es: 'Email', en: 'Email' },
+            lblCliServicio: { es: 'Tipo de Servicio Regular', en: 'Regular Service Type' },
+            lblCliCosto: { es: 'Costo del Servicio ($)', en: 'Service Cost ($)' },
+            lblCliDias: { es: '📆 Días de servicio', en: '📆 Service days' },
+            lblCliFrecuencia: { es: '🔄 Frecuencia del servicio', en: '🔄 Service frequency' },
+            lblCliFechaInicio: { es: '📆 Fecha de inicio del servicio', en: '📆 Service start date' },
+            lblCliSemanaQuincenal: { es: '📌 ¿Qué semana le toca?', en: '📌 Which week?' },
+            lblCliInfoMensual: { es: '📌 Información', en: '📌 Information' },
+            lblCliTipoCodigo: { es: '🔑 Tipo de Código de Acceso', en: '🔑 Access Code Type' },
+            lblCliCodigo: { es: '🔢 Código / Número', en: '🔢 Code / Number' },
+            lblCliInstrucciones: { es: '📝 Instrucciones especiales de ingreso', en: '📝 Special entry instructions' }
+        };
+        
+        Object.keys(lbls).forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = idiomaActual === 'en' ? lbls[id].en : lbls[id].es;
+        });
+        
+        // Traducir opciones del select de servicio
+        const selServicio = document.getElementById('cliServicio');
+        if (selServicio) {
+            const opcs = selServicio.querySelectorAll('option');
+            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? 'Regular' : 'Regular';
+            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? 'Deep Clean' : 'Profunda';
+            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? 'Construction' : 'Construcción';
+            if (opcs[3]) opcs[3].textContent = idiomaActual === 'en' ? 'Special' : 'Especial';
+        }
+        
+        // Traducir opciones de frecuencia del cliente
+        const selFrecuencia = document.getElementById('cliFrecuencia');
+        if (selFrecuencia) {
+            const opcs = selFrecuencia.querySelectorAll('option');
+            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? '📅 Weekly (every week)' : '📅 Semanal (todas las semanas)';
+            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? '📅 Bi-weekly (every other week)' : '📅 Quincenal (semana sí, semana no)';
+            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? '📅 Monthly (once a month)' : '📅 Mensual (una vez al mes)';
+        }
+        
+        // Traducir opciones del tipo de código de acceso
+        const selTipoCodigo = document.getElementById('cliTipoCodigo');
+        if (selTipoCodigo) {
+            const opcs = selTipoCodigo.querySelectorAll('option');
+            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? '-- No code --' : '-- Sin código --';
+            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? 'Alarm' : 'Alarma';
+            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? 'Lock code' : 'Cerradura con clave';
+            if (opcs[3]) opcs[3].textContent = idiomaActual === 'en' ? 'Lockbox' : 'Lockbox (caja de llaves)';
+            if (opcs[4]) opcs[4].textContent = idiomaActual === 'en' ? 'Physical key' : 'Llave física';
+            if (opcs[5]) opcs[5].textContent = idiomaActual === 'en' ? 'Doorman/Reception' : 'Portero/Recepción';
+            if (opcs[6]) opcs[6].textContent = idiomaActual === 'en' ? 'Other' : 'Otro';
+        }
+        
+        // Botones de guardar/limpiar en formularios
+        const btnGuardarEmp = document.querySelector('#formEmpleado button[type="submit"]');
+        if (btnGuardarEmp) btnGuardarEmp.textContent = t('btn_guardar');
+        const btnLimpiarEmp = document.querySelector('#formEmpleado button[type="reset"]');
+        if (btnLimpiarEmp) btnLimpiarEmp.textContent = t('btn_limpiar');
+        
+        const btnGuardarCli = document.getElementById('btnGuardarCliente');
+        if (btnGuardarCli) {
+            const estaEditando = document.getElementById('cliEditId').value;
+            if (estaEditando) {
+                btnGuardarCli.textContent = t('btn_actualizar_cliente');
+            } else {
+                btnGuardarCli.textContent = t('btn_guardar');
+            }
+        }
+        const btnLimpiarCli = document.querySelector('#formCliente button[type="button"]');
+        if (btnLimpiarCli) btnLimpiarCli.textContent = t('btn_limpiar_nuevo');
         // Re-renderizar todo lo dinámico
         if (firebaseListo) {
             renderAgendaDiaria();
