@@ -1899,35 +1899,67 @@
         return { inicio: lunes.toISOString().slice(0,10), fin: domingo.toISOString().slice(0,10) };
     }
 
-    function cargarDatosBoleta() {
-        const data = getData();
-        const empId = document.getElementById('boletaEmpleado').value;
-        const semana = document.getElementById('boletaSemana').value;
-        const tipoPago = document.getElementById('boletaTipoPago').value;
-        
-        if (!empId || !semana) {
-            document.getElementById('boletaPreview').classList.add('hidden');
-            return;
-        }
-        
-        const { inicio, fin } = obtenerRangoSemana(semana);
-        const emp = data.empleados.find(e => e.id === empId);
-        if (!emp) return;
-        
-        const jornadas = data.jornadas.filter(j => 
-            j.empleadoId === empId && 
-            j.estado === 'completado' && 
-            j.fecha >= inicio && 
-            j.fecha <= fin
-        );
-        
-        let totalHoras = 0;
-        jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
-        const bruto = totalHoras * emp.tarifa;
-        
-        // ⚠️⚠️ DESCUENTOS SOLO SI ES CHEQUE
-        let descuento = 0;
-        if (tipoPago === 'cheque') {
+   function cargarDatosBoleta() {
+    const data = getData();
+    const empId = document.getElementById('boletaEmpleado').value;
+    const semana = document.getElementById('boletaSemana').value;
+    const tipoPago = document.getElementById('boletaTipoPago').value;
+    
+    if (!empId || !semana) {
+        document.getElementById('boletaPreview').classList.add('hidden');
+        return;
+    }
+    
+    const { inicio, fin } = obtenerRangoSemana(semana);
+    const emp = data.empleados.find(e => e.id === empId);
+    if (!emp) return;
+    
+    const jornadas = data.jornadas.filter(j => 
+        j.empleadoId === empId && 
+        j.estado === 'completado' && 
+        j.fecha >= inicio && 
+        j.fecha <= fin
+    );
+    
+    let totalHoras = 0;
+    jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
+    const bruto = totalHoras * emp.tarifa;
+    
+    // ⚠️⚠️ DESCUENTOS SOLO SI ES CHEQUE
+    let descuento = 0;
+    if (tipoPago === 'cheque') {
+        descuento = calcularDescuentos(bruto, data.config);
+    }
+    const neto = bruto - descuento;
+
+    let html = `<div class="boleta-pdf-preview">`;
+    html += `<h4 style="text-align:center;">${data.config.empresa || 'Mi Empresa'}</h4>`;
+    html += `<p style="text-align:center;"><strong>BOLETA DE PAGO</strong></p>`;
+    html += `<p><strong>Empleado:</strong> ${emp.nombre}</p>`;
+    html += `<p><strong>Semana:</strong> ${formatoFecha(inicio)} al ${formatoFecha(fin)}</p>`;
+    
+    if (tipoPago === 'efectivo') {
+        html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>💵 PAGO EN EFECTIVO — SIN DESCUENTOS</strong></p>`;
+    } else {
+        html += `<p style="background:#fff3cd; padding:8px; border-radius:6px; color:#856404;"><strong>📄 PAGO CON CHEQUE — CON DESCUENTOS DE LEY</strong></p>`;
+    }
+    
+    html += `<hr>`;
+    html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">`;
+    
+    html += `<div><h5>📋 Detalle de Horas</h5><table>`;
+    html += `<tr><th>Fecha</th><th>Cliente</th><th>Horas</th><th>Monto</th></tr>`;
+    jornadas.forEach(j => {
+        const cli = data.clientes.find(c => c.id === j.clienteId);
+        const horas = calcularHoras(j.horaEntrada, j.horaSalida);
+        const monto = horas * emp.tarifa;
+        html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : 'N/A'}</td><td>${horas.toFixed(2)}h</td><td class="text-right">$${monto.toFixed(2)}</td></tr>`;
+    });
+    html += `<tr><td colspan="3"><strong>Total Horas</strong></td><td class="text-right"><strong>${totalHoras.toFixed(2)}h</strong></td></tr>`;
+    html += `<tr><td colspan="3"><strong>Subtotal</strong></td><td class="text-right"><strong>$${bruto.toFixed(2)}</strong></td></tr>`;
+    html += `</table></div>`;
+    
+    if (tipoPago === 'cheque') {
         html += `<div><h5>📊 Descuentos de Ley</h5><table>`;
         const cfg = data.config;
         html += `<tr><th>Concepto</th><th>%</th><th>Monto</th></tr>`;
@@ -1936,54 +1968,20 @@
         html += `<tr><td colspan="2"><strong>Total Descuentos</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
         html += `<tr><td colspan="2"><strong>Neto a Pagar</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
         html += `</table></div>`;
-        }
-        if (tipoPago === 'efectivo') {
-            html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>💵 PAGO EN EFECTIVO — SIN DESCUENTOS</strong></p>`;
-        } else {
-            html += `<p style="background:#fff3cd; padding:8px; border-radius:6px; color:#856404;"><strong>📄 PAGO CON CHEQUE — CON DESCUENTOS DE LEY</strong></p>`;
-        }
-        
-        html += `<hr>`;
-        html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">`;
-        
-        html += `<div><h5>📋 Detalle de Horas</h5><table>`;
-        html += `<tr><th>Fecha</th><th>Cliente</th><th>Horas</th><th>Monto</th></tr>`;
-        jornadas.forEach(j => {
-            const cli = data.clientes.find(c => c.id === j.clienteId);
-            const horas = calcularHoras(j.horaEntrada, j.horaSalida);
-            const monto = horas * emp.tarifa;
-            html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : 'N/A'}</td><td>${horas.toFixed(2)}h</td><td class="text-right">$${monto.toFixed(2)}</td></tr>`;
-        });
-        html += `<tr><td colspan="3"><strong>Total Horas</strong></td><td class="text-right"><strong>${totalHoras.toFixed(2)}h</strong></td></tr>`;
-        html += `<tr><td colspan="3"><strong>Subtotal</strong></td><td class="text-right"><strong>$${bruto.toFixed(2)}</strong></td></tr>`;
-        html += `</table></div>`;
-        
-        if (tipoPago === 'cheque') {
-            html += `<div><h5>📊 Descuentos de Ley</h5><table>`;
-            const cfg = data.config;
-            html += `<tr><th>Concepto</th><th>%</th><th>Monto</th></tr>`;
-            html += `<tr><td>FICA</td><td>${cfg.FICA || 0}%</td><td class="text-right">$${((bruto * (cfg.FICA || 0)) / 100).toFixed(2)}</td></tr>`;
-            html += `<tr><td>Medicare</td><td>${cfg.Medicare || 0}%</td><td class="text-right">$${((bruto * (cfg.Medicare || 0)) / 100).toFixed(2)}</td></tr>`;
-            html += `<tr><td>SUI</td><td>${cfg.SUI || 0}%</td><td class="text-right">$${((bruto * (cfg.SUI || 0)) / 100).toFixed(2)}</td></tr>`;
-            html += `<tr><td>FUTA</td><td>${cfg.FUTA || 0}%</td><td class="text-right">$${((bruto * (cfg.FUTA || 0)) / 100).toFixed(2)}</td></tr>`;
-            html += `<tr><td colspan="2"><strong>Total Descuentos</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
-            html += `<tr><td colspan="2"><strong>Neto a Pagar</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
-            html += `</table></div>`;
-        } else {
-            html += `<div><h5>📊 Descuentos</h5><table>`;
-            html += `<tr><td style="text-align:center; color:#0d7a3e; padding:20px; font-size:1rem;">✅ Sin descuentos<br><small>(Pago en efectivo)</small></td></tr>`;
-            html += `</table>`;
-            html += `<div style="margin-top:15px; padding:10px; background:#d4edda; border-radius:6px; text-align:center;">`;
-            html += `<strong style="color:#0d7a3e;">💰 TOTAL A PAGAR: $${neto.toFixed(2)}</strong>`;
-            html += `</div></div>`;
-        }
-        
+    } else {
+        html += `<div><h5>📊 Descuentos</h5><table>`;
+        html += `<tr><td style="text-align:center; color:#0d7a3e; padding:20px; font-size:1rem;">✅ Sin descuentos<br><small>(Pago en efectivo)</small></td></tr>`;
+        html += `</table>`;
+        html += `<div style="margin-top:15px; padding:10px; background:#d4edda; border-radius:6px; text-align:center;">`;
+        html += `<strong style="color:#0d7a3e;">💰 TOTAL A PAGAR: $${neto.toFixed(2)}</strong>`;
         html += `</div></div>`;
-        
-        document.getElementById('boletaContenido').innerHTML = html;
-        document.getElementById('boletaPreview').classList.remove('hidden');
     }
-
+    
+    html += `</div></div>`;
+    
+    document.getElementById('boletaContenido').innerHTML = html;
+    document.getElementById('boletaPreview').classList.remove('hidden');
+}
     function generarBoleta() {
         const data = getData();
         const empId = document.getElementById('boletaEmpleado').value;
