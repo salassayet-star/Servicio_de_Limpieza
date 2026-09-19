@@ -537,10 +537,8 @@
             <h2>⚙️ Configuración</h2>
             <form onsubmit="guardarConfig(event)">
                 <div class="config-grid form-grid">
-                    <div class="form-group"><label>FICA %</label><input type="number" id="cfgFICA" step="0.01" value="6.2"></div>
+                    <div class="form-group"><label>Social Security (FICA) %</label><input type="number" id="cfgFICA" step="0.01" value="6.2"></div>
                     <div class="form-group"><label>Medicare %</label><input type="number" id="cfgMedicare" step="0.01" value="1.45"></div>
-                    <div class="form-group"><label>SUI %</label><input type="number" id="cfgSUI" step="0.01" value="2.95"></div>
-                    <div class="form-group"><label>FUTA %</label><input type="number" id="cfgFUTA" step="0.01" value="0.6"></div>
                     <div class="form-group"><label>Empresa</label><input type="text" id="cfgEmpresa" placeholder="Mi Empresa"></div>
                 </div>
                 <button type="submit" class="btn btn-primary">💾 Guardar</button>
@@ -810,8 +808,8 @@
     }
 
     function calcularDescuentos(monto, config) {
-        const total = (config.FICA || 0) + (config.Medicare || 0) + (config.SUI || 0) + (config.FUTA || 0);
-        return (monto * total) / 100;
+    const total = (config.FICA || 0) + (config.Medicare || 0);
+    return (monto * total) / 100;
     }
 
     function etiquetaTipoCodigo(tipo) {
@@ -1092,14 +1090,14 @@
     }
 
     function renderResumenDescuentos(data) {
-        const el = document.getElementById('resumenDescuentos');
-        if (!el) return;
-        const cfg = data.config;
-        const total = (cfg.FICA || 0) + (cfg.Medicare || 0) + (cfg.SUI || 0) + (cfg.FUTA || 0);
-        el.innerHTML = `Total descuentos: ${total}%`;
-        const empEl = document.getElementById('cfgEmpresa');
-        if (empEl) empEl.value = cfg.empresa || 'Mi Empresa';
-    }
+    const el = document.getElementById('resumenDescuentos');
+    if (!el) return;
+    const cfg = data.config;
+    const total = (cfg.FICA || 0) + (cfg.Medicare || 0);
+    el.innerHTML = `<strong>Total descuentos: ${total}%</strong> · Social Security (${cfg.FICA || 0}%) + Medicare (${cfg.Medicare || 0}%)`;
+    const empEl = document.getElementById('cfgEmpresa');
+    if (empEl) empEl.value = cfg.empresa || 'Mi Empresa';
+}
 
     function renderSelectsBoleta(data) {
         const select = document.getElementById('boletaEmpleado');
@@ -1930,16 +1928,15 @@
         // ⚠️⚠️ DESCUENTOS SOLO SI ES CHEQUE
         let descuento = 0;
         if (tipoPago === 'cheque') {
-            descuento = calcularDescuentos(bruto, data.config);
+        html += `<div><h5>📊 Descuentos de Ley</h5><table>`;
+        const cfg = data.config;
+        html += `<tr><th>Concepto</th><th>%</th><th>Monto</th></tr>`;
+        html += `<tr><td>Social Security (FICA)</td><td>${cfg.FICA || 0}%</td><td class="text-right">$${((bruto * (cfg.FICA || 0)) / 100).toFixed(2)}</td></tr>`;
+        html += `<tr><td>Medicare</td><td>${cfg.Medicare || 0}%</td><td class="text-right">$${((bruto * (cfg.Medicare || 0)) / 100).toFixed(2)}</td></tr>`;
+        html += `<tr><td colspan="2"><strong>Total Descuentos</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
+        html += `<tr><td colspan="2"><strong>Neto a Pagar</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
+        html += `</table></div>`;
         }
-        const neto = bruto - descuento;
-
-        let html = `<div class="boleta-pdf-preview">`;
-        html += `<h4 style="text-align:center;">${data.config.empresa || 'Mi Empresa'}</h4>`;
-        html += `<p style="text-align:center;"><strong>BOLETA DE PAGO</strong></p>`;
-        html += `<p><strong>Empleado:</strong> ${emp.nombre}</p>`;
-        html += `<p><strong>Semana:</strong> ${formatoFecha(inicio)} al ${formatoFecha(fin)}</p>`;
-        
         if (tipoPago === 'efectivo') {
             html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>💵 PAGO EN EFECTIVO — SIN DESCUENTOS</strong></p>`;
         } else {
@@ -2323,20 +2320,18 @@
     // ============================================================
     // CONFIG
     // ============================================================
-    function guardarConfig(e) {
-        e.preventDefault();
-        const config = {
-            FICA: parseFloat(document.getElementById('cfgFICA').value) || 0,
-            Medicare: parseFloat(document.getElementById('cfgMedicare').value) || 0,
-            SUI: parseFloat(document.getElementById('cfgSUI').value) || 0,
-            FUTA: parseFloat(document.getElementById('cfgFUTA').value) || 0,
-            empresa: document.getElementById('cfgEmpresa').value || 'Mi Empresa'
-        };
-        datosGlobales.config = config;
-        guardarEnFirebase();
-        renderAll();
-        alert('✅ Config guardada');
-    }
+   function guardarConfig(e) {
+    e.preventDefault();
+    const config = {
+        FICA: parseFloat(document.getElementById('cfgFICA').value) || 0,
+        Medicare: parseFloat(document.getElementById('cfgMedicare').value) || 0,
+        empresa: document.getElementById('cfgEmpresa').value || 'Mi Empresa'
+    };
+    datosGlobales.config = config;
+    guardarEnFirebase();
+    renderAll();
+    alert('✅ Config guardada');
+}
 
     // ============================================================
     // UI / MODAL / TABS
