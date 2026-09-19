@@ -3003,7 +3003,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         const misJornadas = data.jornadas.filter(j => j.empleadoId === empleadoActual.id && j.estado === 'pendiente');
         const container = document.getElementById('misTrabajosActivos');
         if (misJornadas.length === 0) {
-            container.innerHTML = '<p style="color:#4a5568;">${t('msg_sin_trabajos')}</p>';
+            container.innerHTML = `<p style="color:#4a5568;">${t('msg_sin_trabajos')}</p>`;
             return;
         }
         container.innerHTML = misJornadas.map(j => {
@@ -3101,7 +3101,7 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
         const misJornadas = data.jornadas.filter(j => j.empleadoId === empleadoActual.id && j.estado === 'completado');
         const container = document.getElementById('historialEmpleado');
         if (misJornadas.length === 0) {
-            container.innerHTML = '<p style="color:#4a5568;">${t('msg_sin_historial')}</p>';
+            container.innerHTML = `<p style="color:#4a5568;">${t('msg_sin_historial')}</p>`;
             return;
         }
         let totalHoras = 0;
