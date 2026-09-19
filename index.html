@@ -506,7 +506,7 @@
             <p style="color:#4a5568; margin-bottom:15px;"><strong>Solo el administrador</strong> genera boletas. Descuentos <strong>solo</strong> cuando el pago es con cheque.</p>
             <div class="form-grid">
                 <div class="form-group"><label>Empleado</label><select id="boletaEmpleado" onchange="cargarDatosBoleta()"></select></div>
-                <div class="form-group"><label>Semana</label><input type="week" id="boletaSemana" onchange="cargarDatosBoleta()"></div>
+               <div class="form-group"><label>Semana (elige cualquier fecha)</label><input type="date" id="boletaSemana" onchange="cargarDatosBoleta()"></div>
                 <div class="form-group"><label>Tipo de Pago</label>
                     <select id="boletaTipoPago" onchange="cargarDatosBoleta()">
                         <option value="efectivo">💵 Efectivo (sin descuentos)</option>
@@ -1888,8 +1888,10 @@
     // ============================================================
     // BOLETAS (CORREGIDO: descuentos SOLO con cheque)
     // ============================================================
-    function obtenerRangoSemana(semana) {
-        const [year, week] = semana.split('-W').map(Number);
+   function obtenerRangoSemana(valor) {
+    // Si es formato semana (2026-W38)
+    if (typeof valor === 'string' && valor.includes('-W')) {
+        const [year, week] = valor.split('-W').map(Number);
         const firstDay = new Date(year, 0, 1 + (week - 1) * 7);
         const dayOffset = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
         const lunes = new Date(firstDay);
@@ -1898,6 +1900,15 @@
         domingo.setDate(lunes.getDate() + 6);
         return { inicio: lunes.toISOString().slice(0,10), fin: domingo.toISOString().slice(0,10) };
     }
+    // Si es formato fecha (2026-09-18)
+    const fecha = new Date(valor + 'T00:00:00');
+    const diaSemana = fecha.getDay();
+    const lunes = new Date(fecha);
+    lunes.setDate(fecha.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
+    const domingo = new Date(lunes);
+    domingo.setDate(lunes.getDate() + 6);
+    return { inicio: lunes.toISOString().slice(0,10), fin: domingo.toISOString().slice(0,10) };
+}
 
    function cargarDatosBoleta() {
     const data = getData();
@@ -1982,6 +1993,98 @@
     document.getElementById('boletaContenido').innerHTML = html;
     document.getElementById('boletaPreview').classList.remove('hidden');
 }
+        function cargarDatosBoleta() {
+        const data = getData();
+        const empId = document.getElementById('boletaEmpleado').value;
+        const semana = document.getElementById('boletaSemana').value;
+        const tipoPago = document.getElementById('boletaTipoPago').value;
+        
+        if (!empId || !semana) {
+            document.getElementById('boletaPreview').classList.add('hidden');
+            return;
+        }
+        
+        const { inicio, fin } = obtenerRangoSemana(semana);
+        const emp = data.empleados.find(e => e.id === empId);
+        if (!emp) return;
+        
+        const jornadas = data.jornadas.filter(j => 
+            j.empleadoId === empId && 
+            j.estado === 'completado' && 
+            j.fecha >= inicio && 
+            j.fecha <= fin
+        );
+        
+        let totalHoras = 0;
+        jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
+        const bruto = totalHoras * emp.tarifa;
+        
+        // ⚠️ DESCUENTOS SOLO SI ES CHEQUE
+        let descuento = 0;
+        if (tipoPago === 'cheque') {
+            descuento = calcularDescuentos(bruto, data.config);
+        }
+        const neto = bruto - descuento;
+
+        let html = `<div class="boleta-pdf-preview">`;
+        html += `<h4 style="text-align:center;">${data.config.empresa || 'Mi Empresa'}</h4>`;
+        html += `<p style="text-align:center;"><strong>BOLETA DE PAGO</strong></p>`;
+        html += `<p><strong>Empleado:</strong> ${emp.nombre}</p>`;
+        html += `<p><strong>Semana:</strong> ${formatoFecha(inicio)} al ${formatoFecha(fin)}</p>`;
+        
+        if (tipoPago === 'efectivo') {
+            html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>💵 PAGO EN EFECTIVO — SIN DESCUENTOS</strong></p>`;
+        } else {
+            html += `<p style="background:#fff3cd; padding:8px; border-radius:6px; color:#856404;"><strong>📄 PAGO CON CHEQUE — CON DESCUENTOS DE LEY</strong></p>`;
+        }
+        
+        html += `<hr>`;
+        html += `<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">`;
+        
+        // Columna izquierda: Detalle de horas
+        html += `<div><h5>📋 Detalle de Horas</h5><table>`;
+        html += `<tr><th>Fecha</th><th>Cliente</th><th>Horas</th><th>Monto</th></tr>`;
+        
+        if (jornadas.length === 0) {
+            html += `<tr><td colspan="4" style="text-align:center; padding:20px; color:#856404;">⚠️ No hay jornadas completadas en esta semana</td></tr>`;
+        } else {
+            jornadas.forEach(j => {
+                const cli = data.clientes.find(c => c.id === j.clienteId);
+                const horas = calcularHoras(j.horaEntrada, j.horaSalida);
+                const monto = horas * emp.tarifa;
+                html += `<tr><td>${formatoFecha(j.fecha)}</td><td>${cli ? cli.nombre : 'N/A'}</td><td>${horas.toFixed(2)}h</td><td class="text-right">$${monto.toFixed(2)}</td></tr>`;
+            });
+        }
+        
+        html += `<tr><td colspan="3"><strong>Total Horas</strong></td><td class="text-right"><strong>${totalHoras.toFixed(2)}h</strong></td></tr>`;
+        html += `<tr><td colspan="3"><strong>Subtotal</strong></td><td class="text-right"><strong>$${bruto.toFixed(2)}</strong></td></tr>`;
+        html += `</table></div>`;
+        
+        // Columna derecha: Descuentos (solo si es cheque)
+        if (tipoPago === 'cheque') {
+            html += `<div><h5>📊 Descuentos de Ley</h5><table>`;
+            const cfg = data.config;
+            html += `<tr><th>Concepto</th><th>%</th><th>Monto</th></tr>`;
+            html += `<tr><td>Social Security (FICA)</td><td>${cfg.FICA || 0}%</td><td class="text-right">$${((bruto * (cfg.FICA || 0)) / 100).toFixed(2)}</td></tr>`;
+            html += `<tr><td>Medicare</td><td>${cfg.Medicare || 0}%</td><td class="text-right">$${((bruto * (cfg.Medicare || 0)) / 100).toFixed(2)}</td></tr>`;
+            html += `<tr><td colspan="2"><strong>Total Descuentos</strong></td><td class="text-right"><strong>$${descuento.toFixed(2)}</strong></td></tr>`;
+            html += `<tr><td colspan="2"><strong>Neto a Pagar</strong></td><td class="text-right"><strong>$${neto.toFixed(2)}</strong></td></tr>`;
+            html += `</table></div>`;
+        } else {
+            html += `<div><h5>📊 Descuentos</h5><table>`;
+            html += `<tr><td style="text-align:center; color:#0d7a3e; padding:20px; font-size:1rem;">✅ Sin descuentos<br><small>(Pago en efectivo)</small></td></tr>`;
+            html += `</table>`;
+            html += `<div style="margin-top:15px; padding:10px; background:#d4edda; border-radius:6px; text-align:center;">`;
+            html += `<strong style="color:#0d7a3e;">💰 TOTAL A PAGAR: $${neto.toFixed(2)}</strong>`;
+            html += `</div></div>`;
+        }
+        
+        html += `</div></div>`;
+        
+        document.getElementById('boletaContenido').innerHTML = html;
+        document.getElementById('boletaPreview').classList.remove('hidden');
+    }
+
     function generarBoleta() {
         const data = getData();
         const empId = document.getElementById('boletaEmpleado').value;
@@ -2366,6 +2469,7 @@
     // INIT
     // ============================================================
     document.getElementById('agendaFecha').value = new Date().toISOString().slice(0,10);
+    document.getElementById('boletaSemana').value = new Date().toISOString().slice(0,10);
     document.getElementById('semanaFecha').value = new Date().toISOString().slice(0,10);
     const hoyMes = new Date();
     document.getElementById('mesFecha').value = hoyMes.getFullYear() + '-' + String(hoyMes.getMonth() + 1).padStart(2, '0');
