@@ -229,12 +229,12 @@
             <p style="color:#4a5568; margin-bottom:15px;">Clientes que tocan según sus días y frecuencia programados.</p>
             
             <div class="agenda-header">
-                <div class="agenda-fecha">
-    <label style="font-weight:600;" id="labelAgendaFecha">📆 Fecha:</label>
-    <input type="date" id="agendaFecha" onchange="renderAgendaDiaria()">
-    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(-1)" id="btnAgendaAnterior">◀️ Anterior</button>
-    <button class="btn btn-primary btn-sm" onclick="irHoy()" id="btnAgendaHoy">📌 Hoy</button>
-    <button class="btn btn-secondary btn-sm" onclick="cambiarDia(1)" id="btnAgendaSiguiente">Siguiente ▶️</button>
+            <div class="agenda-fecha">
+    <label style="font-weight:600;" id="labelSemana">📆 Semana de:</label>
+    <input type="date" id="semanaFecha" onchange="renderSemana()">
+    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(-1)" id="btnSemanaAnterior">◀️ Anterior</button>
+    <button class="btn btn-primary btn-sm" onclick="irSemanaActual()" id="btnSemanaActual">📌 Actual</button>
+    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(1)" id="btnSemanaSiguiente">Siguiente ▶️</button>
 </div>
                 <div class="agenda-resumen" id="agendaResumen"></div>
             </div>
@@ -248,13 +248,13 @@
             <p style="color:#4a5568; margin-bottom:15px;">Días programados de cada cliente. Haz clic en cualquier día para <strong>activar/cancelar</strong>.</p>
             
             <div class="agenda-header">
-                <div class="agenda-fecha">
-                    <label style="font-weight:600;">📆 Semana de:</label>
-                    <input type="date" id="semanaFecha" onchange="renderSemana()">
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(-1)">◀️ Anterior</button>
-                    <button class="btn btn-primary btn-sm" onclick="irSemanaActual()">📌 Actual</button>
-                    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(1)">Siguiente ▶️</button>
-                </div>
+               <div class="agenda-fecha">
+    <label style="font-weight:600;" id="labelMes">📆 Mes:</label>
+    <input type="month" id="mesFecha" onchange="renderMes()">
+    <button class="btn btn-secondary btn-sm" onclick="cambiarMes(-1)" id="btnMesAnterior">◀️ Anterior</button>
+    <button class="btn btn-primary btn-sm" onclick="irMesActual()" id="btnMesActual">📌 Actual</button>
+    <button class="btn btn-secondary btn-sm" onclick="cambiarMes(1)" id="btnMesSiguiente">Siguiente ▶️</button>
+</div>
             </div>
 
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
@@ -294,9 +294,9 @@
             <div id="mesContenido"></div>
         </div>
 
-        <!-- TAB EMPLEADOS -->
+   <!-- TAB EMPLEADOS -->
         <div class="tab-content" id="tab-admin-empleados">
-            <h2>👤 Gestión de Empleados</h2>
+            <h2 id="tituloEmpleados">👤 Gestión de Empleados</h2>
             <form id="formEmpleado" onsubmit="guardarEmpleado(event)">
                 <div class="form-grid">
                     <div class="form-group"><label>Nombre *</label><input type="text" id="empNombre" required></div>
@@ -330,9 +330,9 @@
             </div>
         </div>
 
-        <!-- TAB CLIENTES -->
+     <!-- TAB CLIENTES -->
         <div class="tab-content" id="tab-admin-clientes">
-            <h2>🏢 Gestión de Clientes</h2>
+            <h2 id="tituloClientes">🏢 Gestión de Clientes</h2>
             <p style="color:#4a5568; margin-bottom:15px;">Edita cualquier cliente con el botón ✏️ si solicitan cambios.</p>
             
             <form id="formCliente" onsubmit="guardarCliente(event)">
@@ -488,9 +488,9 @@
             <button class="btn btn-warning" onclick="registrarPagoCliente()">💰 Registrar Pago Manual</button>
         </div>
 
-        <!-- TAB JORNADAS -->
+       <!-- TAB JORNADAS -->
         <div class="tab-content" id="tab-admin-jornadas">
-            <h2>📋 Monitoreo de Jornadas</h2>
+            <h2 id="tituloJornadas">📋 Monitoreo de Jornadas</h2>
             <p style="color:#4a5568; margin-bottom:15px;">Los empleados marcan entrada/salida con <strong>geolocalización</strong>. Puedes modificar las horas aquí.</p>
             <button class="btn btn-success" onclick="exportarExcelJornadas()">📊 Exportar Excel</button>
             <div class="table-wrapper">
@@ -1190,7 +1190,7 @@
         });
         
         // Stats
-        const statsCards = document.querySelectorAll('.admin-dashboard .stat-card .label');
+        const statsCards = document.querySelectorAll('.stat-card .label');
         const statsMap = ['stat_empleados', 'stat_clientes', 'stat_jornadas', 'stat_ingresos'];
         statsCards.forEach((label, i) => {
             if (label && statsMap[i]) label.textContent = t(statsMap[i]);
@@ -1222,6 +1222,35 @@
                 if (h2) h2.textContent = t(item.key);
             }
         });
+                // === TÍTULOS DE SECCIONES ===
+        const tituloEmpleados = document.getElementById('tituloEmpleados');
+        if (tituloEmpleados) tituloEmpleados.textContent = idiomaActual === 'en' ? '👤 Employee Management' : '👤 Gestión de Empleados';
+        
+        const tituloClientes = document.getElementById('tituloClientes');
+        if (tituloClientes) tituloClientes.textContent = idiomaActual === 'en' ? '🏢 Client Management' : '🏢 Gestión de Clientes';
+        
+        const tituloJornadas = document.getElementById('tituloJornadas');
+        if (tituloJornadas) tituloJornadas.textContent = idiomaActual === 'en' ? '📋 Job Monitoring' : '📋 Monitoreo de Jornadas';
+        
+        // === SEMANA ===
+        const labelSemana = document.getElementById('labelSemana');
+        if (labelSemana) labelSemana.textContent = idiomaActual === 'en' ? '📆 Week of:' : '📆 Semana de:';
+        const btnSemanaAnterior = document.getElementById('btnSemanaAnterior');
+        if (btnSemanaAnterior) btnSemanaAnterior.textContent = idiomaActual === 'en' ? '◀️ Previous' : '◀️ Anterior';
+        const btnSemanaActual = document.getElementById('btnSemanaActual');
+        if (btnSemanaActual) btnSemanaActual.textContent = idiomaActual === 'en' ? '📌 Current' : '📌 Actual';
+        const btnSemanaSiguiente = document.getElementById('btnSemanaSiguiente');
+        if (btnSemanaSiguiente) btnSemanaSiguiente.textContent = idiomaActual === 'en' ? 'Next ▶️' : 'Siguiente ▶️';
+        
+        // === MES ===
+        const labelMes = document.getElementById('labelMes');
+        if (labelMes) labelMes.textContent = idiomaActual === 'en' ? '📆 Month:' : '📆 Mes:';
+        const btnMesAnterior = document.getElementById('btnMesAnterior');
+        if (btnMesAnterior) btnMesAnterior.textContent = idiomaActual === 'en' ? '◀️ Previous' : '◀️ Anterior';
+        const btnMesActual = document.getElementById('btnMesActual');
+        if (btnMesActual) btnMesActual.textContent = idiomaActual === 'en' ? '📌 Current' : '📌 Actual';
+        const btnMesSiguiente = document.getElementById('btnMesSiguiente');
+        if (btnMesSiguiente) btnMesSiguiente.textContent = idiomaActual === 'en' ? 'Next ▶️' : 'Siguiente ▶️';
         
         // Re-renderizar todo lo dinámico
         if (firebaseListo) {
