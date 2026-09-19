@@ -1421,34 +1421,11 @@ if (btnModo) btnModo.textContent = idiomaActual === 'en' ? '🌙 Mode' : '🌙 M
             if (el) el.textContent = idiomaActual === 'en' ? lbls[id].en : lbls[id].es;
         });
         
-        // Opciones del select de servicio
-        const selServicio = document.getElementById('cliServicio');
-        if (selServicio) {
-            const opcs = selServicio.querySelectorAll('option');
-            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? 'Regular' : 'Regular';
-            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? 'Deep Clean' : 'Profunda';
-            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? 'Construction' : 'Construcción';
-            if (opcs[3]) opcs[3].textContent = idiomaActual === 'en' ? 'Special' : 'Especial';
-        }
         
-        // Opciones del select de frecuencia
-        const selFrecuencia = document.getElementById('cliFrecuencia');
-        if (selFrecuencia) {
-            const opcs = selFrecuencia.querySelectorAll('option');
-            if (opcs[0]) opcs[0].textContent = idiomaActual === 'en' ? '📅 Weekly (every week)' : '📅 Semanal (todas las semanas)';
-            if (opcs[1]) opcs[1].textContent = idiomaActual === 'en' ? '📅 Bi-weekly (every other week)' : '📅 Quincenal (semana sí, semana no)';
-            if (opcs[2]) opcs[2].textContent = idiomaActual === 'en' ? '📅 Monthly (once a month)' : '📅 Mensual (una vez al mes)';
-        }
         
-        // Opciones del tipo de código
-        const selTipoCodigo = document.getElementById('cliTipoCodigo');
-        if (selTipoCodigo) {
-            const opcs = selTipoCodigo.querySelectorAll('option');
-            const textos = idiomaActual === 'en' 
-                ? ['-- No code --', 'Alarm', 'Lock code', 'Lockbox', 'Physical key', 'Doorman/Reception', 'Other']
-                : ['-- Sin código --', 'Alarma', 'Cerradura con clave', 'Lockbox (caja de llaves)', 'Llave física', 'Portero/Recepción', 'Otro'];
-            opcs.forEach((op, i) => { if (textos[i]) op.textContent = textos[i]; });
-        }
+       
+        
+       
         // Re-renderizar todo lo dinámico
         if (firebaseListo) {
             renderAgendaDiaria();
