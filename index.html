@@ -151,6 +151,83 @@
             .mes-dia { min-height: 70px; padding: 4px; }
         }
         @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
+                /* MODO OSCURO */
+        body.modo-oscuro {
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+        body.modo-oscuro .header {
+            background: linear-gradient(135deg, #0a1929, #0f2b4d);
+        }
+        body.modo-oscuro .tab-content,
+        body.modo-oscuro .login-container,
+        body.modo-oscuro .modal,
+        body.modo-oscuro .stat-card,
+        body.modo-oscuro .tabs {
+            background: #2d3748;
+            color: #e2e8f0;
+        }
+        body.modo-oscuro .tabs {
+            background: #2d3748;
+        }
+        body.modo-oscuro .tab-btn {
+            color: #cbd5e0;
+        }
+        body.modo-oscuro .tab-btn:hover {
+            background: #4a5568;
+        }
+        body.modo-oscuro .tab-btn.active {
+            background: #1a4a7a;
+            color: white;
+        }
+        body.modo-oscuro h2, body.modo-oscuro h3, body.modo-oscuro h4, body.modo-oscuro h5 {
+            color: #e2e8f0;
+        }
+        body.modo-oscuro p {
+            color: #cbd5e0;
+        }
+        body.modo-oscuro .form-group label {
+            color: #e2e8f0;
+        }
+        body.modo-oscuro .form-group input,
+        body.modo-oscuro .form-group select,
+        body.modo-oscuro .form-group textarea {
+            background: #1a202c;
+            color: #e2e8f0;
+            border-color: #4a5568;
+        }
+        body.modo-oscuro table th {
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+        body.modo-oscuro table td {
+            border-bottom-color: #4a5568;
+            color: #e2e8f0;
+        }
+        body.modo-oscuro table tr:hover {
+            background: #4a5568;
+        }
+        body.modo-oscuro .stat-card .number {
+            color: #63b3ed;
+        }
+        body.modo-oscuro .stat-card .label {
+            color: #cbd5e0;
+        }
+        body.modo-oscuro .boleta-box {
+            background: #2d3748;
+            border-color: #4a5568;
+        }
+        body.modo-oscuro .trabajo-card {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        body.modo-oscuro .trabajo-info h4 {
+            color: #e2e8f0;
+        }
+        body.modo-oscuro .trabajo-info p {
+            color: #cbd5e0;
+        }
     </style>
 </head>
 <body>
@@ -3319,14 +3396,17 @@ alert(t('msg_config_guardada'));}
     });
 
     function cambiarModo() {
-        document.body.style.background = document.body.style.background === '#1a202c' ? '#f0f4f8' : '#1a202c';
-        document.body.style.color = document.body.style.color === '#e2e8f0' ? '#1a202c' : '#e2e8f0';
-    }
-
+    const modoOscuro = document.body.classList.toggle('modo-oscuro');
+    localStorage.setItem('clean_modo', modoOscuro ? 'oscuro' : 'claro');
+}
     // ============================================================
     // INIT
     // ============================================================
     aplicarIdioma();
+    // Aplicar modo guardado
+if (localStorage.getItem('clean_modo') === 'oscuro') {
+    document.body.classList.add('modo-oscuro');
+}
     document.getElementById('agendaFecha').value = new Date().toISOString().slice(0,10);
     document.getElementById('boletaSemana').value = new Date().toISOString().slice(0,10);
     document.getElementById('semanaFecha').value = new Date().toISOString().slice(0,10);
