@@ -594,7 +594,7 @@
                 <div id="boletaContenido"></div>
                 <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
                     <button class="btn btn-success" onclick="generarBoleta()">✅ Generar</button>
-                    <button class="btn btn-info" onclick="exportarBoletaPDF()">📄 PDF</button>
+                    <button class="btn btn-info" onclick="exportarBoletaPDF()">🖨️ Imprimir / PDF</button>
                 </div>
             </div>
             <hr style="margin:30px 0;">
@@ -3278,27 +3278,166 @@
         document.getElementById('boletaPreview').classList.add('hidden');
     }
 
-    function exportarBoletaPDF() {
+        function exportarBoletaPDF() {
         const contenido = document.getElementById('boletaContenido').innerHTML;
         if (!contenido) { alert('⚠️ Primero genera la vista previa'); return; }
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4');
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = contenido;
-        const lines = tempDiv.innerText.split('\n').filter(l => l.trim());
-        doc.setFontSize(14);
-        doc.text('Boleta de Pago', 14, 18);
-        doc.setFontSize(9);
-        doc.text('Generado: ' + new Date().toLocaleString(), 14, 24);
-        let y = 34;
-        lines.forEach(line => {
-            if (y > 275) { doc.addPage(); y = 20; }
-            const parts = line.match(/.{1,70}/g) || [line];
-            parts.forEach(p => { doc.text(p, 14, y); y += 5; });
-        });
-        doc.save('boleta.pdf');
+        
+        // Obtener datos del empleado y semana para el título
+        const empId = document.getElementById('boletaEmpleado').value;
+        const semana = document.getElementById('boletaSemana').value;
+        const data = getData();
+        const emp = data.empleados.find(e => e.id === empId);
+        const nombreEmp = emp ? emp.nombre : 'Empleado';
+        const nombreEmpresa = data.config.empresa || 'Mi Empresa';
+        
+        // Crear ventana de impresión
+        const ventanaImpresion = window.open('', '_blank', 'width=900,height=700');
+        
+        ventanaImpresion.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Boleta - ${nombreEmp} - ${nombreEmpresa}</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+                    body {
+                        padding: 20px;
+                        background: white;
+                        color: #1a202c;
+                        font-size: 14px;
+                    }
+                    .boleta-pdf-preview {
+                        max-width: 800px;
+                        margin: 0 auto;
+                        padding: 30px;
+                        border: 2px solid #1a4a7a;
+                        border-radius: 10px;
+                        background: white;
+                    }
+                    .boleta-pdf-preview h4 {
+                        text-align: center;
+                        font-size: 1.5rem;
+                        color: #1a4a7a;
+                        margin-bottom: 10px;
+                    }
+                    .boleta-pdf-preview p {
+                        margin: 8px 0;
+                        font-size: 0.95rem;
+                    }
+                    .boleta-pdf-preview hr {
+                        margin: 15px 0;
+                        border: none;
+                        border-top: 2px solid #1a4a7a;
+                    }
+                    .boleta-pdf-preview h5 {
+                        font-size: 1rem;
+                        color: #1a4a7a;
+                        margin: 10px 0;
+                    }
+                    .boleta-pdf-preview table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 0.85rem;
+                        margin: 10px 0;
+                    }
+                    .boleta-pdf-preview table td,
+                    .boleta-pdf-preview table th {
+                        border: 1px solid #ccc;
+                        padding: 6px 10px;
+                    }
+                    .boleta-pdf-preview table th {
+                        background: #f0f4f8;
+                        color: #1a4a7a;
+                        text-align: left;
+                    }
+                    .boleta-pdf-preview .text-right {
+                        text-align: right;
+                    }
+                    .boleta-pdf-preview strong {
+                        color: #1a4a7a;
+                    }
+                    
+                    /* Botones de acción */
+                    .action-buttons {
+                        text-align: center;
+                        margin: 20px 0;
+                        padding: 15px;
+                        background: #f0f4f8;
+                        border-radius: 10px;
+                    }
+                    .action-buttons button {
+                        padding: 12px 30px;
+                        margin: 0 8px;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                    }
+                    .btn-print {
+                        background: #0d7a3e;
+                        color: white;
+                    }
+                    .btn-print:hover { background: #0a5e30; }
+                    .btn-close {
+                        background: #6c757d;
+                        color: white;
+                    }
+                    .btn-close:hover { background: #5a6268; }
+                    
+                    /* Al imprimir: ocultar botones */
+                    @media print {
+                        .action-buttons { display: none; }
+                        body { padding: 0; }
+                        .boleta-pdf-preview {
+                            border: 1px solid #ccc;
+                            box-shadow: none;
+                            padding: 20px;
+                        }
+                    }
+                    
+                    /* Dos columnas */
+                    .boleta-doble-columna {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 20px;
+                    }
+                    @media print {
+                        .boleta-doble-columna {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 20px;
+                        }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="action-buttons">
+                    <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+                    <button class="btn-close" onclick="window.close()">❌ Cerrar</button>
+                </div>
+                
+                <div class="boleta-pdf-preview">
+                    ${contenido}
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+                    <button class="btn-close" onclick="window.close()">❌ Cerrar</button>
+                </div>
+                
+                <script>
+                    // Enfocar la ventana
+                    window.focus();
+                </script>
+            </body>
+            </html>
+        `);
+        
+        ventanaImpresion.document.close();
     }
-
     // ============================================================
     // EMPLEADO
     // ============================================================
