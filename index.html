@@ -535,9 +535,9 @@
             <button class="tab-btn" data-tab="admin-empleados">👤 Empleados</button>
             <button class="tab-btn" data-tab="admin-clientes">🏢 Clientes</button>
             <button class="tab-btn" data-tab="admin-jornadas">📋 Jornadas</button>
-            <button class="tab-btn" data-tab="admin-boletas">📄 Boletas</button>
+            <button class="tab-btn" data-tab="admin-boletas">📄 Paystubs</button>
             <button class="tab-btn" data-tab="admin-planillas">📊 Planillas</button>
-            <button class="tab-btn" data-tab="admin-config">⚙️ Config</button>
+            <button class="tab-btn" data-tab="admin-config">⚙️ Settings</button>
         </div>
 
         <!-- ===== TAB AGENDA DIARIA ===== -->
@@ -848,6 +848,79 @@
                     <tbody id="tablaBoletas"></tbody>
                 </table>
             </div>
+        </div>
+         
+        <!-- ===== TAB PLANILLAS ===== -->
+        <div class="tab-content" id="tab-admin-planillas">
+            <h2>📊 Planillas de Sueldos y Taxes</h2>
+            <p style="color:#4a5568; margin-bottom:15px;">
+                <strong>📊 Planilla de Sueldos:</strong> Todos los pagos (efectivo + cheque) para control administrativo.<br>
+                <strong>📋 Formulario de Taxes:</strong> Solo pagos con cheque (reportables al IRS).
+            </p>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Tipo de documento</label>
+                    <select id="planillaTipo" onchange="cambiarTipoPlanilla()">
+                        <option value="sueldos">📊 Planilla de Sueldos (todos los pagos)</option>
+                        <option value="taxes">📋 Formulario de Taxes (solo cheques)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Período</label>
+                    <select id="planillaPeriodo" onchange="cambiarPeriodoPlanilla()">
+                        <option value="semanal">Semanal</option>
+                        <option value="quincenal">Quincenal</option>
+                        <option value="mensual" selected>Mensual</option>
+                        <option value="trimestral">Trimestral (Form 941)</option>
+                        <option value="anual">Anual (W-2)</option>
+                        <option value="personalizado">Personalizado</option>
+                    </select>
+                </div>
+                <div class="form-group" id="grupoSemanaPlanilla" style="display:none;">
+                    <label>Semana (elige cualquier fecha)</label>
+                    <input type="date" id="planillaSemana" onchange="generarPlanilla()">
+                </div>
+                <div class="form-group" id="grupoMesPlanilla">
+                    <label>Mes</label>
+                    <input type="month" id="planillaMes" onchange="generarPlanilla()">
+                </div>
+                <div class="form-group" id="grupoTrimestrePlanilla" style="display:none;">
+                    <label>Trimestre</label>
+                    <select id="planillaTrimestre" onchange="generarPlanilla()">
+                        <option value="1">Q1 (Enero - Marzo)</option>
+                        <option value="2">Q2 (Abril - Junio)</option>
+                        <option value="3">Q3 (Julio - Septiembre)</option>
+                        <option value="4">Q4 (Octubre - Diciembre)</option>
+                    </select>
+                </div>
+                <div class="form-group" id="grupoAnioPlanilla" style="display:none;">
+                    <label>Año</label>
+                    <input type="number" id="planillaAnio" value="2026" onchange="generarPlanilla()">
+                </div>
+                <div class="form-group" id="grupoInicioPlanilla" style="display:none;">
+                    <label>Fecha inicio</label>
+                    <input type="date" id="planillaFechaInicio" onchange="generarPlanilla()">
+                </div>
+                <div class="form-group" id="grupoFinPlanilla" style="display:none;">
+                    <label>Fecha fin</label>
+                    <input type="date" id="planillaFechaFin" onchange="generarPlanilla()">
+                </div>
+                <div class="form-group" id="grupoEmpleadoPlanilla">
+                    <label>Empleado (opcional)</label>
+                    <select id="planillaEmpleado" onchange="generarPlanilla()">
+                        <option value="">-- Todos los empleados --</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="generarPlanilla()">📊 Generar Planilla</button>
+                <button class="btn btn-info" onclick="exportarPlanillaPDF()">🖨️ Imprimir / PDF</button>
+                <button class="btn btn-success" onclick="exportarPlanillaExcel()">📊 Exportar Excel</button>
+            </div>
+            
+            <div id="planillaPreview" style="margin-top:25px;"></div>
         </div>
                 <!-- ===== TAB PLANILLAS ===== -->
         <div class="tab-content" id="tab-admin-planillas">
@@ -4053,7 +4126,7 @@
     // ============================================================
     // UI / MODAL / TABS
     // ============================================================
-    function cerrarModal() { document.getElementById('modalOverlay').classList.remove('active'); }
+        function cerrarModal() { document.getElementById('modalOverlay').classList.remove('active'); }
     document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) cerrarModal(); });
 
     document.querySelectorAll('.tabs').forEach(tabContainer => {
@@ -4071,11 +4144,11 @@
                 if (contentId === 'admin-semana') renderSemana();
                 if (contentId === 'admin-mes') renderMes();
                 if (contentId === 'admin-clientes') renderPagosClientes();
+                if (contentId === 'admin-planillas') inicializarPlanilla();
                 if (contentId === 'emp-trabajos-hoy') cargarTrabajosHoy();
             });
         });
     });
-
     function cambiarModo() {
     const modoOscuro = document.body.classList.toggle('modo-oscuro');
     localStorage.setItem('clean_modo', modoOscuro ? 'oscuro' : 'claro');
@@ -4084,17 +4157,35 @@
     // INIT
     // ============================================================
     aplicarIdioma();
+    
     // Aplicar modo guardado
-if (localStorage.getItem('clean_modo') === 'oscuro') {
-    document.body.classList.add('modo-oscuro');
-}
-    document.getElementById('agendaFecha').value = new Date().toISOString().slice(0,10);
-    document.getElementById('boletaSemana').value = new Date().toISOString().slice(0,10);
-    document.getElementById('semanaFecha').value = new Date().toISOString().slice(0,10);
+    if (localStorage.getItem('clean_modo') === 'oscuro') {
+        document.body.classList.add('modo-oscuro');
+    }
+    
+    // Inicializar fechas (con verificación para evitar errores)
+    const hoy = new Date().toISOString().slice(0,10);
     const hoyMes = new Date();
-    document.getElementById('mesFecha').value = hoyMes.getFullYear() + '-' + String(hoyMes.getMonth() + 1).padStart(2, '0');
-    document.getElementById('cliFechaInicio').value = new Date().toISOString().slice(0,10);
-        actualizarCamposFrecuencia();
+    const mesActual = hoyMes.getFullYear() + '-' + String(hoyMes.getMonth() + 1).padStart(2, '0');
+    
+    const camposFecha = {
+        'agendaFecha': hoy,
+        'boletaSemana': hoy,
+        'semanaFecha': hoy,
+        'mesFecha': mesActual,
+        'cliFechaInicio': hoy,
+        'planillaSemana': hoy,
+        'planillaMes': mesActual,
+        'planillaFechaInicio': hoy,
+        'planillaFechaFin': hoy
+    };
+    
+    Object.keys(camposFecha).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = camposFecha[id];
+    });
+    
+    actualizarCamposFrecuencia();
     
     // ============================================================
     // PWA - INSTALACIÓN COMO APP
