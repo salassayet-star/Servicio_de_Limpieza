@@ -334,17 +334,18 @@
                 width: 100%;
             }
             .tabs {
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                -webkit-overflow-scrolling: touch;
+                flex-wrap: wrap;
+                justify-content: center;
+                overflow-x: visible;
                 padding: 8px;
-                gap: 4px;
+                gap: 6px;
             }
             .tab-btn {
                 white-space: nowrap;
                 flex-shrink: 0;
                 padding: 8px 14px;
                 font-size: 0.85rem;
+                flex: 0 1 auto;
             }
             .tab-content {
                 padding: 15px;
@@ -421,6 +422,10 @@
             .tab-btn {
                 padding: 6px 10px;
                 font-size: 0.75rem;
+            }
+            .tabs {
+                gap: 4px;
+                padding: 6px;
             }
             .tab-content {
                 padding: 12px;
