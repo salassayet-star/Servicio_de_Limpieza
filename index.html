@@ -4150,6 +4150,479 @@
             });
         });
     });
+        // ============================================================
+    // PLANILLAS DE SUELDOS Y TAXES
+    // ============================================================
+    
+    function inicializarPlanilla() {
+        // Establecer mes actual por defecto
+        const hoy = new Date();
+        const mesActual = hoy.getFullYear() + '-' + String(hoy.getMonth() + 1).padStart(2, '0');
+        
+        const inputMes = document.getElementById('planillaMes');
+        if (inputMes && !inputMes.value) inputMes.value = mesActual;
+        
+        const inputSemana = document.getElementById('planillaSemana');
+        if (inputSemana && !inputSemana.value) inputSemana.value = hoy.toISOString().slice(0, 10);
+        
+        const inputInicio = document.getElementById('planillaFechaInicio');
+        if (inputInicio && !inputInicio.value) inputInicio.value = hoy.toISOString().slice(0, 10);
+        
+        const inputFin = document.getElementById('planillaFechaFin');
+        if (inputFin && !inputFin.value) inputFin.value = hoy.toISOString().slice(0, 10);
+        
+        // Cargar empleados en el selector
+        const data = getData();
+        const selectEmp = document.getElementById('planillaEmpleado');
+        if (selectEmp) {
+            selectEmp.innerHTML = '<option value="">-- Todos los empleados --</option>' + 
+                data.empleados.map(e => `<option value="${e.id}">${e.nombre}</option>`).join('');
+        }
+        
+        // Inicializar tipo de planilla
+        cambiarTipoPlanilla();
+    }
+    
+    function cambiarTipoPlanilla() {
+        const tipo = document.getElementById('planillaTipo').value;
+        const aviso = document.getElementById('planillaPreview');
+        if (aviso) aviso.innerHTML = '';
+        generarPlanilla();
+    }
+    
+    function cambiarPeriodoPlanilla() {
+        const periodo = document.getElementById('planillaPeriodo').value;
+        
+        // Ocultar todos
+        const grupos = ['grupoSemanaPlanilla', 'grupoMesPlanilla', 'grupoTrimestrePlanilla', 
+                        'grupoAnioPlanilla', 'grupoInicioPlanilla', 'grupoFinPlanilla'];
+        grupos.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = 'none';
+        });
+        
+        // Mostrar el correspondiente
+        if (periodo === 'semanal' || periodo === 'quincenal') {
+            document.getElementById('grupoSemanaPlanilla').style.display = 'flex';
+        } else if (periodo === 'mensual') {
+            document.getElementById('grupoMesPlanilla').style.display = 'flex';
+        } else if (periodo === 'trimestral') {
+            document.getElementById('grupoTrimestrePlanilla').style.display = 'flex';
+            document.getElementById('grupoAnioPlanilla').style.display = 'flex';
+        } else if (periodo === 'anual') {
+            document.getElementById('grupoAnioPlanilla').style.display = 'flex';
+        } else if (periodo === 'personalizado') {
+            document.getElementById('grupoInicioPlanilla').style.display = 'flex';
+            document.getElementById('grupoFinPlanilla').style.display = 'flex';
+        }
+        
+        generarPlanilla();
+    }
+    
+    function calcularRangoPlanilla() {
+        const periodo = document.getElementById('planillaPeriodo').value;
+        let inicio, fin;
+        
+        if (periodo === 'semanal' || periodo === 'quincenal') {
+            const fechaRef = document.getElementById('planillaSemana').value;
+            if (!fechaRef) return null;
+            const fecha = new Date(fechaRef + 'T00:00:00');
+            const diaSemana = fecha.getDay();
+            const lunes = new Date(fecha);
+            lunes.setDate(fecha.getDate() - (diaSemana === 0 ? 6 : diaSemana - 1));
+            
+            if (periodo === 'semanal') {
+                inicio = lunes;
+                fin = new Date(lunes);
+                fin.setDate(lunes.getDate() + 6);
+            } else {
+                // Quincenal: primera mitad (1-15) o segunda (16-fin de mes)
+                const dia = fecha.getDate();
+                if (dia <= 15) {
+                    inicio = new Date(fecha.getFullYear(), fecha.getMonth(), 1);
+                    fin = new Date(fecha.getFullYear(), fecha.getMonth(), 15);
+                } else {
+                    inicio = new Date(fecha.getFullYear(), fecha.getMonth(), 16);
+                    fin = new Date(fecha.getFullYear(), fecha.getMonth() + 1, 0);
+                }
+            }
+        } else if (periodo === 'mensual') {
+            const mesRef = document.getElementById('planillaMes').value;
+            if (!mesRef) return null;
+            const [year, month] = mesRef.split('-').map(Number);
+            inicio = new Date(year, month - 1, 1);
+            fin = new Date(year, month, 0);
+        } else if (periodo === 'trimestral') {
+            const trimestre = parseInt(document.getElementById('planillaTrimestre').value);
+            const year = parseInt(document.getElementById('planillaAnio').value);
+            const mesInicio = (trimestre - 1) * 3;
+            inicio = new Date(year, mesInicio, 1);
+            fin = new Date(year, mesInicio + 3, 0);
+        } else if (periodo === 'anual') {
+            const year = parseInt(document.getElementById('planillaAnio').value);
+            inicio = new Date(year, 0, 1);
+            fin = new Date(year, 11, 31);
+        } else if (periodo === 'personalizado') {
+            const fi = document.getElementById('planillaFechaInicio').value;
+            const ff = document.getElementById('planillaFechaFin').value;
+            if (!fi || !ff) return null;
+            inicio = new Date(fi + 'T00:00:00');
+            fin = new Date(ff + 'T00:00:00');
+        }
+        
+        return {
+            inicio: inicio.toISOString().slice(0, 10),
+            fin: fin.toISOString().slice(0, 10),
+            inicioDate: inicio,
+            finDate: fin
+        };
+    }
+    
+    function generarPlanilla() {
+        const tipo = document.getElementById('planillaTipo').value;
+        const rango = calcularRangoPlanilla();
+        
+        const preview = document.getElementById('planillaPreview');
+        if (!preview) return;
+        
+        if (!rango) {
+            preview.innerHTML = '<p style="color:#856404;">⚠️ Selecciona un período válido.</p>';
+            return;
+        }
+        
+        const data = getData();
+        const empFiltro = document.getElementById('planillaEmpleado').value;
+        
+        // Filtrar empleados
+        let empleados = data.empleados;
+        if (empFiltro) empleados = empleados.filter(e => e.id === empFiltro);
+        
+        // Filtrar boletas por rango
+        const boletasRango = data.boletas.filter(b => 
+            b.semanaInicio >= rango.inicio && b.semanaFin <= rango.fin
+        );
+        
+        let html = '';
+        
+        if (tipo === 'sueldos') {
+            html += renderPlanillaSueldos(empleados, boletasRango, rango);
+        } else {
+            html += renderFormularioTaxes(empleados, boletasRango, rango, data);
+        }
+        
+        preview.innerHTML = html;
+    }
+    
+    function renderPlanillaSueldos(empleados, boletas, rango) {
+        const data = getData();
+        const fmt = (n) => '$' + (n || 0).toFixed(2);
+        const fmtFecha = (f) => {
+            if (!f) return '';
+            const [y, m, d] = f.split('-');
+            return `${d}/${m}/${y}`;
+        };
+        
+        let html = `<div style="background:white; padding:25px; border-radius:12px; border:2px solid #1a4a7a;">`;
+        html += `<h2 style="text-align:center; color:#1a4a7a; margin-bottom:5px;">📊 PLANILLA DE SUELDOS</h2>`;
+        html += `<p style="text-align:center; color:#4a5568; margin-bottom:20px;">`;
+        html += `Período: <strong>${fmtFecha(rango.inicio)}</strong> al <strong>${fmtFecha(rango.fin)}</strong>`;
+        html += `</p>`;
+        
+        if (empleados.length === 0) {
+            html += `<p style="text-align:center; color:#856404;">No hay empleados en el sistema.</p>`;
+            html += `</div>`;
+            return html;
+        }
+        
+        let totalGeneralBruto = 0;
+        let totalGeneralCheque = 0;
+        let totalGeneralEfectivo = 0;
+        let totalGeneralDescuentos = 0;
+        let totalGeneralNeto = 0;
+        
+        empleados.forEach(emp => {
+            const boletasEmp = boletas.filter(b => b.empleadoId === emp.id);
+            
+            if (boletasEmp.length === 0) return;
+            
+            let totalBruto = 0;
+            let totalCheque = 0;
+            let totalEfectivo = 0;
+            let totalDescuentos = 0;
+            
+            html += `<div style="border:1px solid #cbd5e0; border-radius:10px; padding:15px; margin-bottom:15px;">`;
+            html += `<h3 style="color:#1a4a7a; margin-bottom:10px;">👤 ${emp.nombre}</h3>`;
+            html += `<p style="font-size:0.85rem; color:#4a5568; margin-bottom:10px;">`;
+            html += `Cargo: ${emp.cargo || 'N/A'} | Tarifa: $${emp.tarifa}/h`;
+            if (emp.ssn) html += ` | SSN: ${emp.ssn}`;
+            html += `</p>`;
+            
+            // Separar boletas por tipo
+            const boletasCheque = boletasEmp.filter(b => b.tipoPago === 'cheque');
+            const boletasEfectivo = boletasEmp.filter(b => b.tipoPago === 'efectivo');
+            
+            if (boletasCheque.length > 0) {
+                html += `<h4 style="color:#856404; margin:10px 0; font-size:0.9rem;">📄 PAGOS CON CHEQUE (reportables)</h4>`;
+                html += `<table style="width:100%; border-collapse:collapse; font-size:0.85rem; margin-bottom:10px;">`;
+                html += `<thead><tr style="background:#fff3cd;"><th style="padding:6px; text-align:left; border:1px solid #dee2e6;">Semana</th><th style="padding:6px; text-align:right; border:1px solid #dee2e6;">Horas</th><th style="padding:6px; text-align:right; border:1px solid #dee2e6;">Bruto</th><th style="padding:6px; text-align:right; border:1px solid #dee2e6;">Descuentos</th><th style="padding:6px; text-align:right; border:1px solid #dee2e6;">Neto</th></tr></thead><tbody>`;
+                
+                boletasCheque.forEach(b => {
+                    totalBruto += b.totalBruto || 0;
+                    totalCheque += b.totalBruto || 0;
+                    totalDescuentos += b.descuento || 0;
+                    
+                    html += `<tr>`;
+                    html += `<td style="padding:6px; border:1px solid #dee2e6;">${fmtFecha(b.semanaInicio)} - ${fmtFecha(b.semanaFin)}</td>`;
+                    html += `<td style="padding:6px; border:1px solid #dee2e6; text-align:right;">${(b.totalHoras || 0).toFixed(2)}h</td>`;
+                    html += `<td style="padding:6px; border:1px solid #dee2e6; text-align:right;">${fmt(b.totalBruto)}</td>`;
+                    html += `<td style="padding:6px; border:1px solid #dee2e6; text-align:right; color:#b22234;">-${fmt(b.descuento)}</td>`;
+                    html += `<td style="padding:6px; border:1px solid #dee2e6; text-align:right; color:#0d7a3e;"><strong>${fmt(b.totalNeto)}</strong></td>`;
+                    html += `</tr>`;
+                });
+                html += `</tbody></table>`;
+            }
+            
+            if (boletasEfectivo.length > 0) {
+                html += `<h4 style="color:#0d7a3e; margin:10px 0; font-size:0.9rem;">💵 PAGOS EN EFECTIVO (solo control)</h4>`;
+                html += `<table style="width:100%; border-collapse:collapse; font-size:0.85rem; margin-bottom:10px;">`;
+                html += `<thead><tr style="background:#d4edda;"><th style="padding:6px; text-align:left; border:1px solid #dee2e6;">Semana</th><th style="padding:6px; text-align:right; border:1px solid #dee2e6;">Horas</th><th style="padding:6px; text-align:right; border:1px solid #dee2e6;">Neto</th></tr></thead><tbody>`;
+                
+                boletasEfectivo.forEach(b => {
+                    totalBruto += b.totalBruto || 0;
+                    totalEfectivo += b.totalBruto || 0;
+                    
+                    html += `<tr>`;
+                    html += `<td style="padding:6px; border:1px solid #dee2e6;">${fmtFecha(b.semanaInicio)} - ${fmtFecha(b.semanaFin)}</td>`;
+                    html += `<td style="padding:6px; border:1px solid #dee2e6; text-align:right;">${(b.totalHoras || 0).toFixed(2)}h</td>`;
+                    html += `<td style="padding:6px; border:1px solid #dee2e6; text-align:right; color:#0d7a3e;"><strong>${fmt(b.totalNeto)}</strong></td>`;
+                    html += `</tr>`;
+                });
+                html += `</tbody></table>`;
+            }
+            
+            // Resumen del empleado
+            const netoTotal = (totalCheque - totalDescuentos) + totalEfectivo;
+            
+            html += `<div style="background:#f0f4f8; padding:10px; border-radius:6px; margin-top:10px;">`;
+            html += `<table style="width:100%; font-size:0.85rem;">`;
+            html += `<tr><td>Total Bruto:</td><td style="text-align:right;"><strong>${fmt(totalBruto)}</strong></td></tr>`;
+            html += `<tr><td>Total con Cheque:</td><td style="text-align:right;">${fmt(totalCheque)}</td></tr>`;
+            html += `<tr><td>Total en Efectivo:</td><td style="text-align:right;">${fmt(totalEfectivo)}</td></tr>`;
+            html += `<tr><td>Total Descuentos:</td><td style="text-align:right; color:#b22234;">-${fmt(totalDescuentos)}</td></tr>`;
+            html += `<tr style="border-top:2px solid #1a4a7a;"><td><strong>TOTAL NETO:</strong></td><td style="text-align:right; color:#0d7a3e; font-size:1.1rem;"><strong>${fmt(netoTotal)}</strong></td></tr>`;
+            html += `</table>`;
+            html += `</div>`;
+            html += `</div>`;
+            
+            // Sumar a los generales
+            totalGeneralBruto += totalBruto;
+            totalGeneralCheque += totalCheque;
+            totalGeneralEfectivo += totalEfectivo;
+            totalGeneralDescuentos += totalDescuentos;
+            totalGeneralNeto += netoTotal;
+        });
+        
+        // Resumen general
+        html += `<div style="background:#1a4a7a; color:white; padding:15px; border-radius:10px; margin-top:20px;">`;
+        html += `<h3 style="margin-bottom:10px;">📊 RESUMEN GENERAL DEL PERÍODO</h3>`;
+        html += `<table style="width:100%; color:white; font-size:0.9rem;">`;
+        html += `<tr><td>Total Bruto:</td><td style="text-align:right;"><strong>${fmt(totalGeneralBruto)}</strong></td></tr>`;
+        html += `<tr><td>Total con Cheque:</td><td style="text-align:right;">${fmt(totalGeneralCheque)}</td></tr>`;
+        html += `<tr><td>Total en Efectivo:</td><td style="text-align:right;">${fmt(totalGeneralEfectivo)}</td></tr>`;
+        html += `<tr><td>Total Descuentos:</td><td style="text-align:right;">-${fmt(totalGeneralDescuentos)}</td></tr>`;
+        html += `<tr style="border-top:2px solid white; font-size:1.1rem;"><td><strong>TOTAL NETO A PAGAR:</strong></td><td style="text-align:right;"><strong>${fmt(totalGeneralNeto)}</strong></td></tr>`;
+        html += `</table>`;
+        html += `</div>`;
+        
+        html += `</div>`;
+        return html;
+    }
+    
+    function renderFormularioTaxes(empleados, boletas, rango, data) {
+        const fmt = (n) => '$' + (n || 0).toFixed(2);
+        const fmtFecha = (f) => {
+            if (!f) return '';
+            const [y, m, d] = f.split('-');
+            return `${d}/${m}/${y}`;
+        };
+        
+        // Solo cheques
+        const boletasCheque = boletas.filter(b => b.tipoPago === 'cheque');
+        
+        const cfg = data.config;
+        const empresa = cfg.empresa || 'Mi Empresa';
+        const ein = cfg.ein || 'No especificado';
+        const direccion = cfg.direccion || '';
+        const ciudad = cfg.ciudad || '';
+        const estado = cfg.estado || '';
+        const zip = cfg.zip || '';
+        
+        let totalBruto = 0;
+        let totalFICA = 0;
+        let totalMedicare = 0;
+        
+        boletasCheque.forEach(b => {
+            totalBruto += b.totalBruto || 0;
+            totalFICA += (b.totalBruto || 0) * ((cfg.FICA || 6.2) / 100);
+            totalMedicare += (b.totalBruto || 0) * ((cfg.Medicare || 1.45) / 100);
+        });
+        
+        let html = `<div style="background:white; padding:25px; border-radius:12px; border:2px solid #1a4a7a;">`;
+        html += `<h2 style="text-align:center; color:#1a4a7a; margin-bottom:5px;">📋 FORMULARIO DE TAXES</h2>`;
+        html += `<p style="text-align:center; color:#4a5568; margin-bottom:20px;">`;
+        html += `Período: <strong>${fmtFecha(rango.inicio)}</strong> al <strong>${fmtFecha(rango.fin)}</strong>`;
+        html += `</p>`;
+        
+        html += `<div style="background:#f0f4f8; padding:15px; border-radius:8px; margin-bottom:20px;">`;
+        html += `<h3 style="color:#1a4a7a; margin-bottom:10px; font-size:1rem;">🏢 DATOS DE LA EMPRESA</h3>`;
+        html += `<p style="font-size:0.9rem;"><strong>Nombre:</strong> ${empresa}</p>`;
+        html += `<p style="font-size:0.9rem;"><strong>EIN:</strong> ${ein}</p>`;
+        if (direccion) html += `<p style="font-size:0.9rem;"><strong>Dirección:</strong> ${direccion}, ${ciudad}, ${estado} ${zip}</p>`;
+        html += `</div>`;
+        
+        if (boletasCheque.length === 0) {
+            html += `<p style="text-align:center; color:#856404; padding:20px;">No hay pagos con cheque en este período.</p>`;
+            html += `</div>`;
+            return html;
+        }
+        
+        html += `<h3 style="color:#1a4a7a; margin:15px 0; font-size:1rem;">👥 EMPLEADOS REPORTADOS</h3>`;
+        html += `<table style="width:100%; border-collapse:collapse; font-size:0.85rem; margin-bottom:20px;">`;
+        html += `<thead><tr style="background:#1a4a7a; color:white;"><th style="padding:8px; text-align:left; border:1px solid #dee2e6;">Empleado</th><th style="padding:8px; text-align:left; border:1px solid #dee2e6;">SSN</th><th style="padding:8px; text-align:right; border:1px solid #dee2e6;">Bruto</th><th style="padding:8px; text-align:right; border:1px solid #dee2e6;">FICA</th><th style="padding:8px; text-align:right; border:1px solid #dee2e6;">Medicare</th></tr></thead><tbody>`;
+        
+        empleados.forEach(emp => {
+            const boletasEmp = boletasCheque.filter(b => b.empleadoId === emp.id);
+            if (boletasEmp.length === 0) return;
+            
+            let brutoEmp = 0;
+            boletasEmp.forEach(b => { brutoEmp += b.totalBruto || 0; });
+            
+            const ficaEmp = brutoEmp * ((cfg.FICA || 6.2) / 100);
+            const medicareEmp = brutoEmp * ((cfg.Medicare || 1.45) / 100);
+            
+            html += `<tr>`;
+            html += `<td style="padding:8px; border:1px solid #dee2e6;">${emp.nombre}</td>`;
+            html += `<td style="padding:8px; border:1px solid #dee2e6;">${emp.ssn || 'No especificado'}</td>`;
+            html += `<td style="padding:8px; border:1px solid #dee2e6; text-align:right;">${fmt(brutoEmp)}</td>`;
+            html += `<td style="padding:8px; border:1px solid #dee2e6; text-align:right;">${fmt(ficaEmp)}</td>`;
+            html += `<td style="padding:8px; border:1px solid #dee2e6; text-align:right;">${fmt(medicareEmp)}</td>`;
+            html += `</tr>`;
+        });
+        
+        html += `</tbody></table>`;
+        
+        html += `<div style="background:#1a4a7a; color:white; padding:15px; border-radius:10px; margin-bottom:20px;">`;
+        html += `<h3 style="margin-bottom:10px;">📊 RESUMEN FEDERAL (Form 941)</h3>`;
+        html += `<table style="width:100%; color:white; font-size:0.9rem;">`;
+        html += `<tr><td>Total empleados reportados:</td><td style="text-align:right;"><strong>${empleados.filter(e => boletasCheque.some(b => b.empleadoId === e.id)).length}</strong></td></tr>`;
+        html += `<tr><td>Total salarios brutos:</td><td style="text-align:right;"><strong>${fmt(totalBruto)}</strong></td></tr>`;
+        html += `<tr><td>Social Security (${cfg.FICA || 6.2}%):</td><td style="text-align:right;">${fmt(totalFICA)}</td></tr>`;
+        html += `<tr><td>Medicare (${cfg.Medicare || 1.45}%):</td><td style="text-align:right;">${fmt(totalMedicare)}</td></tr>`;
+        html += `<tr><td>Federal Income Tax:</td><td style="text-align:right;">$0.00</td></tr>`;
+        html += `<tr style="border-top:2px solid white; font-size:1.1rem;"><td><strong>TOTAL A PAGAR:</strong></td><td style="text-align:right;"><strong>${fmt(totalFICA + totalMedicare)}</strong></td></tr>`;
+        html += `</table>`;
+        html += `</div>`;
+        
+        html += `<div style="background:#fff3cd; padding:10px; border-radius:6px; font-size:0.8rem; color:#856404;">`;
+        html += `<strong>⚠️ IMPORTANTE:</strong> Este formulario es solo una guía para tu contador. Los pagos en efectivo NO se incluyen porque no tienen retenciones de ley.`;
+        html += `</div>`;
+        
+        html += `</div>`;
+        return html;
+    }
+    
+    function exportarPlanillaPDF() {
+        const preview = document.getElementById('planillaPreview');
+        if (!preview || !preview.innerHTML.trim()) {
+            alert('⚠️ Primero genera una planilla');
+            return;
+        }
+        
+        const tipo = document.getElementById('planillaTipo').value;
+        const titulo = tipo === 'sueldos' ? 'Planilla de Sueldos' : 'Formulario de Taxes';
+        
+        const ventanaImpresion = window.open('', '_blank', 'width=900,height=700');
+        
+        ventanaImpresion.document.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>${titulo}</title>
+                <style>
+                    body { padding: 20px; font-family: Arial, sans-serif; }
+                    table { page-break-inside: avoid; }
+                    .action-buttons { text-align: center; margin: 20px 0; padding: 15px; background: #f0f4f8; border-radius: 10px; }
+                    .action-buttons button { padding: 12px 30px; margin: 0 8px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+                    .btn-print { background: #0d7a3e; color: white; }
+                    .btn-close { background: #6c757d; color: white; }
+                    @media print { .action-buttons { display: none; } body { padding: 0; } }
+                </style>
+            </head>
+            <body>
+                <div class="action-buttons">
+                    <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+                    <button class="btn-close" onclick="window.close()">❌ Cerrar</button>
+                </div>
+                ${preview.innerHTML}
+                <div class="action-buttons">
+                    <button class="btn-print" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button>
+                    <button class="btn-close" onclick="window.close()">❌ Cerrar</button>
+                </div>
+            </body>
+            </html>
+        `);
+        ventanaImpresion.document.close();
+    }
+    
+    function exportarPlanillaExcel() {
+        const tipo = document.getElementById('planillaTipo').value;
+        const rango = calcularRangoPlanilla();
+        if (!rango) { alert('⚠️ Primero selecciona un período'); return; }
+        
+        const data = getData();
+        const empFiltro = document.getElementById('planillaEmpleado').value;
+        let empleados = data.empleados;
+        if (empFiltro) empleados = empleados.filter(e => e.id === empFiltro);
+        
+        const boletasRango = data.boletas.filter(b => 
+            b.semanaInicio >= rango.inicio && b.semanaFin <= rango.fin
+        );
+        
+        const rows = [];
+        
+        empleados.forEach(emp => {
+            const boletasEmp = boletasRango.filter(b => b.empleadoId === emp.id);
+            boletasEmp.forEach(b => {
+                if (tipo === 'taxes' && b.tipoPago !== 'cheque') return;
+                rows.push({
+                    'Empleado': emp.nombre,
+                    'SSN': emp.ssn || '',
+                    'Cargo': emp.cargo || '',
+                    'Semana Inicio': b.semanaInicio,
+                    'Semana Fin': b.semanaFin,
+                    'Horas': (b.totalHoras || 0).toFixed(2),
+                    'Tarifa': emp.tarifa,
+                    'Bruto': (b.totalBruto || 0).toFixed(2),
+                    'Tipo Pago': b.tipoPago,
+                    'Descuentos': (b.descuento || 0).toFixed(2),
+                    'Neto': (b.totalNeto || 0).toFixed(2)
+                });
+            });
+        });
+        
+        if (rows.length === 0) {
+            alert('⚠️ No hay datos para exportar en este período');
+            return;
+        }
+        
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(rows);
+        const nombreArchivo = tipo === 'sueldos' ? 'planilla_sueldos' : 'formulario_taxes';
+        XLSX.utils.book_append_sheet(wb, ws, tipo === 'sueldos' ? 'Planilla' : 'Taxes');
+        XLSX.writeFile(wb, nombreArchivo + '_' + rango.inicio + '_' + rango.fin + '.xlsx');
+    }
+
     function cambiarModo() {
     const modoOscuro = document.body.classList.toggle('modo-oscuro');
     localStorage.setItem('clean_modo', modoOscuro ? 'oscuro' : 'claro');
