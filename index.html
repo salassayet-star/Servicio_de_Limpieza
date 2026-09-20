@@ -1840,6 +1840,11 @@
                 const datos = docSnap.data();
                 datosGlobales = { ...datosGlobales, ...datos };
                 console.log('✅ Datos cargados desde Firebase');
+                // Actualizar título con nombre de empresa
+                const tituloApp = document.getElementById('tituloApp');
+                if (tituloApp && datosGlobales.config && datosGlobales.config.empresa) {
+                    tituloApp.innerHTML = `🧹 ${datosGlobales.config.empresa}`;
+                }
             } else {
                 console.log('📝 Primera vez - Creando documento en Firebase...');
                 await guardarEnFirebase();
@@ -1851,6 +1856,11 @@
                     datosGlobales = { ...datosGlobales, ...datos };
                     actualizarSyncBadge('ok');
                     renderAll();
+                   // Actualizar título con nombre de empresa
+                    const tituloApp = document.getElementById('tituloApp');
+                    if (tituloApp && datosGlobales.config && datosGlobales.config.empresa) {
+                        tituloApp.innerHTML = `🧹 ${datosGlobales.config.empresa}`;
+                    }
                     if (empleadoActual) {
                         cargarTrabajosHoy();
                         cargarTrabajosEmpleado();
@@ -2146,9 +2156,19 @@
     // ============================================================
     // RENDER ADMIN
     // ============================================================
-    function renderAll() {
-        if (!firebaseListo) return;
-        const data = getData();
+   function renderAll() {
+    if (!firebaseListo) return;
+    const data = getData();
+    
+    // Actualizar título con nombre de empresa
+    const tituloApp = document.getElementById('tituloApp');
+    if (tituloApp && data.config && data.config.empresa) {
+        tituloApp.innerHTML = `🧹 ${data.config.empresa}`;
+    }
+    
+    renderEmpleados(data);
+    // ... el resto
+        
         renderEmpleados(data);
         renderClientes(data);
         renderJornadas(data);
