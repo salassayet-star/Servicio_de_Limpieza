@@ -547,16 +547,16 @@
             <h2>📅 Agenda Diaria</h2>
             <p style="color:#4a5568; margin-bottom:15px;">Clientes que tocan según sus días y frecuencia programados.</p>
             
-            <div class="agenda-header">
-            <div class="agenda-fecha">
-    <label style="font-weight:600;" id="labelSemana">📆 Semana de:</label>
-    <input type="date" id="semanaFecha" onchange="renderSemana()">
-    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(-1)" id="btnSemanaAnterior">◀️ Anterior</button>
-    <button class="btn btn-primary btn-sm" onclick="irSemanaActual()" id="btnSemanaActual">📌 Actual</button>
-    <button class="btn btn-secondary btn-sm" onclick="cambiarSemana(1)" id="btnSemanaSiguiente">Siguiente ▶️</button>
+         <div class="agenda-header">
+    <div class="agenda-fecha">
+        <label id="labelAgendaFecha">📆 Fecha:</label>
+        <input type="date" id="agendaFecha" onchange="renderAgendaDiaria()">
+        <button class="btn btn-secondary btn-sm" onclick="cambiarDia(-1)" id="btnAgendaAnterior">◀️ Anterior</button>
+        <button class="btn btn-primary btn-sm" onclick="irHoy()" id="btnAgendaHoy">📌 Hoy</button>
+        <button class="btn btn-secondary btn-sm" onclick="cambiarDia(1)" id="btnAgendaSiguiente">Siguiente ▶️</button>
+    </div>
+    <div class="agenda-resumen" id="agendaResumen"></div>
 </div>
-                <div class="agenda-resumen" id="agendaResumen"></div>
-            </div>
 
             <div id="agendaContenido"></div>
         </div>
@@ -853,78 +853,6 @@
         </div>
          
         <!-- ===== TAB PLANILLAS ===== -->
-        <div class="tab-content" id="tab-admin-planillas">
-            <h2>📊 Planillas de Sueldos y Taxes</h2>
-            <p style="color:#4a5568; margin-bottom:15px;">
-                <strong>📊 Planilla de Sueldos:</strong> Todos los pagos (efectivo + cheque) para control administrativo.<br>
-                <strong>📋 Formulario de Taxes:</strong> Solo pagos con cheque (reportables al IRS).
-            </p>
-            
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Tipo de documento</label>
-                    <select id="planillaTipo" onchange="cambiarTipoPlanilla()">
-                        <option value="sueldos">📊 Planilla de Sueldos (todos los pagos)</option>
-                        <option value="taxes">📋 Formulario de Taxes (solo cheques)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Período</label>
-                    <select id="planillaPeriodo" onchange="cambiarPeriodoPlanilla()">
-                        <option value="semanal">Semanal</option>
-                        <option value="quincenal">Quincenal</option>
-                        <option value="mensual" selected>Mensual</option>
-                        <option value="trimestral">Trimestral (Form 941)</option>
-                        <option value="anual">Anual (W-2)</option>
-                        <option value="personalizado">Personalizado</option>
-                    </select>
-                </div>
-                <div class="form-group" id="grupoSemanaPlanilla" style="display:none;">
-                    <label>Semana (elige cualquier fecha)</label>
-                    <input type="date" id="planillaSemana" onchange="generarPlanilla()">
-                </div>
-                <div class="form-group" id="grupoMesPlanilla">
-                    <label>Mes</label>
-                    <input type="month" id="planillaMes" onchange="generarPlanilla()">
-                </div>
-                <div class="form-group" id="grupoTrimestrePlanilla" style="display:none;">
-                    <label>Trimestre</label>
-                    <select id="planillaTrimestre" onchange="generarPlanilla()">
-                        <option value="1">Q1 (Enero - Marzo)</option>
-                        <option value="2">Q2 (Abril - Junio)</option>
-                        <option value="3">Q3 (Julio - Septiembre)</option>
-                        <option value="4">Q4 (Octubre - Diciembre)</option>
-                    </select>
-                </div>
-                <div class="form-group" id="grupoAnioPlanilla" style="display:none;">
-                    <label>Año</label>
-                    <input type="number" id="planillaAnio" value="2026" onchange="generarPlanilla()">
-                </div>
-                <div class="form-group" id="grupoInicioPlanilla" style="display:none;">
-                    <label>Fecha inicio</label>
-                    <input type="date" id="planillaFechaInicio" onchange="generarPlanilla()">
-                </div>
-                <div class="form-group" id="grupoFinPlanilla" style="display:none;">
-                    <label>Fecha fin</label>
-                    <input type="date" id="planillaFechaFin" onchange="generarPlanilla()">
-                </div>
-                <div class="form-group" id="grupoEmpleadoPlanilla">
-                    <label>Empleado (opcional)</label>
-                    <select id="planillaEmpleado" onchange="generarPlanilla()">
-                        <option value="">-- Todos los empleados --</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn btn-primary" onclick="generarPlanilla()">📊 Generar Planilla</button>
-                <button class="btn btn-info" onclick="exportarPlanillaPDF()">🖨️ Imprimir / PDF</button>
-                <button class="btn btn-success" onclick="exportarPlanillaExcel()">📊 Exportar Excel</button>
-            </div>
-            
-            <div id="planillaPreview" style="margin-top:25px;"></div>
-        </div>
-                <!-- ===== TAB PLANILLAS ===== -->
         <div class="tab-content" id="tab-admin-planillas">
             <h2>📊 Planillas de Sueldos y Taxes</h2>
             <p style="color:#4a5568; margin-bottom:15px;">
