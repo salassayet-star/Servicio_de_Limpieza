@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Limpieza Profesional</title>
+        <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22CleanManager%22%2C%22short_name%22%3A%22CleanManager%22%2C%22description%22%3A%22Sistema%20de%20limpieza%20profesional%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230f2b4d%22%2C%22theme_color%22%3A%22%230f2b4d%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%253D%25270%25200%2520512%2520512%2527%253E%253Crect%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520fill%253D%2527%25230f2b4d%2527%252F%253E%253Ctext%2520x%253D%2527256%2527%2520y%253D%2527340%2527%2520font-size%253D%2527300%2527%2520text-anchor%253D%2527middle%2527%253E%25F0%259F%25A7%25B9%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%2520maskable%22%7D%5D%7D">
+    <meta name="theme-color" content="#0f2b4d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CleanManager">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230f2b4d'/%3E%3Ctext x='256' y='340' font-size='300' text-anchor='middle'%3E%F0%9F%A7%B9%3C/text%3E%3C/svg%3E">
+    <meta name="mobile-web-app-capable" content="yes">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
@@ -240,9 +248,10 @@
 </div>
 
 <header class="header">
-        <h1 id="tituloApp">🧹 CleanManager <span>v5.0</span></h1>
+    <h1 id="tituloApp">🧹 CleanManager <span>v5.0</span></h1>
     <div class="header-actions">
         <span class="sync-badge" id="syncStatus">☁️ Conectado</span>
+        <button class="btn btn-success" onclick="instalarApp()" id="btnInstalarApp" style="display:none;">📲 Instalar App</button>
         <button class="btn btn-outline" onclick="cambiarIdioma()" id="btnIdioma" title="Change language / Cambiar idioma">🌐 Español</button>
         <button class="btn btn-outline" onclick="cambiarModo()" id="btnModo">🌙 Modo</button>
         <button class="btn btn-outline" onclick="cerrarSesion()" id="btnSalir">🚪 Salir</button>
@@ -3768,8 +3777,56 @@ if (localStorage.getItem('clean_modo') === 'oscuro') {
     const hoyMes = new Date();
     document.getElementById('mesFecha').value = hoyMes.getFullYear() + '-' + String(hoyMes.getMonth() + 1).padStart(2, '0');
     document.getElementById('cliFechaInicio').value = new Date().toISOString().slice(0,10);
-    actualizarCamposFrecuencia();
-
+        actualizarCamposFrecuencia();
+    
+    // ============================================================
+    // PWA - INSTALACIÓN COMO APP
+    // ============================================================
+    let deferredPrompt = null;
+    
+    // Detectar cuando se puede instalar
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Mostrar botón de instalación
+        const btnInstalar = document.getElementById('btnInstalarApp');
+        if (btnInstalar) btnInstalar.style.display = 'inline-flex';
+        console.log('📲 App lista para instalar');
+    });
+    
+    // Función para instalar
+    function instalarApp() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('✅ App instalada');
+                    const btn = document.getElementById('btnInstalarApp');
+                    if (btn) btn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            });
+        } else {
+            // Mostrar instrucciones según el dispositivo
+            const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const esAndroid = /Android/.test(navigator.userAgent);
+            
+            if (esIOS) {
+                alert('📲 Para instalar en iPhone:\n\n1. Toca el botón Compartir (⬆️)\n2. Selecciona "Añadir a pantalla de inicio"\n3. Ponle nombre y toca "Añadir"');
+            } else if (esAndroid) {
+                alert('📲 Para instalar en Android:\n\n1. Toca el menú (⋮) arriba a la derecha\n2. Selecciona "Añadir a pantalla de inicio"\n3. Confirma');
+            } else {
+                alert('📲 Para instalar en PC:\n\n• Chrome/Edge: Busca el ícono de instalación (⊕) en la barra de direcciones\n• O ve al menú (⋮) → "Instalar CleanManager"\n\nSi ya está instalada, se abrirá como app.');
+            }
+        }
+    }
+    
+    // Detectar si ya está instalada
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        console.log('📱 Ejecutando como app instalada');
+        const btnInstalar = document.getElementById('btnInstalarApp');
+        if (btnInstalar) btnInstalar.style.display = 'none';
+    }
 </script>
 </body>
 </html>
