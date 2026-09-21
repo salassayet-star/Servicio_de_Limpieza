@@ -609,7 +609,7 @@
         </div>
 
         <!-- TAB CONFIG -->
-        <div class="tab-content" id="tab-admin-config">
+       <div class="tab-content" id="tab-admin-config">
             <h2>⚙️ Configuración</h2>
             <form onsubmit="guardarConfig(event)">
                 
@@ -630,49 +630,51 @@
                     <div class="form-group"><label>Teléfono</label><input type="tel" id="cfgTelefono" placeholder="(555) 123-4567"></div>
                 </div>
                 
-                <h4 style="color:#1a4a7a; margin:15px 0 10px;">🔐 Credenciales del Administrador</h4>
+                <h4 style="color:#1a4a7a; margin:15px 0 10px;">🔐 Credenciales del Administrador Principal</h4>
                 <div class="config-grid form-grid">
                     <div class="form-group">
                         <label>Usuario del Admin</label>
                         <input type="text" id="cfgAdminUser" placeholder="admin" value="admin">
                     </div>
                     <div class="form-group">
-                        <label>Contraseña del Admin</label>
-                        <input type="text" id="cfgAdminPass" placeholder="admin123" value="admin123">
+                        <label>Contraseña</label>
+                        <input type="password" id="cfgAdminPass" placeholder="Escribe para cambiar" autocomplete="new-password">
+                        <small style="color:#4a5568; font-size:0.75rem;">Deja vacío para no cambiar</small>
                     </div>
                     <div class="form-group">
                         <label>Confirmar Contraseña</label>
-                        <input type="text" id="cfgAdminPassConfirm" placeholder="Repite la contraseña">
+                        <input type="password" id="cfgAdminPassConfirm" placeholder="Repite la nueva contraseña">
                     </div>
                 </div>
                 <div style="background:#fff3cd; padding:10px; border-radius:6px; font-size:0.85rem; color:#856404; margin-bottom:15px;">
-                    ⚠️ <strong>Importante:</strong> Guarda bien estas credenciales. Las usarás para entrar al panel de administrador.
+                    ⚠️ <strong>Importante:</strong> Si cambias la contraseña, guárdala bien. La necesitarás para entrar.
                 </div>
                 
-                <button type="submit" class="btn btn-primary">💾 Guardar</button>
-            </form>
-            <div style="margin-top:20px; padding:15px; background:#f7fafc; border-radius:8px;">
-                <p id="resumenDescuentos">Total descuentos: 0%</p>
-            </div>
-            <hr style="margin:30px 0;">
-            <h3>🗄️ Gestión de Datos</h3>
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
-                <button class="btn btn-danger" onclick="exportarBackup()">💾 Backup local</button>
-                <button class="btn btn-success" onclick="importarBackup()">📂 Restaurar local</button>
-            </div>
-            <div style="background:#fff3cd; border-left:4px solid #e6a800; padding:15px; border-radius:8px; margin-top:20px;">
-                <h4 style="color:#856404; margin-bottom:10px;">⚠️ Zona de Peligro</h4>
-                <p style="font-size:0.85rem; color:#856404; margin-bottom:12px;">
-                    Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) <strong>se conserva</strong>.
-                </p>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <button class="btn btn-warning" onclick="borrarBoletas()">🗑️ Borrar solo Boletas</button>
-                    <button class="btn btn-warning" onclick="borrarJornadas()">🗑️ Borrar solo Jornadas</button>
-                    <button class="btn btn-danger" onclick="borrarTodosLosDatos()">🚨 Borrar TODOS los Datos</button>
+                <h4 style="color:#1a4a7a; margin:15px 0 10px;">👥 Administradores Adicionales</h4>
+                <div style="background:#f7fafc; padding:15px; border-radius:8px; margin-bottom:15px;">
+                    <div class="form-grid" style="margin-bottom:10px;">
+                        <div class="form-group">
+                            <label>Nombre completo</label>
+                            <input type="text" id="nuevoAdminNombre" placeholder="Ej: Juan Pérez">
+                        </div>
+                        <div class="form-group">
+                            <label>Usuario</label>
+                            <input type="text" id="nuevoAdminUser" placeholder="Ej: juan">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña</label>
+                            <input type="password" id="nuevoAdminPass" placeholder="Contraseña">
+                        </div>
+                        <div class="form-group" style="justify-content:flex-end;">
+                            <button type="button" class="btn btn-success" onclick="agregarAdmin()">➕ Agregar Admin</button>
+                        </div>
+                    </div>
+                    <div id="listaAdmins"></div>
                 </div>
-            </div>
-            <input type="file" id="backupInput" accept=".json" style="display:none;" onchange="cargarBackup(event)">
-                        <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;" id="syncInfoConfig">
+                
+                <button type="submit" class="btn btn-primary">💾 Guardar Configuración</button>
+            </form> 
+           <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;" id="syncInfoConfig">
                 ☁️ <strong>Sincronización activa:</strong> Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.
             </div>
         </div>
@@ -2132,15 +2134,26 @@
     }
 
     function loginAdmin() {
-    const user = document.getElementById('adminUser') ? document.getElementById('adminUser').value.trim() : 'admin';
+    const user = document.getElementById('adminUser') ? document.getElementById('adminUser').value.trim() : '';
     const pass = document.getElementById('adminPass').value;
     
-    // Obtener credenciales guardadas (o valores por defecto)
     const config = datosGlobales.config || {};
-    const userCorrecto = config.adminUser || 'admin';
-    const passCorrecta = config.adminPass || 'admin123';
+    const userPrincipal = config.adminUser || 'admin';
+    const passPrincipal = config.adminPass || 'admin123';
+    const adminsAdicionales = config.admins || [];
     
-    if (user === userCorrecto && pass === passCorrecta) {
+    // Verificar admin principal
+    let loginExitoso = false;
+    if (user === userPrincipal && pass === passPrincipal) {
+        loginExitoso = true;
+    }
+    
+    // Verificar admins adicionales
+    if (!loginExitoso) {
+        loginExitoso = adminsAdicionales.some(a => a.user === user && a.pass === pass);
+    }
+    
+    if (loginExitoso) {
         document.getElementById('loginAdmin').classList.add('hidden');
         document.getElementById('adminDashboard').classList.remove('hidden');
         document.getElementById('adminError').style.display = 'none';
@@ -2149,7 +2162,6 @@
         document.getElementById('adminError').style.display = 'block';
     }
 }
-
     function loginEmpleado() {
         const user = document.getElementById('empLoginUser').value.trim();
         const pass = document.getElementById('empLoginPass').value.trim();
@@ -2340,6 +2352,86 @@
     if (statsCards[2]) statsCards[2].textContent = t('stat_jornadas');
     if (statsCards[3]) statsCards[3].textContent = t('stat_ingresos');
 }
+   function agregarAdmin() {
+    const nombre = document.getElementById('nuevoAdminNombre').value.trim();
+    const user = document.getElementById('nuevoAdminUser').value.trim();
+    const pass = document.getElementById('nuevoAdminPass').value;
+    
+    if (!nombre || !user || !pass) {
+        alert('⚠️ Todos los campos son obligatorios');
+        return;
+    }
+    
+    if (pass.length < 4) {
+        alert('⚠️ La contraseña debe tener al menos 4 caracteres');
+        return;
+    }
+    
+    // Verificar que el usuario no exista
+    const admins = datosGlobales.config.admins || [];
+    if (user === (datosGlobales.config.adminUser || 'admin') || admins.some(a => a.user === user)) {
+        alert('⚠️ Ese usuario ya existe');
+        return;
+    }
+    
+    // Agregar admin
+    const nuevoAdmin = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        nombre: nombre,
+        user: user,
+        pass: pass,
+        creado: new Date().toISOString()
+    };
+    
+    admins.push(nuevoAdmin);
+    datosGlobales.config.admins = admins;
+    guardarEnFirebase();
+    
+    // Limpiar campos
+    document.getElementById('nuevoAdminNombre').value = '';
+    document.getElementById('nuevoAdminUser').value = '';
+    document.getElementById('nuevoAdminPass').value = '';
+    
+    renderListaAdmins();
+    alert('✅ Administrador agregado: ' + nombre);
+}
+
+function eliminarAdmin(id) {
+    if (!confirm('¿Eliminar este administrador?')) return;
+    
+    const admins = datosGlobales.config.admins || [];
+    datosGlobales.config.admins = admins.filter(a => a.id !== id);
+    guardarEnFirebase();
+    renderListaAdmins();
+    alert('✅ Administrador eliminado');
+}
+
+function renderListaAdmins() {
+    const container = document.getElementById('listaAdmins');
+    if (!container) return;
+    
+    const admins = datosGlobales.config.admins || [];
+    
+    if (admins.length === 0) {
+        container.innerHTML = '<p style="color:#4a5568; font-size:0.85rem; text-align:center; padding:10px;">No hay administradores adicionales</p>';
+        return;
+    }
+    
+    let html = '<table style="width:100%; border-collapse:collapse; font-size:0.85rem;">';
+    html += '<thead><tr style="background:#e2e8f0;"><th style="padding:8px; text-align:left;">Nombre</th><th style="padding:8px; text-align:left;">Usuario</th><th style="padding:8px; text-align:center;">Acciones</th></tr></thead>';
+    html += '<tbody>';
+    admins.forEach(a => {
+        html += '<tr style="border-bottom:1px solid #e2e8f0;">';
+        html += '<td style="padding:8px;">' + a.nombre + '</td>';
+        html += '<td style="padding:8px;">' + a.user + '</td>';
+        html += '<td style="padding:8px; text-align:center;">';
+        html += '<button type="button" class="btn btn-danger btn-sm" onclick="eliminarAdmin(\'' + a.id + '\')">🗑️</button>';
+        html += '</td>';
+        html += '</tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+} 
    function renderResumenDescuentos(data) {
     const el = document.getElementById('resumenDescuentos');
     if (!el) return;
@@ -2370,15 +2462,19 @@
     const telEl = document.getElementById('cfgTelefono');
     if (telEl) telEl.value = cfg.telefono || '';
     
-    // Cargar credenciales del admin
+    // Cargar usuario del admin
     const adminUserEl = document.getElementById('cfgAdminUser');
     if (adminUserEl) adminUserEl.value = cfg.adminUser || 'admin';
     
+    // NO cargar la contraseña (dejar en blanco)
     const adminPassEl = document.getElementById('cfgAdminPass');
-    if (adminPassEl) adminPassEl.value = cfg.adminPass || 'admin123';
+    if (adminPassEl) adminPassEl.value = '';
     
     const adminConfirmEl = document.getElementById('cfgAdminPassConfirm');
-    if (adminConfirmEl) adminConfirmEl.value = cfg.adminPass || 'admin123';
+    if (adminConfirmEl) adminConfirmEl.value = '';
+    
+    // Renderizar lista de admins
+    renderListaAdmins();
 }
     function renderSelectsBoleta(data) {
         const select = document.getElementById('boletaEmpleado');
@@ -3780,26 +3876,29 @@
    function guardarConfig(e) {
     e.preventDefault();
     
-    // Obtener credenciales de admin
-    const adminUser = document.getElementById('cfgAdminUser') ? document.getElementById('cfgAdminUser').value.trim() : 'admin';
-    const adminPass = document.getElementById('cfgAdminPass') ? document.getElementById('cfgAdminPass').value : 'admin123';
-    const adminPassConfirm = document.getElementById('cfgAdminPassConfirm') ? document.getElementById('cfgAdminPassConfirm').value : '';
+    const adminUser = document.getElementById('cfgAdminUser').value.trim();
+    const adminPass = document.getElementById('cfgAdminPass').value;
+    const adminPassConfirm = document.getElementById('cfgAdminPassConfirm').value;
     
-    // Validar credenciales
-    if (!adminUser || !adminPass) {
-        alert('⚠️ El usuario y la contraseña del admin no pueden estar vacíos');
+    // Validar usuario
+    if (!adminUser) {
+        alert('⚠️ El usuario del admin no puede estar vacío');
         return;
     }
     
-    if (adminPass.length < 4) {
-        alert('⚠️ La contraseña debe tener al menos 4 caracteres');
-        return;
-    }
+    // Determinar contraseña (mantener la actual si está vacío)
+    let passFinal = datosGlobales.config.adminPass || 'admin123';
     
-    // Solo validar confirmación si el usuario escribió algo en ese campo
-    if (adminPassConfirm && adminPass !== adminPassConfirm) {
-        alert('⚠️ Las contraseñas no coinciden. Verifica que sean iguales.');
-        return;
+    if (adminPass) {
+        if (adminPass.length < 4) {
+            alert('⚠️ La contraseña debe tener al menos 4 caracteres');
+            return;
+        }
+        if (adminPass !== adminPassConfirm) {
+            alert('⚠️ Las contraseñas no coinciden');
+            return;
+        }
+        passFinal = adminPass;
     }
     
     const config = {
@@ -3813,18 +3912,22 @@
         zip: document.getElementById('cfgZIP') ? document.getElementById('cfgZIP').value : '',
         telefono: document.getElementById('cfgTelefono') ? document.getElementById('cfgTelefono').value : '',
         adminUser: adminUser,
-        adminPass: adminPass
+        adminPass: passFinal,
+        admins: datosGlobales.config.admins || []
     };
     
     datosGlobales.config = config;
     guardarEnFirebase();
     renderAll();
     
-    // Actualizar el título del header
     const tituloApp = document.getElementById('tituloApp');
     if (tituloApp) tituloApp.innerHTML = `🧹 ${config.empresa}`;
     
-    alert('✅ Configuración guardada\n\n👤 Usuario: ' + adminUser + '\n🔑 Contraseña: ' + adminPass);
+    // Limpiar campos de contraseña
+    document.getElementById('cfgAdminPass').value = '';
+    document.getElementById('cfgAdminPassConfirm').value = '';
+    
+    alert('✅ Configuración guardada');
 }
     // ============================================================
     // UI / MODAL / TABS
