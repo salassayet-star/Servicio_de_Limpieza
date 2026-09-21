@@ -634,8 +634,7 @@
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
         <div>
             <strong style="color:#1a4a7a;">👤 Usuario actual:</strong>
-            <span id="displayAdminUser" style="font-family:monospace; background:white; padding:6px 14px; border-radius:6px; margin-left:8px; font-weight:600;">admin</span>
-        </div>
+            <span id="displayAdminUser" style="font-family:monospace; background:white; padding:6px 14px; border-radius:6px; margin-left:8px; font-weight:600;">...</span>        </div>
         <button type="button" class="btn btn-warning" onclick="toggleCambiarUsuario()">✏️ Cambiar Usuario</button>
     </div>
     <div id="grupoCambiarUsuario" style="display:none; margin-top:15px; background:white; padding:15px; border-radius:8px;">
@@ -4197,6 +4196,15 @@ function renderListaAdmins() {
     // INIT
     // ============================================================
     aplicarIdioma();
+        // ⚠️ ACTUALIZAR DISPLAY DEL ADMIN AUTOMÁTICAMENTE
+    setInterval(() => {
+        const displayUser = document.getElementById('displayAdminUser');
+        if (displayUser && datosGlobales.config && datosGlobales.config.adminUser) {
+            if (displayUser.textContent !== datosGlobales.config.adminUser) {
+                displayUser.textContent = datosGlobales.config.adminUser;
+            }
+        }
+    }, 2000);
     // ⚠️ RESTAURAR SESIÓN
     restaurarSesion();
     // Aplicar modo guardado
