@@ -629,22 +629,54 @@
                     <div class="form-group"><label>Teléfono</label><input type="tel" id="cfgTelefono" placeholder="(555) 123-4567"></div>
                 </div>
                 
-                <h4 style="color:#1a4a7a; margin:15px 0 10px;">🔐 Credenciales del Administrador Principal</h4>
-                <div class="config-grid form-grid">
-                    <div class="form-group">
-                        <label>Usuario del Admin</label>
-                        <input type="text" id="cfgAdminUser" placeholder="admin" value="admin">
-                    </div>
-                    <div class="form-group">
-                        <label>Contraseña</label>
-                        <input type="password" id="cfgAdminPass" placeholder="Escribe para cambiar" autocomplete="new-password">
-                        <small style="color:#4a5568; font-size:0.75rem;">Deja vacío para no cambiar</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Confirmar Contraseña</label>
-                        <input type="password" id="cfgAdminPassConfirm" placeholder="Repite la nueva contraseña">
-                    </div>
-                </div>
+               <h4 style="color:#1a4a7a; margin:15px 0 10px;">🔐 Usuario del Administrador Principal</h4>
+<div style="background:#f0f4f8; padding:15px; border-radius:8px; margin-bottom:15px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+            <strong style="color:#1a4a7a;">👤 Usuario actual:</strong>
+            <span id="displayAdminUser" style="font-family:monospace; background:white; padding:6px 14px; border-radius:6px; margin-left:8px; font-weight:600;">admin</span>
+        </div>
+        <button type="button" class="btn btn-warning" onclick="toggleCambiarUsuario()">✏️ Cambiar Usuario</button>
+    </div>
+    <div id="grupoCambiarUsuario" style="display:none; margin-top:15px; background:white; padding:15px; border-radius:8px;">
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nuevo Usuario</label>
+                <input type="text" id="cfgAdminUser" placeholder="Nuevo usuario">
+            </div>
+            <div class="form-group">
+                <label>Contraseña actual (para confirmar)</label>
+                <input type="password" id="cfgAdminConfirmPass" placeholder="Tu contraseña actual">
+            </div>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <button type="button" class="btn btn-success" onclick="cambiarUsuarioAdmin()">✅ Confirmar Cambio</button>
+            <button type="button" class="btn btn-secondary" onclick="toggleCambiarUsuario()">❌ Cancelar</button>
+        </div>
+        <div style="background:#fff3cd; padding:8px; border-radius:6px; font-size:0.8rem; color:#856404; margin-top:10px;">
+            ⚠️ Al cambiar el usuario, deberás usar el nuevo para iniciar sesión.
+        </div>
+    </div>
+</div>
+
+<h4 style="color:#1a4a7a; margin:15px 0 10px;">🔑 Cambiar Contraseña del Admin</h4>
+<div class="config-grid form-grid">
+    <div class="form-group">
+        <label>Contraseña actual</label>
+        <input type="password" id="cfgAdminPassActual" placeholder="Tu contraseña actual">
+    </div>
+    <div class="form-group">
+        <label>Nueva Contraseña</label>
+        <input type="password" id="cfgAdminPassNueva" placeholder="Nueva contraseña">
+    </div>
+    <div class="form-group">
+        <label>Confirmar Nueva Contraseña</label>
+        <input type="password" id="cfgAdminPassConfirm" placeholder="Repite la nueva contraseña">
+    </div>
+</div>
+<div style="display:flex; gap:10px; margin-bottom:15px;">
+    <button type="button" class="btn btn-warning" onclick="cambiarPasswordAdmin()">🔑 Cambiar Contraseña</button>
+</div>
                 <div style="background:#fff3cd; padding:10px; border-radius:6px; font-size:0.85rem; color:#856404; margin-bottom:15px;">
                     ⚠️ <strong>Importante:</strong> Si cambias la contraseña, guárdala bien. La necesitarás para entrar.
                 </div>
@@ -2361,6 +2393,100 @@
     if (statsCards[2]) statsCards[2].textContent = t('stat_jornadas');
     if (statsCards[3]) statsCards[3].textContent = t('stat_ingresos');
 }
+   function toggleCambiarUsuario() {
+    const grupo = document.getElementById('grupoCambiarUsuario');
+    if (grupo) {
+        grupo.style.display = grupo.style.display === 'none' ? 'block' : 'none';
+        if (grupo.style.display === 'block') {
+            document.getElementById('cfgAdminUser').focus();
+            document.getElementById('cfgAdminConfirmPass').value = '';
+        }
+    }
+}
+
+function cambiarUsuarioAdmin() {
+    const nuevoUser = document.getElementById('cfgAdminUser').value.trim();
+    const passConfirm = document.getElementById('cfgAdminConfirmPass').value;
+    
+    if (!nuevoUser) {
+        alert('⚠️ Escribe un usuario válido');
+        return;
+    }
+    
+    if (nuevoUser.length < 3) {
+        alert('⚠️ El usuario debe tener al menos 3 caracteres');
+        return;
+    }
+    
+    // Verificar contraseña actual
+    const config = datosGlobales.config || {};
+    if (passConfirm !== config.adminPass) {
+        alert('⚠️ La contraseña actual no es correcta');
+        return;
+    }
+    
+    // Verificar que el usuario no exista
+    const admins = config.admins || [];
+    if (nuevoUser === config.adminUser || admins.some(a => a.user === nuevoUser)) {
+        alert('⚠️ Ese usuario ya existe');
+        return;
+    }
+    
+    if (!confirm('¿Cambiar el usuario del admin a "' + nuevoUser + '"?\n\nDeberás usar este usuario para iniciar sesión.')) {
+        return;
+    }
+    
+    // Guardar
+    datosGlobales.config.adminUser = nuevoUser;
+    guardarEnFirebase();
+    
+    // Actualizar la vista
+    document.getElementById('displayAdminUser').textContent = nuevoUser;
+    document.getElementById('cfgAdminUser').value = '';
+    document.getElementById('cfgAdminConfirmPass').value = '';
+    document.getElementById('grupoCambiarUsuario').style.display = 'none';
+    
+    alert('✅ Usuario cambiado a: ' + nuevoUser);
+}
+
+function cambiarPasswordAdmin() {
+    const passActual = document.getElementById('cfgAdminPassActual').value;
+    const passNueva = document.getElementById('cfgAdminPassNueva').value;
+    const passConfirm = document.getElementById('cfgAdminPassConfirm').value;
+    
+    if (!passActual || !passNueva || !passConfirm) {
+        alert('⚠️ Todos los campos son obligatorios');
+        return;
+    }
+    
+    // Verificar contraseña actual
+    const config = datosGlobales.config || {};
+    if (passActual !== config.adminPass) {
+        alert('⚠️ La contraseña actual no es correcta');
+        return;
+    }
+    
+    if (passNueva.length < 4) {
+        alert('⚠️ La nueva contraseña debe tener al menos 4 caracteres');
+        return;
+    }
+    
+    if (passNueva !== passConfirm) {
+        alert('⚠️ Las contraseñas nuevas no coinciden');
+        return;
+    }
+    
+    // Guardar
+    datosGlobales.config.adminPass = passNueva;
+    guardarEnFirebase();
+    
+    // Limpiar
+    document.getElementById('cfgAdminPassActual').value = '';
+    document.getElementById('cfgAdminPassNueva').value = '';
+    document.getElementById('cfgAdminPassConfirm').value = '';
+    
+    alert('✅ Contraseña cambiada correctamente');
+} 
    function agregarAdmin() {
     const nombre = document.getElementById('nuevoAdminNombre').value.trim();
     const user = document.getElementById('nuevoAdminUser').value.trim();
@@ -2487,19 +2613,34 @@ function renderListaAdmins() {
     const telEl = document.getElementById('cfgTelefono');
     if (telEl) telEl.value = cfg.telefono || '';
     
-    // Cargar usuario del admin
-    const adminUserEl = document.getElementById('cfgAdminUser');
-    if (adminUserEl) adminUserEl.value = cfg.adminUser || 'admin';
+    // Mostrar usuario actual (solo lectura)
+    const displayUser = document.getElementById('displayAdminUser');
+    if (displayUser) displayUser.textContent = cfg.adminUser || 'admin';
     
-    // NO cargar la contraseña (dejar en blanco)
-    const adminPassEl = document.getElementById('cfgAdminPass');
-    if (adminPassEl) adminPassEl.value = '';
+    // Limpiar campos de cambio de usuario y contraseña
+    const cfgAdminUserEl = document.getElementById('cfgAdminUser');
+    if (cfgAdminUserEl) cfgAdminUserEl.value = '';
     
-    const adminConfirmEl = document.getElementById('cfgAdminPassConfirm');
-    if (adminConfirmEl) adminConfirmEl.value = '';
+    const cfgAdminConfirmPassEl = document.getElementById('cfgAdminConfirmPass');
+    if (cfgAdminConfirmPassEl) cfgAdminConfirmPassEl.value = '';
+    
+    const cfgAdminPassActualEl = document.getElementById('cfgAdminPassActual');
+    if (cfgAdminPassActualEl) cfgAdminPassActualEl.value = '';
+    
+    const cfgAdminPassNuevaEl = document.getElementById('cfgAdminPassNueva');
+    if (cfgAdminPassNuevaEl) cfgAdminPassNuevaEl.value = '';
+    
+    const cfgAdminPassConfirmEl = document.getElementById('cfgAdminPassConfirm');
+    if (cfgAdminPassConfirmEl) cfgAdminPassConfirmEl.value = '';
+    
+    // Ocultar el grupo de cambio de usuario
+    const grupoCambio = document.getElementById('grupoCambiarUsuario');
+    if (grupoCambio) grupoCambio.style.display = 'none';
     
     // Renderizar lista de admins
-    renderListaAdmins();
+    if (typeof renderListaAdmins === 'function') {
+        renderListaAdmins();
+    }
 }
     function renderSelectsBoleta(data) {
         const select = document.getElementById('boletaEmpleado');
@@ -3898,66 +4039,20 @@ function renderListaAdmins() {
     // ============================================================
     // CONFIG
     // ============================================================
-   function guardarConfig(e) {
+  function guardarConfig(e) {
     e.preventDefault();
     
-    // Obtener la config actual
     const configActual = datosGlobales.config || {};
     
-    // ⚠️ ADMIN USER: Leer lo que hay en el campo
-    const adminUserField = document.getElementById('cfgAdminUser').value;
-    const adminUserInput = adminUserField ? adminUserField.trim() : '';
+    // ⚠️ IMPORTANTE: NO tocar adminUser ni adminPass aquí
+    // Esos se cambian con sus propios botones
     
-    // ⚠️ Si el campo está vacío Y ya hay un usuario guardado → conservarlo
-    // Si el campo está vacío Y NO hay usuario guardado → poner 'admin'
-    // Si el campo tiene texto → usar el texto
-    let adminUserFinal;
-    if (adminUserInput) {
-        adminUserFinal = adminUserInput;  // Tiene texto nuevo
-    } else if (configActual.adminUser) {
-        adminUserFinal = configActual.adminUser;  // Está vacío pero hay valor guardado
-    } else {
-        adminUserFinal = 'admin';  // Está vacío y no hay valor guardado
-    }
-    
-    console.log('👤 Usuario final:', adminUserFinal);
-    
-    // ⚠️ ADMIN PASS: Igual lógica
-    const adminPassField = document.getElementById('cfgAdminPass').value;
-    const adminPassConfirm = document.getElementById('cfgAdminPassConfirm').value;
-    
-    let adminPassFinal;
-    if (adminPassField) {
-        // El usuario escribió algo → validar
-        if (adminPassField.length < 4) {
-            alert('⚠️ La contraseña debe tener al menos 4 caracteres');
-            return;
-        }
-        if (adminPassField !== adminPassConfirm) {
-            alert('⚠️ Las contraseñas no coinciden');
-            return;
-        }
-        adminPassFinal = adminPassField;
-    } else if (configActual.adminPass) {
-        adminPassFinal = configActual.adminPass;  // Conservar
-    } else {
-        adminPassFinal = 'admin123';  // Valor por defecto
-    }
-    
-    // ⚠️ EMPRESA: Misma lógica
+    // ⚠️ EMPRESA
     const empresaField = document.getElementById('cfgEmpresa').value;
     const empresaInput = empresaField ? empresaField.trim() : '';
+    const empresaFinal = empresaInput || configActual.empresa || 'Mi Empresa';
     
-    let empresaFinal;
-    if (empresaInput) {
-        empresaFinal = empresaInput;
-    } else if (configActual.empresa) {
-        empresaFinal = configActual.empresa;
-    } else {
-        empresaFinal = 'Mi Empresa';
-    }
-    
-    // ⚠️ CAMPOS OPCIONALES: Misma lógica
+    // ⚠️ CAMPOS OPCIONALES
     const getValorFinal = (id, campoConfig) => {
         const el = document.getElementById(id);
         if (!el) return configActual[campoConfig] || '';
@@ -3976,13 +4071,10 @@ function renderListaAdmins() {
     // ⚠️ FICA Y MEDICARE
     const ficaField = parseFloat(document.getElementById('cfgFICA').value);
     const medicareField = parseFloat(document.getElementById('cfgMedicare').value);
-    
     const ficaFinal = (!isNaN(ficaField) && ficaField > 0) ? ficaField : (configActual.FICA || 6.2);
     const medicareFinal = (!isNaN(medicareField) && medicareField > 0) ? medicareField : (configActual.Medicare || 1.45);
     
-    // ⚠️ ADMINS ADICIONALES: SIEMPRE conservar
-    const adminsFinal = configActual.admins || [];
-    
+    // ⚠️ CONSERVAR adminUser, adminPass y admins
     const config = {
         FICA: ficaFinal,
         Medicare: medicareFinal,
@@ -3993,12 +4085,10 @@ function renderListaAdmins() {
         estado: estadoFinal,
         zip: zipFinal,
         telefono: telefonoFinal,
-        adminUser: adminUserFinal,
-        adminPass: adminPassFinal,
-        admins: adminsFinal
+        adminUser: configActual.adminUser || 'admin',      // ← CONSERVAR
+        adminPass: configActual.adminPass || 'admin123',   // ← CONSERVAR
+        admins: configActual.admins || []                   // ← CONSERVAR
     };
-    
-    console.log('💾 Guardando config:', config);
     
     datosGlobales.config = config;
     guardarEnFirebase();
@@ -4007,14 +4097,9 @@ function renderListaAdmins() {
     const tituloApp = document.getElementById('tituloApp');
     if (tituloApp) tituloApp.innerHTML = `🧹 ${config.empresa}`;
     
-    // Limpiar SOLO los campos de contraseña
-    document.getElementById('cfgAdminPass').value = '';
-    document.getElementById('cfgAdminPassConfirm').value = '';
-    
-    // Recargar la vista de Config
     renderResumenDescuentos(getData());
     
-    alert('✅ Configuración guardada\n\n👤 Usuario: ' + adminUserFinal);
+    alert('✅ Configuración guardada');
 }
     // ============================================================
     // UI / MODAL / TABS
