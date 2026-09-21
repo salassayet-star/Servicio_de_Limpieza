@@ -2117,20 +2117,27 @@
     }
 
     function volverInicio() {
-        document.getElementById('modoSeleccion').style.display = 'block';
-        document.getElementById('loginAdmin').classList.add('hidden');
-        document.getElementById('loginEmpleado').classList.add('hidden');
-        document.getElementById('adminDashboard').classList.add('hidden');
-        document.getElementById('empleadoDashboard').classList.add('hidden');
-        document.getElementById('adminError').style.display = 'none';
-        document.getElementById('empleadoError').style.display = 'none';
-        rolActual = null;
-        empleadoActual = null;
-    }
+    // Borrar sesión al volver al inicio
+    localStorage.removeItem('clean_sesion');
+    
+    document.getElementById('modoSeleccion').style.display = 'block';
+    document.getElementById('loginAdmin').classList.add('hidden');
+    document.getElementById('loginEmpleado').classList.add('hidden');
+    document.getElementById('adminDashboard').classList.add('hidden');
+    document.getElementById('empleadoDashboard').classList.add('hidden');
+    document.getElementById('adminError').style.display = 'none';
+    document.getElementById('empleadoError').style.display = 'none';
+    rolActual = null;
+    empleadoActual = null;
+}
 
     function cerrarSesion() {
-        if (confirm('¿Cerrar sesión?')) volverInicio();
+    if (confirm('¿Cerrar sesión?')) {
+        // ⚠️ BORRAR SESIÓN
+        localStorage.removeItem('clean_sesion');
+        volverInicio();
     }
+}
 
     function loginAdmin() {
     const user = document.getElementById('adminUser') ? document.getElementById('adminUser').value.trim() : '';
@@ -2153,6 +2160,13 @@
     }
     
     if (loginExitoso) {
+        // ⚠️ GUARDAR SESIÓN
+        localStorage.setItem('clean_sesion', JSON.stringify({
+            tipo: 'admin',
+            usuario: user,
+            fecha: new Date().toISOString()
+        }));
+        
         document.getElementById('loginAdmin').classList.add('hidden');
         document.getElementById('adminDashboard').classList.remove('hidden');
         document.getElementById('adminError').style.display = 'none';
@@ -2162,38 +2176,34 @@
     }
 }
     function loginEmpleado() {
-        const user = document.getElementById('empLoginUser').value.trim();
-        const pass = document.getElementById('empLoginPass').value.trim();
-        const data = getData();
+    const user = document.getElementById('empLoginUser').value.trim();
+    const pass = document.getElementById('empLoginPass').value;
+    const data = getData();
+    const emp = data.empleados.find(e => e.usuario === user && e.password === pass && e.estado === 'activo');
+    
+    if (emp) {
+        // ⚠️ GUARDAR SESIÓN
+        localStorage.setItem('clean_sesion', JSON.stringify({
+            tipo: 'empleado',
+            empleadoId: emp.id,
+            fecha: new Date().toISOString()
+        }));
         
-        if (data.empleados.length === 0) {
-            alert('⚠️ No hay empleados registrados. Contacta al administrador.');
-            return;
-        }
+        empleadoActual = emp;
+        document.getElementById('loginEmpleado').classList.add('hidden');
+        document.getElementById('empleadoDashboard').classList.remove('hidden');
+        document.getElementById('empleadoError').style.display = 'none';
+        document.getElementById('empNombreDisplay').textContent = emp.nombre;
+        const hoy = new Date().toISOString().slice(0,10);
+        document.getElementById('fechaHoyDisplay').textContent = `— ${nombreDia(hoy)} ${formatoFecha(hoy)}`;
         
-        const emp = data.empleados.find(e => 
-            e.usuario === user && 
-            e.password === pass && 
-            e.estado === 'activo'
-        );
-        
-        if (emp) {
-            empleadoActual = emp;
-            document.getElementById('loginEmpleado').classList.add('hidden');
-            document.getElementById('empleadoDashboard').classList.remove('hidden');
-            document.getElementById('empleadoError').style.display = 'none';
-            document.getElementById('empNombreDisplay').textContent = emp.nombre;
-            const hoy = new Date().toISOString().slice(0,10);
-            document.getElementById('fechaHoyDisplay').textContent = `— ${nombreDia(hoy)} ${formatoFecha(hoy)}`;
-            
-            cargarTrabajosHoy();
-            cargarTrabajosEmpleado();
-            cargarHistorialEmpleado();
-        } else {
-            document.getElementById('empleadoError').style.display = 'block';
-        }
+        cargarTrabajosHoy();
+        cargarTrabajosEmpleado();
+        cargarHistorialEmpleado();
+    } else {
+        document.getElementById('empleadoError').style.display = 'block';
     }
-
+}
     document.getElementById('adminPass').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); loginAdmin(); }
     });
@@ -3989,10 +3999,69 @@ function renderListaAdmins() {
     const modoOscuro = document.body.classList.toggle('modo-oscuro');
     localStorage.setItem('clean_modo', modoOscuro ? 'oscuro' : 'claro');
 }
+    function restaurarSesion() {
+    try {
+        const sesion = localStorage.getItem('clean_sesion');
+        if (!sesion) return;
+        
+        const datos = JSON.parse(sesion);
+        
+        // Verificar que la sesión no sea muy vieja (opcional: máximo 30 días)
+        const fechaSesion = new Date(datos.fecha);
+        const ahora = new Date();
+        const diasDiferencia = (ahora - fechaSesion) / (1000 * 60 * 60 * 24);
+        
+        if (diasDiferencia > 30) {
+            localStorage.removeItem('clean_sesion');
+            return;
+        }
+        
+        if (datos.tipo === 'admin') {
+            // Restaurar sesión admin
+            document.getElementById('modoSeleccion').style.display = 'none';
+            document.getElementById('loginAdmin').classList.add('hidden');
+            document.getElementById('loginEmpleado').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            document.getElementById('empleadoDashboard').classList.add('hidden');
+            renderAll();
+            console.log('✅ Sesión admin restaurada');
+        } else if (datos.tipo === 'empleado') {
+            // Restaurar sesión empleado
+            const data = getData();
+            const emp = data.empleados.find(e => e.id === datos.empleadoId && e.estado === 'activo');
+            
+            if (emp) {
+                empleadoActual = emp;
+                document.getElementById('modoSeleccion').style.display = 'none';
+                document.getElementById('loginAdmin').classList.add('hidden');
+                document.getElementById('loginEmpleado').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.add('hidden');
+                document.getElementById('empleadoDashboard').classList.remove('hidden');
+                document.getElementById('empNombreDisplay').textContent = emp.nombre;
+                const hoy = new Date().toISOString().slice(0,10);
+                document.getElementById('fechaHoyDisplay').textContent = `— ${nombreDia(hoy)} ${formatoFecha(hoy)}`;
+                
+                cargarTrabajosHoy();
+                cargarTrabajosEmpleado();
+                cargarHistorialEmpleado();
+                console.log('✅ Sesión empleado restaurada');
+            } else {
+                // El empleado ya no existe o está inactivo
+                localStorage.removeItem('clean_sesion');
+            }
+        }
+    } catch (error) {
+        console.error('Error al restaurar sesión:', error);
+        localStorage.removeItem('clean_sesion');
+    }
+}
+    
     // ============================================================
     // INIT
     // ============================================================
     aplicarIdioma();
+    // ⚠️ RESTAURAR SESIÓN
+    restaurarSesion();
     // Aplicar modo guardado
 if (localStorage.getItem('clean_modo') === 'oscuro') {
     document.body.classList.add('modo-oscuro');
