@@ -3912,12 +3912,10 @@ function renderListaAdmins() {
     let userFinal = configActual.adminUser || 'admin';
     let passFinal = configActual.adminPass || 'admin123';
     
-    // Solo actualizar el usuario si escribió algo
     if (adminUserInput) {
         userFinal = adminUserInput;
     }
     
-    // Solo actualizar la contraseña si escribió algo
     if (adminPass) {
         if (adminPass.length < 4) {
             alert('⚠️ La contraseña debe tener al menos 4 caracteres');
@@ -3930,22 +3928,29 @@ function renderListaAdmins() {
         passFinal = adminPass;
     }
     
-    // Conservar los admins existentes
-    const adminsExistentes = configActual.admins || [];
+    // ⚠️ CONSERVAR datos de empresa si están vacíos
+    const empresaInput = document.getElementById('cfgEmpresa').value.trim();
+    const einInput = document.getElementById('cfgEIN') ? document.getElementById('cfgEIN').value.trim() : '';
+    const direccionInput = document.getElementById('cfgDireccion') ? document.getElementById('cfgDireccion').value.trim() : '';
+    const ciudadInput = document.getElementById('cfgCiudad') ? document.getElementById('cfgCiudad').value.trim() : '';
+    const estadoInput = document.getElementById('cfgEstado') ? document.getElementById('cfgEstado').value.trim() : '';
+    const zipInput = document.getElementById('cfgZIP') ? document.getElementById('cfgZIP').value.trim() : '';
+    const telefonoInput = document.getElementById('cfgTelefono') ? document.getElementById('cfgTelefono').value.trim() : '';
     
     const config = {
-        FICA: parseFloat(document.getElementById('cfgFICA').value) || 0,
-        Medicare: parseFloat(document.getElementById('cfgMedicare').value) || 0,
-        empresa: document.getElementById('cfgEmpresa').value || 'Mi Empresa',
-        ein: document.getElementById('cfgEIN') ? document.getElementById('cfgEIN').value : '',
-        direccion: document.getElementById('cfgDireccion') ? document.getElementById('cfgDireccion').value : '',
-        ciudad: document.getElementById('cfgCiudad') ? document.getElementById('cfgCiudad').value : '',
-        estado: document.getElementById('cfgEstado') ? document.getElementById('cfgEstado').value : '',
-        zip: document.getElementById('cfgZIP') ? document.getElementById('cfgZIP').value : '',
-        telefono: document.getElementById('cfgTelefono') ? document.getElementById('cfgTelefono').value : '',
+        FICA: parseFloat(document.getElementById('cfgFICA').value) || configActual.FICA || 6.2,
+        Medicare: parseFloat(document.getElementById('cfgMedicare').value) || configActual.Medicare || 1.45,
+        // Si el campo está vacío → conservar el valor actual
+        empresa: empresaInput || configActual.empresa || 'Mi Empresa',
+        ein: einInput || configActual.ein || '',
+        direccion: direccionInput || configActual.direccion || '',
+        ciudad: ciudadInput || configActual.ciudad || '',
+        estado: estadoInput || configActual.estado || '',
+        zip: zipInput || configActual.zip || '',
+        telefono: telefonoInput || configActual.telefono || '',
         adminUser: userFinal,
         adminPass: passFinal,
-        admins: adminsExistentes
+        admins: configActual.admins || []
     };
     
     datosGlobales.config = config;
@@ -3960,7 +3965,7 @@ function renderListaAdmins() {
     document.getElementById('cfgAdminPassConfirm').value = '';
     
     // Mostrar la config guardada
-    renderResumenDescuentos(config);
+    renderResumenDescuentos(getData());
     
     alert('✅ Configuración guardada');
 }
