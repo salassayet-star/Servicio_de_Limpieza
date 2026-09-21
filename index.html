@@ -264,8 +264,7 @@
     <!-- LOGIN ADMIN -->
     <div id="loginAdmin" class="login-container hidden">
     <h2>👤 Acceso Admin</h2>
-    <div class="form-group"><label>Usuario</label><input type="text" id="adminUser" placeholder="admin" value="admin"></div>
-    <div class="form-group"><label>Contraseña</label><input type="password" id="adminPass" placeholder="admin123"></div>
+   <div class="form-group"><label>Usuario</label><input type="text" id="adminUser" placeholder="Ingresa tu usuario"></div>    <div class="form-group"><label>Contraseña</label><input type="password" id="adminPass" placeholder="admin123"></div>
     <button class="btn btn-primary" onclick="loginAdmin()">🔐 Entrar</button>
     <button class="btn btn-secondary" onclick="volverInicio()">⬅️ Volver</button>
     <div id="adminError" style="color:red; margin-top:10px; display:none;">❌ Usuario o contraseña incorrectos</div>
@@ -3958,24 +3957,29 @@ function renderListaAdmins() {
     document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) cerrarModal(); });
 
     document.querySelectorAll('.tabs').forEach(tabContainer => {
-        tabContainer.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const parent = this.closest('.tabs');
-                parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                const contentId = this.dataset.tab;
-                const container = this.closest('.admin-dashboard') || this.closest('.empleado-dashboard');
-                container.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                const target = container.querySelector('#tab-' + contentId);
-                if (target) target.classList.add('active');
-                if (contentId === 'admin-agenda') renderAgendaDiaria();
-                if (contentId === 'admin-semana') renderSemana();
-                if (contentId === 'admin-mes') renderMes();
-                if (contentId === 'admin-clientes') renderPagosClientes();
-                if (contentId === 'emp-trabajos-hoy') cargarTrabajosHoy();
-            });
+    tabContainer.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const parent = this.closest('.tabs');
+            parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const contentId = this.dataset.tab;
+            const container = this.closest('.admin-dashboard') || this.closest('.empleado-dashboard');
+            container.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            const target = container.querySelector('#tab-' + contentId);
+            if (target) target.classList.add('active');
+            if (contentId === 'admin-agenda') renderAgendaDiaria();
+            if (contentId === 'admin-semana') renderSemana();
+            if (contentId === 'admin-mes') renderMes();
+            if (contentId === 'admin-clientes') renderPagosClientes();
+            if (contentId === 'admin-planillas' && typeof inicializarPlanilla === 'function') inicializarPlanilla();
+            if (contentId === 'admin-config') {
+                renderResumenDescuentos(getData());
+                renderListaAdmins();
+            }
+            if (contentId === 'emp-trabajos-hoy') cargarTrabajosHoy();
         });
     });
+});
 
     function cambiarModo() {
     const modoOscuro = document.body.classList.toggle('modo-oscuro');
