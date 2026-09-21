@@ -2367,9 +2367,13 @@
         return;
     }
     
+    // Obtener config actual
+    const config = datosGlobales.config || {};
+    const admins = config.admins || [];
+    
     // Verificar que el usuario no exista
-    const admins = datosGlobales.config.admins || [];
-    if (user === (datosGlobales.config.adminUser || 'admin') || admins.some(a => a.user === user)) {
+    const userPrincipal = config.adminUser || 'admin';
+    if (user === userPrincipal || admins.some(a => a.user === user)) {
         alert('⚠️ Ese usuario ya existe');
         return;
     }
@@ -2384,7 +2388,15 @@
     };
     
     admins.push(nuevoAdmin);
+    
+    // ⚠️ Actualizar la config completa
     datosGlobales.config.admins = admins;
+    datosGlobales.config.FICA = datosGlobales.config.FICA || 6.2;
+    datosGlobales.config.Medicare = datosGlobales.config.Medicare || 1.45;
+    datosGlobales.config.empresa = datosGlobales.config.empresa || 'Mi Empresa';
+    datosGlobales.config.adminUser = datosGlobales.config.adminUser || 'admin';
+    datosGlobales.config.adminPass = datosGlobales.config.adminPass || 'admin123';
+    
     guardarEnFirebase();
     
     // Limpiar campos
@@ -2399,8 +2411,12 @@
 function eliminarAdmin(id) {
     if (!confirm('¿Eliminar este administrador?')) return;
     
-    const admins = datosGlobales.config.admins || [];
+    const config = datosGlobales.config || {};
+    const admins = config.admins || [];
+    
+    // Filtrar el admin a eliminar
     datosGlobales.config.admins = admins.filter(a => a.id !== id);
+    
     guardarEnFirebase();
     renderListaAdmins();
     alert('✅ Administrador eliminado');
@@ -3886,8 +3902,11 @@ function renderListaAdmins() {
         return;
     }
     
+    // Obtener la config actual (con los admins ya guardados)
+    const configActual = datosGlobales.config || {};
+    
     // Determinar contraseña (mantener la actual si está vacío)
-    let passFinal = datosGlobales.config.adminPass || 'admin123';
+    let passFinal = configActual.adminPass || 'admin123';
     
     if (adminPass) {
         if (adminPass.length < 4) {
@@ -3901,6 +3920,9 @@ function renderListaAdmins() {
         passFinal = adminPass;
     }
     
+    // ⚠️ IMPORTANTE: Conservar los admins existentes
+    const adminsExistentes = configActual.admins || [];
+    
     const config = {
         FICA: parseFloat(document.getElementById('cfgFICA').value) || 0,
         Medicare: parseFloat(document.getElementById('cfgMedicare').value) || 0,
@@ -3913,7 +3935,7 @@ function renderListaAdmins() {
         telefono: document.getElementById('cfgTelefono') ? document.getElementById('cfgTelefono').value : '',
         adminUser: adminUser,
         adminPass: passFinal,
-        admins: datosGlobales.config.admins || []
+        admins: adminsExistentes  // ← Conservar los admins
     };
     
     datosGlobales.config = config;
