@@ -2141,10 +2141,10 @@
         document.getElementById('loginAdmin').classList.toggle('hidden', rol !== 'admin');
         document.getElementById('loginEmpleado').classList.toggle('hidden', rol !== 'empleado');
         rolActual = rol;
-        setTimeout(() => {
-            if (rol === 'admin') document.getElementById('adminPass').focus();
-            else document.getElementById('empLoginUser').focus();
-        }, 100);
+                   setTimeout(() => {
+                actualizarDisplayAdmin();
+                console.log('🔄 Display actualizado después de restaurar sesión');
+            }, 200);
     }
 
     function volverInicio() {
@@ -2612,9 +2612,8 @@ function renderListaAdmins() {
     const telEl = document.getElementById('cfgTelefono');
     if (telEl) telEl.value = cfg.telefono || '';
     
-    // Mostrar usuario actual (solo lectura)
-    const displayUser = document.getElementById('displayAdminUser');
-    if (displayUser) displayUser.textContent = cfg.adminUser || 'admin';
+       // Mostrar usuario actual (el que está logueado)
+    actualizarDisplayAdmin();
     
     // Limpiar campos de cambio de usuario y contraseña
     const cfgAdminUserEl = document.getElementById('cfgAdminUser');
@@ -4197,13 +4196,8 @@ function renderListaAdmins() {
     // ============================================================
     aplicarIdioma();
         // ⚠️ ACTUALIZAR DISPLAY DEL ADMIN AUTOMÁTICAMENTE
-    setInterval(() => {
-        const displayUser = document.getElementById('displayAdminUser');
-        if (displayUser && datosGlobales.config && datosGlobales.config.adminUser) {
-            if (displayUser.textContent !== datosGlobales.config.adminUser) {
-                displayUser.textContent = datosGlobales.config.adminUser;
-            }
-        }
+        setInterval(() => {
+        actualizarDisplayAdmin();
     }, 2000);
     // ⚠️ RESTAURAR SESIÓN
     restaurarSesion();
