@@ -3891,22 +3891,23 @@ function renderListaAdmins() {
    function guardarConfig(e) {
     e.preventDefault();
     
-    const adminUser = document.getElementById('cfgAdminUser').value.trim();
+    const adminUserInput = document.getElementById('cfgAdminUser').value.trim();
     const adminPass = document.getElementById('cfgAdminPass').value;
     const adminPassConfirm = document.getElementById('cfgAdminPassConfirm').value;
     
-    // Validar usuario
-    if (!adminUser) {
-        alert('⚠️ El usuario del admin no puede estar vacío');
-        return;
-    }
-    
-    // Obtener la config actual (con los admins ya guardados)
+    // Obtener la config actual
     const configActual = datosGlobales.config || {};
     
-    // Determinar contraseña (mantener la actual si está vacío)
+    // ⚠️ CONSERVAR usuario y contraseña si están vacíos
+    let userFinal = configActual.adminUser || 'admin';
     let passFinal = configActual.adminPass || 'admin123';
     
+    // Solo actualizar el usuario si escribió algo
+    if (adminUserInput) {
+        userFinal = adminUserInput;
+    }
+    
+    // Solo actualizar la contraseña si escribió algo
     if (adminPass) {
         if (adminPass.length < 4) {
             alert('⚠️ La contraseña debe tener al menos 4 caracteres');
@@ -3919,7 +3920,7 @@ function renderListaAdmins() {
         passFinal = adminPass;
     }
     
-    // ⚠️ IMPORTANTE: Conservar los admins existentes
+    // Conservar los admins existentes
     const adminsExistentes = configActual.admins || [];
     
     const config = {
@@ -3932,9 +3933,9 @@ function renderListaAdmins() {
         estado: document.getElementById('cfgEstado') ? document.getElementById('cfgEstado').value : '',
         zip: document.getElementById('cfgZIP') ? document.getElementById('cfgZIP').value : '',
         telefono: document.getElementById('cfgTelefono') ? document.getElementById('cfgTelefono').value : '',
-        adminUser: adminUser,
+        adminUser: userFinal,
         adminPass: passFinal,
-        admins: adminsExistentes  // ← Conservar los admins
+        admins: adminsExistentes
     };
     
     datosGlobales.config = config;
@@ -3944,9 +3945,12 @@ function renderListaAdmins() {
     const tituloApp = document.getElementById('tituloApp');
     if (tituloApp) tituloApp.innerHTML = `🧹 ${config.empresa}`;
     
-    // Limpiar campos de contraseña
+    // Limpiar SOLO los campos de contraseña
     document.getElementById('cfgAdminPass').value = '';
     document.getElementById('cfgAdminPassConfirm').value = '';
+    
+    // Mostrar la config guardada
+    renderResumenDescuentos(config);
     
     alert('✅ Configuración guardada');
 }
