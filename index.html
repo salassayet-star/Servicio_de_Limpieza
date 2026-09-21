@@ -3901,57 +3901,104 @@ function renderListaAdmins() {
    function guardarConfig(e) {
     e.preventDefault();
     
-    const adminUserInput = document.getElementById('cfgAdminUser').value.trim();
-    const adminPass = document.getElementById('cfgAdminPass').value;
-    const adminPassConfirm = document.getElementById('cfgAdminPassConfirm').value;
-    
     // Obtener la config actual
     const configActual = datosGlobales.config || {};
     
-    // ⚠️ CONSERVAR usuario y contraseña si están vacíos
-    let userFinal = configActual.adminUser || 'admin';
-    let passFinal = configActual.adminPass || 'admin123';
+    // ⚠️ ADMIN USER: Leer lo que hay en el campo
+    const adminUserField = document.getElementById('cfgAdminUser').value;
+    const adminUserInput = adminUserField ? adminUserField.trim() : '';
     
+    // ⚠️ Si el campo está vacío Y ya hay un usuario guardado → conservarlo
+    // Si el campo está vacío Y NO hay usuario guardado → poner 'admin'
+    // Si el campo tiene texto → usar el texto
+    let adminUserFinal;
     if (adminUserInput) {
-        userFinal = adminUserInput;
+        adminUserFinal = adminUserInput;  // Tiene texto nuevo
+    } else if (configActual.adminUser) {
+        adminUserFinal = configActual.adminUser;  // Está vacío pero hay valor guardado
+    } else {
+        adminUserFinal = 'admin';  // Está vacío y no hay valor guardado
     }
     
-    if (adminPass) {
-        if (adminPass.length < 4) {
+    console.log('👤 Usuario final:', adminUserFinal);
+    
+    // ⚠️ ADMIN PASS: Igual lógica
+    const adminPassField = document.getElementById('cfgAdminPass').value;
+    const adminPassConfirm = document.getElementById('cfgAdminPassConfirm').value;
+    
+    let adminPassFinal;
+    if (adminPassField) {
+        // El usuario escribió algo → validar
+        if (adminPassField.length < 4) {
             alert('⚠️ La contraseña debe tener al menos 4 caracteres');
             return;
         }
-        if (adminPass !== adminPassConfirm) {
+        if (adminPassField !== adminPassConfirm) {
             alert('⚠️ Las contraseñas no coinciden');
             return;
         }
-        passFinal = adminPass;
+        adminPassFinal = adminPassField;
+    } else if (configActual.adminPass) {
+        adminPassFinal = configActual.adminPass;  // Conservar
+    } else {
+        adminPassFinal = 'admin123';  // Valor por defecto
     }
     
-    // ⚠️ CONSERVAR datos de empresa si están vacíos
-    const empresaInput = document.getElementById('cfgEmpresa').value.trim();
-    const einInput = document.getElementById('cfgEIN') ? document.getElementById('cfgEIN').value.trim() : '';
-    const direccionInput = document.getElementById('cfgDireccion') ? document.getElementById('cfgDireccion').value.trim() : '';
-    const ciudadInput = document.getElementById('cfgCiudad') ? document.getElementById('cfgCiudad').value.trim() : '';
-    const estadoInput = document.getElementById('cfgEstado') ? document.getElementById('cfgEstado').value.trim() : '';
-    const zipInput = document.getElementById('cfgZIP') ? document.getElementById('cfgZIP').value.trim() : '';
-    const telefonoInput = document.getElementById('cfgTelefono') ? document.getElementById('cfgTelefono').value.trim() : '';
+    // ⚠️ EMPRESA: Misma lógica
+    const empresaField = document.getElementById('cfgEmpresa').value;
+    const empresaInput = empresaField ? empresaField.trim() : '';
+    
+    let empresaFinal;
+    if (empresaInput) {
+        empresaFinal = empresaInput;
+    } else if (configActual.empresa) {
+        empresaFinal = configActual.empresa;
+    } else {
+        empresaFinal = 'Mi Empresa';
+    }
+    
+    // ⚠️ CAMPOS OPCIONALES: Misma lógica
+    const getValorFinal = (id, campoConfig) => {
+        const el = document.getElementById(id);
+        if (!el) return configActual[campoConfig] || '';
+        const valor = el.value.trim();
+        if (valor) return valor;
+        return configActual[campoConfig] || '';
+    };
+    
+    const einFinal = getValorFinal('cfgEIN', 'ein');
+    const direccionFinal = getValorFinal('cfgDireccion', 'direccion');
+    const ciudadFinal = getValorFinal('cfgCiudad', 'ciudad');
+    const estadoFinal = getValorFinal('cfgEstado', 'estado');
+    const zipFinal = getValorFinal('cfgZIP', 'zip');
+    const telefonoFinal = getValorFinal('cfgTelefono', 'telefono');
+    
+    // ⚠️ FICA Y MEDICARE
+    const ficaField = parseFloat(document.getElementById('cfgFICA').value);
+    const medicareField = parseFloat(document.getElementById('cfgMedicare').value);
+    
+    const ficaFinal = (!isNaN(ficaField) && ficaField > 0) ? ficaField : (configActual.FICA || 6.2);
+    const medicareFinal = (!isNaN(medicareField) && medicareField > 0) ? medicareField : (configActual.Medicare || 1.45);
+    
+    // ⚠️ ADMINS ADICIONALES: SIEMPRE conservar
+    const adminsFinal = configActual.admins || [];
     
     const config = {
-        FICA: parseFloat(document.getElementById('cfgFICA').value) || configActual.FICA || 6.2,
-        Medicare: parseFloat(document.getElementById('cfgMedicare').value) || configActual.Medicare || 1.45,
-        // Si el campo está vacío → conservar el valor actual
-        empresa: empresaInput || configActual.empresa || 'Mi Empresa',
-        ein: einInput || configActual.ein || '',
-        direccion: direccionInput || configActual.direccion || '',
-        ciudad: ciudadInput || configActual.ciudad || '',
-        estado: estadoInput || configActual.estado || '',
-        zip: zipInput || configActual.zip || '',
-        telefono: telefonoInput || configActual.telefono || '',
-        adminUser: userFinal,
-        adminPass: passFinal,
-        admins: configActual.admins || []
+        FICA: ficaFinal,
+        Medicare: medicareFinal,
+        empresa: empresaFinal,
+        ein: einFinal,
+        direccion: direccionFinal,
+        ciudad: ciudadFinal,
+        estado: estadoFinal,
+        zip: zipFinal,
+        telefono: telefonoFinal,
+        adminUser: adminUserFinal,
+        adminPass: adminPassFinal,
+        admins: adminsFinal
     };
+    
+    console.log('💾 Guardando config:', config);
     
     datosGlobales.config = config;
     guardarEnFirebase();
@@ -3964,10 +4011,10 @@ function renderListaAdmins() {
     document.getElementById('cfgAdminPass').value = '';
     document.getElementById('cfgAdminPassConfirm').value = '';
     
-    // Mostrar la config guardada
+    // Recargar la vista de Config
     renderResumenDescuentos(getData());
     
-    alert('✅ Configuración guardada');
+    alert('✅ Configuración guardada\n\n👤 Usuario: ' + adminUserFinal);
 }
     // ============================================================
     // UI / MODAL / TABS
