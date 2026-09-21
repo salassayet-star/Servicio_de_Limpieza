@@ -4134,6 +4134,20 @@ function renderListaAdmins() {
     const modoOscuro = document.body.classList.toggle('modo-oscuro');
     localStorage.setItem('clean_modo', modoOscuro ? 'oscuro' : 'claro');
 }
+    function actualizarDisplayAdmin() {
+    const displayUser = document.getElementById('displayAdminUser');
+    if (!displayUser) return;
+    
+    try {
+        const sesion = JSON.parse(localStorage.getItem('clean_sesion') || '{}');
+        if (sesion.tipo === 'admin' && sesion.usuario) {
+            displayUser.textContent = sesion.usuario;
+            return;
+        }
+    } catch (e) {}
+    
+    displayUser.textContent = datosGlobales.config.adminUser || 'admin';
+}
     function restaurarSesion() {
     try {
         const sesion = localStorage.getItem('clean_sesion');
