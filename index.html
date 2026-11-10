@@ -806,6 +806,7 @@
                     <button type="button" class="btn btn-secondary" onclick="importarBackup()">📂 Restaurar local</button>
                     <button type="button" class="btn btn-success" onclick="generarRespaldoPDF()">📄 Respaldo en PDF</button>
                     <button type="button" class="btn btn-info" onclick="cargarDatosEjemplo()">📋 Cargar datos de ejemplo</button>
+                    <button type="button" class="btn btn-info" onclick="cargarTrabajosEjemplo()">📋 Cargar ejemplos de trabajos realizados</button>
                 </div>
                 <p style="font-size:0.85rem; color:#4a5568; margin-top:8px;">El respaldo en PDF abre un reporte para imprimir o guardar como PDF en tu PC. No incluye contraseñas ni códigos de acceso.</p>
                 <input type="file" id="backupInput" accept=".json" style="display:none" onchange="cargarBackup(event)">
@@ -1143,6 +1144,10 @@
             'msg_borrar_todo_ejemplos': '🗑️ ¿Borrar TODOS los datos y cargar los ejemplos nuevos (5 clientes y 3 empleados)?\n\nSe borran empleados, clientes, jornadas, boletas, pagos, adelantos y cancelaciones. ✅ La configuración (nombre empresa y % descuentos) SE CONSERVARÁ.\n\n⚠️ Esto borra también los datos que hay ahora. Hazlo solo si todo lo que hay es de ejemplo.\n\nEsta acción no se puede deshacer.',
             'msg_borrar_todo_ejemplos_final': '⚠️ ÚLTIMA CONFIRMACIÓN: ¿Seguro de borrar todo y cargar los ejemplos nuevos?',
             'msg_ejemplos_nuevos_cargados': '✅ Todo borrado y ejemplos nuevos cargados: {emp} empleados y {cli} clientes.\n\nCada cliente tiene los 3 empleados asignados.',
+            'msg_confirmar_trabajos_ejemplo': '📋 ¿Cargar trabajos de ejemplo ya realizados?\n\nSe agregan jornadas completadas de los últimos 14 días con los clientes y empleados que ya hay en el sistema. No se borra nada. Si ya estaban cargados, no se duplican.',
+            'msg_trabajos_ejemplo_cargados': '✅ Trabajos de ejemplo cargados: {jor} jornadas, {pag} pagos registrados y {ade} adelanto.\n\nLa mitad de los trabajos quedó pagada y la otra mitad pendiente, para que veas el saldo por cliente. Genera las boletas quincenales desde la pestaña Boletas.',
+            'msg_trabajos_ejemplo_ya_existian': 'ℹ️ Los trabajos de ejemplo ya estaban cargados. No se agregó nada nuevo.',
+            'msg_sin_clientes_empleados': '⚠️ No hay clientes o empleados en el sistema.\n\nPrimero carga los datos de ejemplo (5 clientes y 3 empleados) o crea clientes y empleados.',
             'msg_cerrar_sesion': '¿Cerrar sesión?',
             
             // Boletas
@@ -1524,6 +1529,10 @@
             'msg_borrar_todo_ejemplos': '🗑️ Delete ALL data and load the new examples (5 clients and 3 employees)?\n\nEmployees, clients, jobs, paystubs, payments, advances and cancellations will be deleted. ✅ Settings (company name and deduction %) WILL BE KEPT.\n\n⚠️ This also deletes the data that is there now. Only do this if everything there is example data.\n\nThis cannot be undone.',
             'msg_borrar_todo_ejemplos_final': '⚠️ FINAL CONFIRMATION: Are you sure you want to delete everything and load the new examples?',
             'msg_ejemplos_nuevos_cargados': '✅ Everything deleted and new examples loaded: {emp} employees and {cli} clients.\n\nEach client has all 3 employees assigned.',
+            'msg_confirmar_trabajos_ejemplo': '📋 Load example completed jobs?\n\nCompleted jobs from the last 14 days will be added using the clients and employees already in the system. Nothing will be deleted. If they were already loaded, they will not be duplicated.',
+            'msg_trabajos_ejemplo_cargados': '✅ Example jobs loaded: {jor} jobs, {pag} payments recorded and {ade} advance.\n\nHalf of the jobs are paid and the other half are pending, so you can see each client\'s balance. Generate the biweekly paystubs from the Paystubs tab.',
+            'msg_trabajos_ejemplo_ya_existian': 'ℹ️ The example jobs were already loaded. Nothing new was added.',
+            'msg_sin_clientes_empleados': '⚠️ There are no clients or employees in the system.\n\nFirst load the example data (5 clients and 3 employees) or create clients and employees.',
             'msg_cerrar_sesion': 'Log out?',
             
             // Boletas
@@ -1929,6 +1938,7 @@
             '💾 Backup local': '💾 Local Backup',
             '📄 Respaldo en PDF': '📄 PDF Backup',
             '📋 Cargar datos de ejemplo': '📋 Load example data',
+            '📋 Cargar ejemplos de trabajos realizados': '📋 Load example completed jobs',
             '🗑️ Borrar todo y cargar ejemplos nuevos': '🗑️ Delete all and load new examples',
             '👤 Empleados asignados a este cliente': '👤 Employees assigned to this client',
             'Los empleados marcados trabajan para este cliente.': 'Checked employees work for this client.',
@@ -2224,6 +2234,7 @@
             '💾 Local Backup': '💾 Backup local',
             '📄 PDF Backup': '📄 Respaldo en PDF',
             '📋 Load example data': '📋 Cargar datos de ejemplo',
+            '📋 Load example completed jobs': '📋 Cargar ejemplos de trabajos realizados',
             '🗑️ Delete all and load new examples': '🗑️ Borrar todo y cargar ejemplos nuevos',
             '👤 Employees assigned to this client': '👤 Empleados asignados a este cliente',
             'Checked employees work for this client.': 'Los empleados marcados trabajan para este cliente.',
@@ -2736,6 +2747,137 @@
         await guardarEnFirebase();
         renderAll();
         alert(t('msg_ejemplos_nuevos_cargados').replace('{emp}', res.emp).replace('{cli}', res.cli));
+    }
+
+
+    // Ejemplos de trabajos ya realizados (jornadas completadas, pagos
+    // y un adelanto) con los clientes y empleados que YA hay en el
+    // sistema. No borra nada. Las fechas se calculan desde HOY al
+    // pulsar el botón (últimos 14 días), nunca se escriben fechas
+    // fijas, para que funcione cuando se pulse. Solo se crea una
+    // jornada por cliente y fecha: así el cargo automático de la
+    // cuenta del cliente aparece exactamente una vez por trabajo.
+    // Los trabajos pagados se guardan como el cargo automático
+    // marcado pagado (id 'auto_<cliente>_<fecha>'), igual que cuando
+    // el Admin marca un cargo como pagado en la cuenta del cliente.
+    // Los pendientes no se guardan: el cargo lo genera sola la vista
+    // de la cuenta a partir de la jornada completada. Las boletas NO
+    // se crean aquí: el Admin las genera desde la pestaña Boletas
+    // con las jornadas de ejemplo. El adelanto sí se crea para que
+    // se vea en la vista previa de la boleta.
+    function fechaLocalISO(d) {
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const dia = String(d.getDate()).padStart(2, '0');
+        return d.getFullYear() + '-' + m + '-' + dia;
+    }
+
+    // Fechas pasadas (sin incluir hoy) en las que el cliente trabaja,
+    // de la más reciente a la más antigua, dentro de los últimos
+    // diasAtras días.
+    function fechasPasadasCliente(cliente, diasAtras) {
+        const fechas = [];
+        const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+        for (let i = 1; i <= diasAtras; i++) {
+            const d = new Date(hoy); d.setDate(d.getDate() - i);
+            const f = fechaLocalISO(d);
+            if ((cliente.dias || []).includes(nombreDiaKey(f))) fechas.push(f);
+        }
+        return fechas;
+    }
+
+    function insertarTrabajosEjemplo(data) {
+        if (!data.jornadas) data.jornadas = [];
+        if (!data.pagosServicios) data.pagosServicios = [];
+        if (!data.adelantosEmpleados) data.adelantosEmpleados = [];
+        let clientes = (data.clientes || []).filter(function (c) { return c.ejemplo; });
+        if (!clientes.length) clientes = (data.clientes || []).slice();
+        let empleados = (data.empleados || []).filter(function (e) { return e.ejemplo && e.estado === 'activo'; });
+        if (!empleados.length) empleados = (data.empleados || []).filter(function (e) { return e.estado === 'activo'; });
+        if (!clientes.length || !empleados.length) return { jor: 0, pag: 0, ade: 0 };
+
+        const turnos = [
+            ['09:00', '12:00'], ['08:00', '13:00'], ['09:00', '13:30'],
+            ['10:00', '12:30'], ['08:30', '12:00'], ['09:00', '12:00'],
+            ['08:00', '12:30'], ['10:00', '13:00'], ['09:30', '12:00'],
+            ['09:00', '13:00']
+        ];
+        const metodos = ['efectivo', 'transferencia'];
+        let jor = 0, pag = 0, ade = 0, idx = 0;
+        const hoyLocal = fechaLocalISO(new Date());
+
+        clientes.forEach(function (cliente) {
+            const fechas = fechasPasadasCliente(cliente, 14).slice(0, 2);
+            fechas.forEach(function (fecha, pos) {
+                const yaExiste = data.jornadas.some(function (j) {
+                    return j.ejemplo && j.clienteId === cliente.id && j.fecha === fecha;
+                });
+                if (yaExiste) return;
+                const emp = empleados[idx % empleados.length];
+                const turno = turnos[idx % turnos.length];
+                data.jornadas.push({
+                    id: generateId(), empleadoId: emp.id, clienteId: cliente.id,
+                    fecha: fecha, horaEntrada: turno[0], horaSalida: turno[1],
+                    direccion: cliente.direccion || '', estado: 'completado',
+                    lat: null, lng: null, manual: true, ejemplo: true
+                });
+                jor++;
+                // El trabajo más antiguo de cada cliente queda pagado y
+                // el más reciente pendiente, para ver las dos caras de
+                // la cuenta. La fecha de pago es el día después del
+                // trabajo (nunca después de hoy).
+                const esElMasAntiguo = pos === fechas.length - 1;
+                if (esElMasAntiguo && cliente.costo > 0) {
+                    const yaPagado = data.pagosServicios.some(function (p) {
+                        return p.clienteId === cliente.id && p.fecha === fecha;
+                    });
+                    if (!yaPagado) {
+                        const fPago = new Date(fecha + 'T00:00:00'); fPago.setDate(fPago.getDate() + 1);
+                        let fechaPago = fechaLocalISO(fPago);
+                        if (fechaPago > hoyLocal) fechaPago = hoyLocal;
+                        data.pagosServicios.push({
+                            id: 'auto_' + cliente.id + '_' + fecha,
+                            clienteId: cliente.id, fecha: fecha,
+                            monto: cliente.costo, estado: 'pagado',
+                            fechaPago: fechaPago,
+                            metodo: metodos[pag % metodos.length],
+                            auto: true, ejemplo: true
+                        });
+                        pag++;
+                    }
+                }
+                idx++;
+            });
+        });
+
+        // Un adelanto de ejemplo para el primer empleado, con fecha de
+        // hoy (dentro de la quincena actual) para que se vea en la
+        // vista previa de su boleta.
+        const empAdelanto = empleados[0];
+        const yaAdelanto = data.adelantosEmpleados.some(function (a) {
+            return a.ejemplo && a.empleadoId === empAdelanto.id && a.monto === 50 && a.fecha === hoyLocal;
+        });
+        if (!yaAdelanto) {
+            data.adelantosEmpleados.push({
+                id: generateId(), empleadoId: empAdelanto.id, monto: 50,
+                fecha: hoyLocal, registro: new Date().toISOString(), ejemplo: true
+            });
+            ade++;
+        }
+        return { jor: jor, pag: pag, ade: ade };
+    }
+
+    function cargarTrabajosEjemplo() {
+        if (!confirm(t('msg_confirmar_trabajos_ejemplo'))) return;
+        const data = getData();
+        const activos = (data.empleados || []).filter(function (e) { return e.estado === 'activo'; });
+        if (!data.clientes.length || !activos.length) { alert(t('msg_sin_clientes_empleados')); return; }
+        const res = insertarTrabajosEjemplo(data);
+        saveData('jornadas', data.jornadas);
+        saveData('pagosServicios', data.pagosServicios);
+        saveData('adelantosEmpleados', data.adelantosEmpleados);
+        renderAll();
+        if (res.jor === 0 && res.pag === 0 && res.ade === 0) { alert(t('msg_trabajos_ejemplo_ya_existian')); return; }
+        alert(t('msg_trabajos_ejemplo_cargados').replace('{jor}', res.jor).replace('{pag}', res.pag).replace('{ade}', res.ade));
     }
 
     function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
