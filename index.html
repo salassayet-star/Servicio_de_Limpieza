@@ -325,7 +325,7 @@
         <div class="selector-rol">
             <button class="btn btn-primary" onclick="seleccionarRol('admin')">👤 Admin</button>
         </div>
-        <p class="login-subtitulo" style="margin-top:15px; font-size:0.85rem;">Solo el administrador entra al sistema. Los empleados no tienen acceso.</p>
+        <p class="login-subtitulo" id="notaSoloAdmin" style="margin-top:15px; font-size:0.85rem;">Solo el administrador entra al sistema. Los empleados no tienen acceso.</p>
         <div class="login-info">
             <div><strong>📅 Agenda</strong>Clientes y trabajos del día, semana y mes.</div>
             <div><strong>💰 Pagos y boletas</strong>Cuánto debe cada cliente y boletas quincenales.</div>
@@ -812,6 +812,7 @@
                     <button type="button" class="btn btn-info" onclick="exportarBackup()">💾 Backup local</button>
                     <button type="button" class="btn btn-secondary" onclick="importarBackup()">📂 Restaurar local</button>
                     <button type="button" class="btn btn-success" onclick="generarRespaldoPDF()">📄 Respaldo en PDF</button>
+                    <button type="button" class="btn btn-info" onclick="cargarDatosEjemplo()">📋 Cargar datos de ejemplo</button>
                 </div>
                 <p style="font-size:0.85rem; color:#4a5568; margin-top:8px;">El respaldo en PDF abre un reporte para imprimir o guardar como PDF en tu PC. No incluye contraseñas ni códigos de acceso.</p>
                 <input type="file" id="backupInput" accept=".json" style="display:none" onchange="cargarBackup(event)">
@@ -948,6 +949,7 @@
             // Login principal
             'acceso_sistema': '🔐 Acceso al Sistema',
             'selecciona_rol': 'Solo el administrador entra al sistema',
+            'solo_admin_nota': 'Solo el administrador entra al sistema. Los empleados no tienen acceso.',
             'rol_admin': '👤 Admin',
             'rol_empleado': '🧹 Empleado',
             
@@ -1014,6 +1016,7 @@
             'btn_borrar_boletas': '🗑️ Borrar solo Boletas',
             'btn_borrar_jornadas': '🗑️ Borrar solo Jornadas',
             'btn_borrar_todo': '🚨 Borrar TODOS los Datos',
+            'btn_cargar_ejemplos': '📋 Cargar datos de ejemplo',
             
             // Mensajes
             'msg_empleado_guardado': '✅ Empleado guardado',
@@ -1142,6 +1145,9 @@
             'msg_borrar_jornadas_final': '⚠️ ÚLTIMA CONFIRMACIÓN: ¿Seguro? Las horas trabajadas se perderán.',
             'msg_borrar_todo': '⚠️ ¿Borrar TODOS los datos (empleados, clientes, jornadas, boletas)?\n\n✅ La configuración (nombre empresa y % descuentos) SE CONSERVARÁ.\n\nEsta acción no se puede deshacer.',
             'msg_borrar_todo_final': '⚠️ ÚLTIMA CONFIRMACIÓN: ¿Estás seguro de borrar todo?',
+            'msg_confirmar_ejemplos': '📋 ¿Cargar 5 empleados y 5 clientes de ejemplo?\n\nNo se borran tus datos. Los ejemplos que ya existan no se duplican.',
+            'msg_ejemplos_cargados': '✅ Datos de ejemplo cargados: {emp} empleados y {cli} clientes nuevos.',
+            'msg_ejemplos_ya_existian': 'ℹ️ Todos los datos de ejemplo ya estaban cargados. No se agregó nada nuevo.',
             'msg_cerrar_sesion': '¿Cerrar sesión?',
             
             // Boletas
@@ -1289,6 +1295,7 @@
             // Login principal
             'acceso_sistema': '🔐 System Access',
             'selecciona_rol': 'Only the administrator signs in',
+            'solo_admin_nota': 'Only the administrator signs in. Employees do not have access.',
             'rol_admin': '👤 Admin',
             'rol_empleado': '🧹 Employee',
             
@@ -1355,6 +1362,7 @@
             'btn_borrar_boletas': '🗑️ Delete Paystubs Only',
             'btn_borrar_jornadas': '🗑️ Delete Jobs Only',
             'btn_borrar_todo': '🚨 Delete ALL Data',
+            'btn_cargar_ejemplos': '📋 Load example data',
             
             // Mensajes
             'msg_empleado_guardado': '✅ Employee saved',
@@ -1483,6 +1491,9 @@
             'msg_borrar_jornadas_final': '⚠️ FINAL CONFIRMATION: Are you sure? Worked hours will be lost.',
             'msg_borrar_todo': '⚠️ Delete ALL data (employees, clients, jobs, paystubs)?\n\n✅ Settings (company name and deduction %) WILL BE KEPT.\n\nThis cannot be undone.',
             'msg_borrar_todo_final': '⚠️ FINAL CONFIRMATION: Are you sure you want to delete everything?',
+            'msg_confirmar_ejemplos': '📋 Load 5 example employees and 5 example clients?\n\nYour data will not be deleted. Examples that already exist will not be duplicated.',
+            'msg_ejemplos_cargados': '✅ Example data loaded: {emp} new employees and {cli} new clients.',
+            'msg_ejemplos_ya_existian': 'ℹ️ All example data was already loaded. Nothing new was added.',
             'msg_cerrar_sesion': 'Log out?',
             
             // Boletas
@@ -1658,6 +1669,7 @@
         if (modoSel) {
             const h2 = modoSel.querySelector('h2'); if (h2) h2.textContent = t('acceso_sistema');
             const p = modoSel.querySelector('p'); if (p) p.textContent = t('selecciona_rol');
+            const notaAdmin = document.getElementById('notaSoloAdmin'); if (notaAdmin) notaAdmin.textContent = t('solo_admin_nota');
             const btns = modoSel.querySelectorAll('.btn');
             if (btns[0]) btns[0].textContent = t('rol_admin');
             if (btns[1]) btns[1].textContent = t('rol_empleado');
@@ -1665,7 +1677,9 @@
         const loginAdmin = document.getElementById('loginAdmin');
         if (loginAdmin) {
             const h2 = loginAdmin.querySelector('h2'); if (h2) h2.textContent = t('acceso_admin');
-            const label = loginAdmin.querySelector('label'); if (label) label.textContent = t('contrasena');
+            const labels = loginAdmin.querySelectorAll('label');
+            if (labels[0]) labels[0].textContent = t('usuario');
+            if (labels[1]) labels[1].textContent = t('contrasena');
             const btnEntrar = loginAdmin.querySelector('.btn-primary'); if (btnEntrar) btnEntrar.textContent = t('btn_entrar');
             const btnVolver = loginAdmin.querySelector('.btn-secondary'); if (btnVolver) btnVolver.textContent = t('btn_volver');
             const errorDiv = document.getElementById('adminError'); if (errorDiv) errorDiv.textContent = t('error_admin');
@@ -1848,9 +1862,11 @@
             // === CONFIG ===
             'Empresa': 'Company',
             'Total descuentos': 'Total deductions',
+            'Solo el administrador entra al sistema. Los empleados no tienen acceso.': 'Only the administrator signs in. Employees do not have access.',
             '🗄️ Gestión de Datos': '🗄️ Data Management',
             '💾 Backup local': '💾 Local Backup',
             '📄 Respaldo en PDF': '📄 PDF Backup',
+            '📋 Cargar datos de ejemplo': '📋 Load example data',
             '📂 Restaurar local': '📂 Restore Local',
             '⚠️ Zona de Peligro': '⚠️ Danger Zone',
             '🗑️ Borrar solo Boletas': '🗑️ Delete Paystubs Only',
@@ -2134,9 +2150,11 @@
             // === CONFIG ===
             'Company': 'Empresa',
             'Total deductions': 'Total descuentos',
+            'Only the administrator signs in. Employees do not have access.': 'Solo el administrador entra al sistema. Los empleados no tienen acceso.',
             '🗄️ Data Management': '🗄️ Gestión de Datos',
             '💾 Local Backup': '💾 Backup local',
             '📄 PDF Backup': '📄 Respaldo en PDF',
+            '📋 Load example data': '📋 Cargar datos de ejemplo',
             '📂 Restore Local': '📂 Restaurar local',
             '⚠️ Danger Zone': '⚠️ Zona de Peligro',
             '🗑️ Delete Paystubs Only': '🗑️ Borrar solo Boletas',
@@ -2548,6 +2566,52 @@
         await guardarEnFirebase();
         alert(t('msg_datos_eliminados'));
         location.reload();
+    }
+
+    // ============================================================
+    // DATOS DE EJEMPLO (5 empleados y 5 clientes, 1-2 veces por semana)
+    // Solo se cargan cuando el Admin pulsa "Cargar datos de ejemplo"
+    // en Configuración > Gestión de Datos. NUNCA se cargan solos al
+    // abrir la página, para no mezclarlos con los datos reales.
+    // Cada ejemplo lleva ejemplo: true para identificarlo y borrarlo.
+    // ============================================================
+    function datosEjemploEmpleados() {
+        return [
+            { nombre: 'María González', telefono: '775-555-0101', email: 'maria.gonzalez@example.com', tarifa: 18, cargo: 'Limpiadora', estado: 'activo', ejemplo: true },
+            { nombre: 'Carlos Ramírez', telefono: '775-555-0102', email: 'carlos.ramirez@example.com', tarifa: 20, cargo: 'Supervisor de limpieza', estado: 'activo', ejemplo: true },
+            { nombre: 'Ana Torres', telefono: '775-555-0103', email: 'ana.torres@example.com', tarifa: 17.5, cargo: 'Limpiadora', estado: 'activo', ejemplo: true },
+            { nombre: 'José Martínez', telefono: '775-555-0104', email: 'jose.martinez@example.com', tarifa: 19, cargo: 'Limpiador', estado: 'activo', ejemplo: true },
+            { nombre: 'Lucía Fernández', telefono: '775-555-0105', email: 'lucia.fernandez@example.com', tarifa: 18.5, cargo: 'Limpiadora', estado: 'activo', ejemplo: true }
+        ];
+    }
+
+    function datosEjemploClientes() {
+        const hoy = new Date().toISOString().slice(0, 10);
+        return [
+            { nombre: 'Familia Johnson', direccion: '1234 Plumb Ln, Reno, NV 89502', telefono: '775-555-0201', email: 'johnson@example.com', servicio: 'regular', costo: 120, dias: ['lunes', 'jueves'], frecuencia: 'semanal', fechaInicio: hoy, semanaQuincenal: 'impar', tipoCodigo: '', codigoAcceso: '', instrucciones: 'Limpiar cocina y baños. El perro es amigable y está en el patio.', ejemplo: true },
+            { nombre: 'Oficinas Sierra Nevada', direccion: '500 S Virginia St, Reno, NV 89501', telefono: '775-555-0202', email: 'oficina@example.com', servicio: 'regular', costo: 200, dias: ['miercoles'], frecuencia: 'semanal', fechaInicio: hoy, semanaQuincenal: 'impar', tipoCodigo: '', codigoAcceso: '', instrucciones: 'Limpieza de oficinas después de las 6 p.m.', ejemplo: true },
+            { nombre: 'Familia Smith', direccion: '8900 Double Diamond Pkwy, Reno, NV 89521', telefono: '775-555-0203', email: 'smith@example.com', servicio: 'profunda', costo: 180, dias: ['martes', 'viernes'], frecuencia: 'semanal', fechaInicio: hoy, semanaQuincenal: 'impar', tipoCodigo: '', codigoAcceso: '', instrucciones: 'Limpieza profunda en cada visita. Entrar por la puerta lateral.', ejemplo: true },
+            { nombre: 'Restaurante El Sabor', direccion: '2500 S Virginia St, Reno, NV 89502', telefono: '775-555-0204', email: 'elsabor@example.com', servicio: 'especial', costo: 150, dias: ['sabado'], frecuencia: 'semanal', fechaInicio: hoy, semanaQuincenal: 'impar', tipoCodigo: '', codigoAcceso: '', instrucciones: 'Limpiar comedor y cocina después del cierre.', ejemplo: true },
+            { nombre: 'Familia Brown', direccion: '4567 McCarran Blvd, Sparks, NV 89431', telefono: '775-555-0205', email: 'brown@example.com', servicio: 'construccion', costo: 220, dias: ['lunes'], frecuencia: 'semanal', fechaInicio: hoy, semanaQuincenal: 'impar', tipoCodigo: '', codigoAcceso: '', instrucciones: 'Limpieza después de construcción. Usar equipo de protección.', ejemplo: true }
+        ];
+    }
+
+    function cargarDatosEjemplo() {
+        if (!confirm(t('msg_confirmar_ejemplos'))) return;
+        const data = getData();
+        let empNuevos = 0, cliNuevos = 0;
+        datosEjemploEmpleados().forEach(function (ej) {
+            const existe = data.empleados.some(function (e) { return e.nombre && e.nombre.toLowerCase() === ej.nombre.toLowerCase(); });
+            if (!existe) { data.empleados.push({ ...ej, id: generateId() }); empNuevos++; }
+        });
+        datosEjemploClientes().forEach(function (ej) {
+            const existe = data.clientes.some(function (c) { return c.nombre && c.nombre.toLowerCase() === ej.nombre.toLowerCase(); });
+            if (!existe) { data.clientes.push({ ...ej, id: generateId() }); cliNuevos++; }
+        });
+        if (empNuevos === 0 && cliNuevos === 0) { alert(t('msg_ejemplos_ya_existian')); return; }
+        saveData('empleados', data.empleados);
+        saveData('clientes', data.clientes);
+        alert(t('msg_ejemplos_cargados').replace('{emp}', empNuevos).replace('{cli}', cliNuevos));
     }
 
     function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
