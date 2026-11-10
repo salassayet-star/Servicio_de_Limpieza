@@ -504,6 +504,11 @@
     </div>
     <div class="form-group"><label id="lblCliCosto">Costo del Servicio ($)</label><input type="number" id="cliCosto" step="0.01"></div>
 </div>
+                <div style="margin:15px 0;">
+                    <label id="lblCliEmpleados" style="font-weight:600; display:block; margin-bottom:8px;">👤 Empleados asignados a este cliente</label>
+                    <div id="cliEmpleadosAsignados" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+                    <small>Los empleados marcados trabajan para este cliente.</small>
+                </div>
                     <div style="margin:15px 0;">
                     <label id="lblCliDias" style="font-weight:600; display:block; margin-bottom:8px;">📆 Días de servicio</label>
                     <div class="dias-grid" id="diasGrid">
@@ -579,7 +584,7 @@
             <h3 style="margin-top:25px;">📋 Clientes Registrados</h3>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th>Nombre</th><th>Dirección</th><th>Teléfono</th><th>Servicio</th><th>Costo</th><th>Días</th><th>Frecuencia</th><th>Código</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>Nombre</th><th>Dirección</th><th>Teléfono</th><th>Servicio</th><th>Costo</th><th>Días</th><th>Frecuencia</th><th>Empleados</th><th>Código</th><th>Acciones</th></tr></thead>
                     <tbody id="tablaClientes"></tbody>
                 </table>
             </div>
@@ -641,7 +646,7 @@
                 <div id="jornadaFormTitulo" style="background:#e3f2fd; padding:10px 15px; border-radius:8px; margin-bottom:15px; color:#1a4a7a; font-weight:600;">➕ Nueva Jornada (registro manual)</div>
                 <div class="form-grid">
                     <div class="form-group"><label>Empleado *</label><select id="jorEmpleado" required onchange="actualizarPreviewJornada()"></select></div>
-                    <div class="form-group"><label>Cliente *</label><select id="jorCliente" required></select></div>
+                    <div class="form-group"><label>Cliente *</label><select id="jorCliente" required onchange="cargarSelectsJornadas(getData())"></select></div>
                     <div class="form-group"><label>Fecha *</label><input type="date" id="jorFecha" required></div>
                     <div class="form-group"><label>Entrada</label><input type="time" id="jorEntrada" onchange="actualizarPreviewJornada()"></div>
                     <div class="form-group"><label>Salida</label><input type="time" id="jorSalida" onchange="actualizarPreviewJornada()"></div>
@@ -810,6 +815,7 @@
                     <button type="button" class="btn btn-warning" onclick="borrarBoletas()">🗑️ Borrar solo Boletas</button>
                     <button type="button" class="btn btn-warning" onclick="borrarJornadas()">🗑️ Borrar solo Jornadas</button>
                     <button type="button" class="btn btn-danger" onclick="borrarTodosLosDatos()">🚨 Borrar TODOS los Datos</button>
+                    <button type="button" class="btn btn-danger" onclick="borrarTodoYCargarEjemplos()">🗑️ Borrar todo y cargar ejemplos nuevos</button>
                 </div>
            </div>
            <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;" id="syncInfoConfig">
@@ -1131,9 +1137,12 @@
             'msg_borrar_jornadas_final': '⚠️ ÚLTIMA CONFIRMACIÓN: ¿Seguro? Las horas trabajadas se perderán.',
             'msg_borrar_todo': '⚠️ ¿Borrar TODOS los datos (empleados, clientes, jornadas, boletas)?\n\n✅ La configuración (nombre empresa y % descuentos) SE CONSERVARÁ.\n\nEsta acción no se puede deshacer.',
             'msg_borrar_todo_final': '⚠️ ÚLTIMA CONFIRMACIÓN: ¿Estás seguro de borrar todo?',
-            'msg_confirmar_ejemplos': '📋 ¿Cargar 5 empleados y 5 clientes de ejemplo?\n\nNo se borran tus datos. Los ejemplos que ya existan no se duplican.',
+            'msg_confirmar_ejemplos': '📋 ¿Cargar 3 empleados y 5 clientes de ejemplo?\n\nNo se borran tus datos. Los ejemplos que ya existan no se duplican. Los 3 empleados trabajan para los 5 clientes.',
             'msg_ejemplos_cargados': '✅ Datos de ejemplo cargados: {emp} empleados y {cli} clientes nuevos.',
             'msg_ejemplos_ya_existian': 'ℹ️ Todos los datos de ejemplo ya estaban cargados. No se agregó nada nuevo.',
+            'msg_borrar_todo_ejemplos': '🗑️ ¿Borrar TODOS los datos y cargar los ejemplos nuevos (5 clientes y 3 empleados)?\n\nSe borran empleados, clientes, jornadas, boletas, pagos, adelantos y cancelaciones. ✅ La configuración (nombre empresa y % descuentos) SE CONSERVARÁ.\n\n⚠️ Esto borra también los datos que hay ahora. Hazlo solo si todo lo que hay es de ejemplo.\n\nEsta acción no se puede deshacer.',
+            'msg_borrar_todo_ejemplos_final': '⚠️ ÚLTIMA CONFIRMACIÓN: ¿Seguro de borrar todo y cargar los ejemplos nuevos?',
+            'msg_ejemplos_nuevos_cargados': '✅ Todo borrado y ejemplos nuevos cargados: {emp} empleados y {cli} clientes.\n\nCada cliente tiene los 3 empleados asignados.',
             'msg_cerrar_sesion': '¿Cerrar sesión?',
             
             // Boletas
@@ -1199,6 +1208,7 @@
             'cli_sin_codigo': '-- Sin código --',
             'cli_sin_dias': 'Debes seleccionar al menos un día',
             'cli_sin_frecuencia': '-- Sin especificar --',
+            'cli_sin_empleados_activos': 'No hay empleados activos todavía.',
             
             // Servicios
             'serv_regular': 'Regular',
@@ -1294,6 +1304,7 @@
             'cuenta_trabajo_hecho': 'Trabajo hecho',
             'cuenta_extra': '➕ Servicio extra',
             'cuenta_sin_fecha': 'Sin fecha programada',
+            'cuenta_empleados_asignados': 'Empleados asignados',
             'config_sincronizacion': '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.'
         
         },
@@ -1507,9 +1518,12 @@
             'msg_borrar_jornadas_final': '⚠️ FINAL CONFIRMATION: Are you sure? Worked hours will be lost.',
             'msg_borrar_todo': '⚠️ Delete ALL data (employees, clients, jobs, paystubs)?\n\n✅ Settings (company name and deduction %) WILL BE KEPT.\n\nThis cannot be undone.',
             'msg_borrar_todo_final': '⚠️ FINAL CONFIRMATION: Are you sure you want to delete everything?',
-            'msg_confirmar_ejemplos': '📋 Load 5 example employees and 5 example clients?\n\nYour data will not be deleted. Examples that already exist will not be duplicated.',
+            'msg_confirmar_ejemplos': '📋 Load 3 example employees and 5 example clients?\n\nYour data will not be deleted. Examples that already exist will not be duplicated. The 3 employees work for all 5 clients.',
             'msg_ejemplos_cargados': '✅ Example data loaded: {emp} new employees and {cli} new clients.',
             'msg_ejemplos_ya_existian': 'ℹ️ All example data was already loaded. Nothing new was added.',
+            'msg_borrar_todo_ejemplos': '🗑️ Delete ALL data and load the new examples (5 clients and 3 employees)?\n\nEmployees, clients, jobs, paystubs, payments, advances and cancellations will be deleted. ✅ Settings (company name and deduction %) WILL BE KEPT.\n\n⚠️ This also deletes the data that is there now. Only do this if everything there is example data.\n\nThis cannot be undone.',
+            'msg_borrar_todo_ejemplos_final': '⚠️ FINAL CONFIRMATION: Are you sure you want to delete everything and load the new examples?',
+            'msg_ejemplos_nuevos_cargados': '✅ Everything deleted and new examples loaded: {emp} employees and {cli} clients.\n\nEach client has all 3 employees assigned.',
             'msg_cerrar_sesion': 'Log out?',
             
             // Boletas
@@ -1575,6 +1589,7 @@
             'cli_sin_codigo': '-- No code --',
             'cli_sin_dias': 'You must select at least one day',
             'cli_sin_frecuencia': '-- Not specified --',
+            'cli_sin_empleados_activos': 'No active employees yet.',
             
             // Servicios
             'serv_regular': 'Regular',
@@ -1670,6 +1685,7 @@
             'cuenta_trabajo_hecho': 'Work done',
             'cuenta_extra': '➕ Extra service',
             'cuenta_sin_fecha': 'No scheduled date',
+            'cuenta_empleados_asignados': 'Assigned employees',
             'config_sincronizacion': '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.'
         }
     };
@@ -1913,6 +1929,9 @@
             '💾 Backup local': '💾 Local Backup',
             '📄 Respaldo en PDF': '📄 PDF Backup',
             '📋 Cargar datos de ejemplo': '📋 Load example data',
+            '🗑️ Borrar todo y cargar ejemplos nuevos': '🗑️ Delete all and load new examples',
+            '👤 Empleados asignados a este cliente': '👤 Employees assigned to this client',
+            'Los empleados marcados trabajan para este cliente.': 'Checked employees work for this client.',
             '📂 Restaurar local': '📂 Restore Local',
             '⚠️ Zona de Peligro': '⚠️ Danger Zone',
             '🗑️ Borrar solo Boletas': '🗑️ Delete Paystubs Only',
@@ -2205,6 +2224,9 @@
             '💾 Local Backup': '💾 Backup local',
             '📄 PDF Backup': '📄 Respaldo en PDF',
             '📋 Load example data': '📋 Cargar datos de ejemplo',
+            '🗑️ Delete all and load new examples': '🗑️ Borrar todo y cargar ejemplos nuevos',
+            '👤 Employees assigned to this client': '👤 Empleados asignados a este cliente',
+            'Checked employees work for this client.': 'Los empleados marcados trabajan para este cliente.',
             '📂 Restore Local': '📂 Restaurar local',
             '⚠️ Danger Zone': '⚠️ Zona de Peligro',
             '🗑️ Delete Paystubs Only': '🗑️ Borrar solo Boletas',
@@ -2623,7 +2645,10 @@
     }
 
     // ============================================================
-    // DATOS DE EJEMPLO (5 empleados y 5 clientes, 1-2 veces por semana)
+    // DATOS DE EJEMPLO (3 empleados y 5 clientes, 1-2 veces por semana)
+    // Los 3 empleados trabajan para TODOS los 5 clientes: cada cliente
+    // lleva empleadosAsignados con los 3 ids. Cada ejemplo lleva
+    // ejemplo: true para identificarlo y borrarlo.
     // Solo se cargan cuando el Admin pulsa "Cargar datos de ejemplo"
     // en Configuración > Gestión de Datos. NUNCA se cargan solos al
     // abrir la página, para no mezclarlos con los datos reales.
@@ -2633,9 +2658,7 @@
         return [
             { nombre: 'María González', telefono: '775-555-0101', email: 'maria.gonzalez@example.com', tarifa: 18, cargo: 'Limpiadora', estado: 'activo', ejemplo: true },
             { nombre: 'Carlos Ramírez', telefono: '775-555-0102', email: 'carlos.ramirez@example.com', tarifa: 20, cargo: 'Supervisor de limpieza', estado: 'activo', ejemplo: true },
-            { nombre: 'Ana Torres', telefono: '775-555-0103', email: 'ana.torres@example.com', tarifa: 17.5, cargo: 'Limpiadora', estado: 'activo', ejemplo: true },
-            { nombre: 'José Martínez', telefono: '775-555-0104', email: 'jose.martinez@example.com', tarifa: 19, cargo: 'Limpiador', estado: 'activo', ejemplo: true },
-            { nombre: 'Lucía Fernández', telefono: '775-555-0105', email: 'lucia.fernandez@example.com', tarifa: 18.5, cargo: 'Limpiadora', estado: 'activo', ejemplo: true }
+            { nombre: 'Ana Torres', telefono: '775-555-0103', email: 'ana.torres@example.com', tarifa: 17.5, cargo: 'Limpiadora', estado: 'activo', ejemplo: true }
         ];
     }
 
@@ -2650,22 +2673,69 @@
         ];
     }
 
+    // Inserta los ejemplos nuevos (3 empleados, 5 clientes) en data.
+    // Los 3 empleados quedan asignados a los 5 clientes. Si
+    // saltarExistentes es true, no duplica los que ya existen por nombre
+    // (pero les actualiza la asignación). Devuelve {emp, cli} nuevos.
+    function insertarEjemplos(data, saltarExistentes) {
+        const idsEmpleados = [];
+        let empNuevos = 0, cliNuevos = 0;
+        datosEjemploEmpleados().forEach(function (ej) {
+            let existente = null;
+            if (saltarExistentes) existente = data.empleados.find(function (e) { return e.nombre && e.nombre.toLowerCase() === ej.nombre.toLowerCase(); });
+            if (existente) { idsEmpleados.push(existente.id); return; }
+            const nuevo = { ...ej, id: generateId() };
+            data.empleados.push(nuevo);
+            idsEmpleados.push(nuevo.id);
+            empNuevos++;
+        });
+        datosEjemploClientes().forEach(function (ej) {
+            let existente = null;
+            if (saltarExistentes) existente = data.clientes.find(function (c) { return c.nombre && c.nombre.toLowerCase() === ej.nombre.toLowerCase(); });
+            if (existente) { existente.empleadosAsignados = idsEmpleados.slice(); return; }
+            data.clientes.push({ ...ej, id: generateId(), empleadosAsignados: idsEmpleados.slice() });
+            cliNuevos++;
+        });
+        return { emp: empNuevos, cli: cliNuevos };
+    }
+
     function cargarDatosEjemplo() {
         if (!confirm(t('msg_confirmar_ejemplos'))) return;
         const data = getData();
-        let empNuevos = 0, cliNuevos = 0;
-        datosEjemploEmpleados().forEach(function (ej) {
-            const existe = data.empleados.some(function (e) { return e.nombre && e.nombre.toLowerCase() === ej.nombre.toLowerCase(); });
-            if (!existe) { data.empleados.push({ ...ej, id: generateId() }); empNuevos++; }
-        });
-        datosEjemploClientes().forEach(function (ej) {
-            const existe = data.clientes.some(function (c) { return c.nombre && c.nombre.toLowerCase() === ej.nombre.toLowerCase(); });
-            if (!existe) { data.clientes.push({ ...ej, id: generateId() }); cliNuevos++; }
-        });
-        if (empNuevos === 0 && cliNuevos === 0) { alert(t('msg_ejemplos_ya_existian')); return; }
+        const res = insertarEjemplos(data, true);
         saveData('empleados', data.empleados);
         saveData('clientes', data.clientes);
-        alert(t('msg_ejemplos_cargados').replace('{emp}', empNuevos).replace('{cli}', cliNuevos));
+        if (res.emp === 0 && res.cli === 0) { alert(t('msg_ejemplos_ya_existian')); return; }
+        alert(t('msg_ejemplos_cargados').replace('{emp}', res.emp).replace('{cli}', res.cli));
+    }
+
+    // Borra TODOS los datos (empleados, clientes, jornadas, boletas,
+    // pagos, adelantos y cancelaciones; la configuración se conserva)
+    // y carga los ejemplos nuevos (5 clientes y 3 empleados, los 3
+    // asignados a los 5 clientes). La usuaria confirmó que todo lo que
+    // hay ahora en el sistema es solo de ejemplo. El borrado solo ocurre
+    // cuando el Admin pulsa este botón dentro del sistema; nada se borra
+    // solo al abrir la página.
+    async function borrarTodoYCargarEjemplos() {
+        if (!confirm(t('msg_borrar_todo_ejemplos'))) return;
+        if (!confirm(t('msg_borrar_todo_ejemplos_final'))) return;
+        const configActual = datosGlobales.config || { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' };
+        datosGlobales = {
+            empleados: [],
+            clientes: [],
+            jornadas: [],
+            boletas: [],
+            config: configActual,
+            pagosClientes: [],
+            adelantosEmpleados: [],
+            pagosServicios: [],
+            pagosAutoEliminados: [],
+            cancelaciones: []
+        };
+        const res = insertarEjemplos(datosGlobales, false);
+        await guardarEnFirebase();
+        renderAll();
+        alert(t('msg_ejemplos_nuevos_cargados').replace('{emp}', res.emp).replace('{cli}', res.cli));
     }
 
     function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
@@ -2906,6 +2976,8 @@
     // ... el resto
         
         renderEmpleados(data);
+        const contAsig = document.getElementById('cliEmpleadosAsignados');
+        if (contAsig && !contAsig.children.length) poblarAsignacionEmpleados([]);
         renderClientes(data);
         renderJornadas(data);
         renderStats(data);
@@ -2948,7 +3020,7 @@
     const tbody = document.getElementById('tablaClientes');
     if (!tbody) return;
     if (data.clientes.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:#4a5568;">${t('msg_sin_clientes')}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:20px; color:#4a5568;">${t('msg_sin_clientes')}</td></tr>`;
         return;
     }
     tbody.innerHTML = data.clientes.map(c => {
@@ -2983,6 +3055,7 @@
             <td>$${c.costo || 0}</td>
             <td><small>${diasTexto}</small></td>
             <td><span class="badge ${frecBadge}">${frecLabel}</span></td>
+            <td><small>${escHtml(nombresAsignados(c, data))}</small></td>
             <td>${codigoMostrar}</td>
             <td>
                 <button class="btn btn-warning btn-sm" onclick="editarCliente('${c.id}')">✏️</button>
@@ -3863,6 +3936,7 @@ function renderListaAdmins() {
         const cliente = data.clientes.find(c => c.id === clienteId) || data.clientes[0];
         if (!cliente) { cont.innerHTML = `<div class="cuenta-cliente"><p>${t('cuenta_selecciona')}</p></div>`; return; }
         const cuenta = calcularCuentaCliente(data, cliente, pagos);
+        const asignadosTxt = nombresAsignados(cliente, data);
         const hoyStr = new Date().toISOString().slice(0,10);
         const debeClase = cuenta.debe > 0 ? 'saldo-debe' : 'saldo-cero';
         const frecTxt = cliente.frecuencia === 'quincenal' ? t('cli_frec_quincenal') : cliente.frecuencia === 'mensual' ? t('cli_frec_mensual') : t('cli_frec_semanal');
@@ -3926,6 +4000,7 @@ function renderListaAdmins() {
         cont.innerHTML = `<div class="cuenta-cliente">
             <h3>${escHtml(cliente.nombre)}</h3>
             <div class="sub">${servTxt} · ${frecTxt} · ${t('cuenta_costo_visita')}: $${(cliente.costo || 0).toFixed(2)} · ${t('cuenta_proxima')}: ${cuenta.proximaFecha ? formatoFecha(cuenta.proximaFecha) + ' · ' + nombreDia(cuenta.proximaFecha) : '—'}</div>
+            <p style="color:#4a5568; font-size:0.9rem; margin:6px 0 0;">👤 ${t('cuenta_empleados_asignados')}: <strong>${escHtml(asignadosTxt)}</strong></p>
             <div class="cuentas-resumen">
                 <div class="cuenta-card pagado"><div class="monto">$${cuenta.cargado.toFixed(2)}</div><div class="label">${t('resumen_cargado')}</div></div>
                 <div class="cuenta-card pagado"><div class="monto">$${cuenta.pagado.toFixed(2)}</div><div class="label">${t('resumen_pagado')}</div></div>
@@ -4205,6 +4280,29 @@ function renderListaAdmins() {
     // ============================================================
     // CRUD CLIENTES
     // ============================================================
+    // Llena las casillas de empleados asignados del formulario de
+    // cliente con los empleados activos. Las casillas marcadas son los
+    // empleados que trabajan para ese cliente.
+    function poblarAsignacionEmpleados(seleccionados) {
+        const cont = document.getElementById('cliEmpleadosAsignados');
+        if (!cont) return;
+        const data = getData();
+        const activos = data.empleados.filter(function (e) { return e.estado === 'activo'; });
+        const sel = seleccionados || [];
+        if (!activos.length) { cont.innerHTML = '<span style="color:#4a5568; font-size:0.85rem;">' + t('cli_sin_empleados_activos') + '</span>'; return; }
+        cont.innerHTML = activos.map(function (e) {
+            return '<label class="dia-check' + (sel.includes(e.id) ? ' activo' : '') + '" data-emp="' + e.id + '" onclick="this.classList.toggle(\'activo\')"><input type="checkbox" value="' + e.id + '">' + escHtml(e.nombre) + '</label>';
+        }).join('');
+    }
+
+    // Nombres de los empleados asignados a un cliente, separados por coma.
+    function nombresAsignados(cliente, data) {
+        const ids = (cliente && cliente.empleadosAsignados) || [];
+        if (!ids.length) return '—';
+        const nombres = ids.map(function (id) { const e = data.empleados.find(function (x) { return x.id === id; }); return e ? e.nombre : null; }).filter(Boolean);
+        return nombres.length ? nombres.join(', ') : '—';
+    }
+
     function guardarCliente(e) {
         e.preventDefault();
         const data = getData();
@@ -4221,6 +4319,8 @@ function renderListaAdmins() {
         }
         
         const frecuencia = document.getElementById('cliFrecuencia').value;
+        const asignados = [];
+        document.querySelectorAll('#cliEmpleadosAsignados .dia-check.activo').forEach(function (label) { asignados.push(label.dataset.emp); });
         const cli = {
             nombre: document.getElementById('cliNombre').value,
             direccion: document.getElementById('cliDireccion').value,
@@ -4234,7 +4334,8 @@ function renderListaAdmins() {
             semanaQuincenal: document.getElementById('cliSemanaQuincenal').value,
             tipoCodigo: document.getElementById('cliTipoCodigo').value,
             codigoAcceso: document.getElementById('cliCodigoAcceso').value,
-            instrucciones: document.getElementById('cliInstrucciones').value
+            instrucciones: document.getElementById('cliInstrucciones').value,
+            empleadosAsignados: asignados
         };
         if (id) {
             const idx = data.clientes.findIndex(c => c.id === id);
@@ -4275,6 +4376,7 @@ function renderListaAdmins() {
                 label.classList.remove('activo');
             }
         });
+        poblarAsignacionEmpleados(cli.empleadosAsignados || []);
         
         actualizarCamposFrecuencia();
         document.getElementById('clienteFormTitulo').innerHTML = t('cli_editar') + ': ' + cli.nombre;
@@ -4298,6 +4400,7 @@ function renderListaAdmins() {
         document.getElementById('cliFrecuencia').value = 'semanal';
         document.getElementById('clienteFormTitulo').innerHTML = t('cli_nuevo');
         document.getElementById('btnGuardarCliente').textContent = t('btn_guardar_cliente');
+        poblarAsignacionEmpleados([]);
         actualizarCamposFrecuencia();
     }
 
@@ -4356,14 +4459,22 @@ function renderListaAdmins() {
     function cargarSelectsJornadas(data) {
         const selEmp = document.getElementById('jorEmpleado');
         const empActual = selEmp ? selEmp.value : '';
-        if (selEmp) selEmp.innerHTML = data.empleados.filter(e => e.estado === 'activo')
-            .map(e => `<option value="${e.id}">${e.nombre}</option>`).join('');
-        if (selEmp && empActual) selEmp.value = empActual;
         const selCli = document.getElementById('jorCliente');
         const cliActual = selCli ? selCli.value : '';
         if (selCli) selCli.innerHTML = data.clientes
             .map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
         if (selCli && cliActual) selCli.value = cliActual;
+        // Los empleados asignados a ese cliente salen primero (con ✓).
+        // Si el cliente no tiene asignados, salen todos los activos.
+        const clienteSel = selCli ? data.clientes.find(c => c.id === selCli.value) : null;
+        const asignados = (clienteSel && clienteSel.empleadosAsignados) || [];
+        const activos = data.empleados.filter(e => e.estado === 'activo');
+        const ordenados = asignados.length
+            ? activos.filter(e => asignados.includes(e.id)).concat(activos.filter(e => !asignados.includes(e.id)))
+            : activos;
+        if (selEmp) selEmp.innerHTML = ordenados
+            .map(e => `<option value="${e.id}">${asignados.includes(e.id) ? '✓ ' : ''}${e.nombre}</option>`).join('');
+        if (selEmp && empActual) selEmp.value = empActual;
         const f = document.getElementById('jorFecha');
         if (f && !f.value) f.value = new Date().toISOString().slice(0,10);
         actualizarPreviewJornada();
