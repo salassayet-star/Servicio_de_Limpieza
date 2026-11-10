@@ -107,6 +107,19 @@
         .cuenta-card.vencido { background: #ffebee; border-color: #b22234; }
         .cuenta-card .monto { font-size: 1.5rem; font-weight: 700; }
         .cuenta-card .label { font-size: 0.85rem; color: #4a5568; }
+        .cuenta-cliente { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 20px; }
+        .cuenta-cliente h3 { margin: 0 0 4px; }
+        .cuenta-cliente .sub { color: #4a5568; font-size: 0.9rem; margin-bottom: 14px; }
+        .saldo-debe { color: #b22234; }
+        .saldo-cero { color: #0d7a3e; }
+        .pago-lista { list-style: none; padding: 0; margin: 0 0 16px; }
+        .pago-item { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px; background: #fff; }
+        .pago-item .info { flex: 1 1 220px; }
+        .pago-item .acciones { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .pago-item.cancelado { background: #f7fafc; opacity: 0.85; }
+        .pago-item .monto { font-weight: 700; white-space: nowrap; }
+        body.modo-oscuro .cuenta-cliente, body.modo-oscuro .pago-item { background: #1a202c; border-color: #2d3748; }
+        body.modo-oscuro .cuenta-cliente .sub { color: #a0aec0; }
         .semana-grid { display: grid; grid-template-columns: 150px repeat(7, 1fr); gap: 4px; background: #e2e8f0; padding: 4px; border-radius: 10px; font-size: 0.8rem; }
         .semana-cell { background: white; padding: 8px 6px; border-radius: 4px; text-align: center; min-height: 40px; display: flex; align-items: center; justify-content: center; }
         .semana-head { background: #1a4a7a; color: white; font-weight: 700; padding: 10px 6px; }
@@ -573,30 +586,24 @@
 
             <hr style="margin:25px 0;">
             
-            <h3>💰 Registro de Pagos por Cliente</h3>
-            <p style="color:#4a5568; margin-bottom:15px; font-size:0.9rem;">Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.</p>
-            
+            <h3>💰 Cuenta del Cliente</h3>
+            <p style="color:#4a5568; margin-bottom:15px; font-size:0.9rem;">Elige un cliente para ver su cuenta: su saldo, sus pagos pendientes y los ya realizados.</p>
+
             <div class="form-grid" style="margin-bottom:15px;">
                 <div class="form-group">
-                    <label>Filtrar por cliente</label>
-                    <select id="filtroClientePagos" onchange="paginaPagosActual = 1; renderPagosClientes()">
-                        <option value="">-- Todos los clientes --</option>
-                    </select>
+                    <label>Elige un cliente</label>
+                    <select id="selectorCuentaCliente" onchange="clienteCuentaSeleccionado = this.value; renderPagosClientes()"></select>
                 </div>
                 <div class="form-group">
-                    <label>Filtrar por estado</label>
-                    <select id="filtroEstadoPagos" onchange="paginaPagosActual = 1; renderPagosClientes()">
-                        <option value="">-- Todos --</option>
-                        <option value="pendiente">Pendientes</option>
-                        <option value="pagado">Pagados</option>
-                    </select>
+                    <label>Buscar por nombre…</label>
+                    <input type="text" id="buscarCuentaCliente" placeholder="Buscar por nombre…" oninput="renderPagosClientes()">
                 </div>
             </div>
 
-            <div class="cuentas-resumen" id="cuentasResumen"></div>
+            <div id="detalleCuentaCliente"></div>
 
             <h4 style="margin-top:10px;">📊 Resumen por cliente — cuánto debe cada cliente</h4>
-            <p style="color:#4a5568; margin-bottom:10px; font-size:0.85rem;">Cargado = servicios programados + extras manuales. Pagado = servicios marcados pagados + adelantos y pagos directos. Debe = cargado − pagado. Si un pago manual corresponde a un servicio ya marcado pagado, marca el servicio como pagado en vez de registrarlo dos veces.</p>
+            <p style="color:#4a5568; margin-bottom:10px; font-size:0.85rem;">Se cobra solo el trabajo ya hecho: el cargo aparece cuando el administrador registra la jornada completada. Las fechas programadas sin jornada completada no se cobran todavía. Un adelanto o pago directo es dinero recibido; un servicio extra es un cargo nuevo.</p>
             <div class="table-wrapper"><table>
                 <thead><tr><th>Cliente</th><th>Cargado</th><th>Pagado</th><th>Debe</th><th>Pagados</th><th>Pendientes</th><th>Vencidos</th><th>Último pago</th></tr></thead>
                 <tbody id="tablaResumenCliente"></tbody>
@@ -608,25 +615,6 @@
                 <thead><tr><th>Cliente</th><th>Fecha</th><th>Concepto</th><th>Monto</th><th>Notas</th><th>Acciones</th></tr></thead>
                 <tbody id="tablaPagosManuales"></tbody>
             </table></div>
-
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Cliente</th>
-                            <th>Servicio</th>
-                            <th>Fecha Programada</th>
-                            <th>Monto</th>
-                            <th>Estado</th>
-                            <th>Fecha Pago</th>
-                            <th>Método</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaPagosClientes"></tbody>
-                </table>
-            </div>
-            <div class="paginacion" id="paginacionPagos"></div>
 
             <hr style="margin:25px 0;">
 
@@ -917,8 +905,6 @@
     let firebaseListo = false;
     let empleadoActual = null;
     let rolActual = null;
-    let paginaPagosActual = 1;
-    const PAGOS_POR_PAGINA = 10;
     const DOC_ID = 'sistema_limpieza_datos';
         let datosGlobales = {
         empleados: [],
@@ -1278,6 +1264,36 @@
             'config_gestion': '🗄️ Gestión de Datos',
             'config_zona_peligro': '⚠️ Zona de Peligro',
             'config_peligro_desc': 'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.',
+
+            // Cuenta del cliente (vista de pagos)
+            'cuenta_titulo': '💰 Cuenta del Cliente',
+            'cuenta_elegir': 'Elige un cliente',
+            'cuenta_buscar': 'Buscar por nombre…',
+            'cuenta_sin_clientes': 'No hay clientes todavía. Agrega uno arriba para empezar.',
+            'cuenta_selecciona': 'Selecciona un cliente para ver su cuenta.',
+            'cuenta_proxima': 'Próxima fecha programada',
+            'cuenta_costo_visita': 'Costo por visita',
+            'cuenta_pendientes': '⏳ Pagos pendientes',
+            'cuenta_pagados': '✅ Pagos realizados',
+            'cuenta_programadas': '📅 Programadas sin hacer',
+            'cuenta_canceladas': '❌ Fechas canceladas',
+            'cuenta_marcar_pagado': '✅ Marcar como pagado',
+            'cuenta_deshacer': '↩️ Deshacer',
+            'cuenta_cancelar_fecha': '❌ Cancelar esta fecha',
+            'cuenta_restaurar_fecha': '↩️ Restaurar fecha',
+            'cuenta_confirmar_cancelar': '¿Cancelar esta fecha? No se cobrará y no aparecerá en la agenda.',
+            'cuenta_sin_pendientes': 'Sin pagos pendientes. ¡Al día! 🎉',
+            'cuenta_sin_pagados': 'Todavía no hay pagos registrados.',
+            'cuenta_sin_programadas': 'No hay fechas programadas sin hacer.',
+            'cuenta_sin_canceladas': 'No hay fechas canceladas.',
+            'cuenta_sin_hacer': 'Sin hacer todavía',
+            'cuenta_programada': 'Programada',
+            'cuenta_regla': 'Se cobra solo el trabajo ya hecho: el cargo aparece cuando el administrador registra la jornada completada. Las fechas programadas sin jornada completada no se cobran todavía. Un adelanto o pago directo es dinero recibido; un servicio extra es un cargo nuevo.',
+            'cuenta_metodo': 'Método',
+            'cuenta_fecha_pago': 'Fecha de pago',
+            'cuenta_trabajo_hecho': 'Trabajo hecho',
+            'cuenta_extra': '➕ Servicio extra',
+            'cuenta_sin_fecha': 'Sin fecha programada',
             'config_sincronizacion': '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.'
         
         },
@@ -1624,6 +1640,36 @@
             'config_gestion': '🗄️ Data Management',
             'config_zona_peligro': '⚠️ Danger Zone',
             'config_peligro_desc': 'These actions cannot be undone. Settings (company name and % deductions) are preserved.',
+
+            // Client account (payments view)
+            'cuenta_titulo': '💰 Client Account',
+            'cuenta_elegir': 'Choose a client',
+            'cuenta_buscar': 'Search by name…',
+            'cuenta_sin_clientes': 'No clients yet. Add one above to get started.',
+            'cuenta_selecciona': 'Select a client to see their account.',
+            'cuenta_proxima': 'Next scheduled date',
+            'cuenta_costo_visita': 'Cost per visit',
+            'cuenta_pendientes': '⏳ Pending payments',
+            'cuenta_pagados': '✅ Payments made',
+            'cuenta_programadas': '📅 Scheduled — not done yet',
+            'cuenta_canceladas': '❌ Canceled dates',
+            'cuenta_marcar_pagado': '✅ Mark as paid',
+            'cuenta_deshacer': '↩️ Undo',
+            'cuenta_cancelar_fecha': '❌ Cancel this date',
+            'cuenta_restaurar_fecha': '↩️ Restore date',
+            'cuenta_confirmar_cancelar': 'Cancel this date? It will not be charged and will not appear on the schedule.',
+            'cuenta_sin_pendientes': 'No pending payments. All caught up! 🎉',
+            'cuenta_sin_pagados': 'No payments recorded yet.',
+            'cuenta_sin_programadas': 'No scheduled dates without completed work.',
+            'cuenta_sin_canceladas': 'No canceled dates.',
+            'cuenta_sin_hacer': 'Not done yet',
+            'cuenta_programada': 'Scheduled',
+            'cuenta_regla': 'Only completed work is charged: a charge appears when the administrator records the completed job. Scheduled dates without a completed job are not charged yet. An advance or direct payment counts as money received; an extra service counts as a new charge.',
+            'cuenta_metodo': 'Method',
+            'cuenta_fecha_pago': 'Payment date',
+            'cuenta_trabajo_hecho': 'Work done',
+            'cuenta_extra': '➕ Extra service',
+            'cuenta_sin_fecha': 'No scheduled date',
             'config_sincronizacion': '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.'
         }
     };
@@ -1935,7 +1981,7 @@
             'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.': 'These actions cannot be undone. Settings (company name and % deductions) are preserved.',
             '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.': '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.',
             '📊 Resumen por cliente — cuánto debe cada cliente': '📊 Summary by client — how much each client owes',
-            'Cargado = servicios programados + extras manuales. Pagado = servicios marcados pagados + adelantos y pagos directos. Debe = cargado − pagado. Si un pago manual corresponde a un servicio ya marcado pagado, marca el servicio como pagado en vez de registrarlo dos veces.': 'Charged = scheduled services + manual extras. Paid = services marked paid + advances and direct payments. Balance Due = charged − paid. If a manual payment is for a service already marked paid, mark the service as paid instead of recording it twice.',
+            'Se cobra solo el trabajo ya hecho: el cargo aparece cuando el administrador registra la jornada completada. Las fechas programadas sin jornada completada no se cobran todavía. Un adelanto o pago directo es dinero recibido; un servicio extra es un cargo nuevo.': 'Only completed work is charged: a charge appears when the administrator records the completed job. Scheduled dates without a completed job are not charged yet. An advance or direct payment counts as money received; an extra service counts as a new charge.',
             'Guarda una copia de seguridad antes de borrar datos.': 'Save a backup before deleting data.',
             'Solo consulta — las horas las registra el administrador.': 'View only — hours are entered by the administrator.',
             'El respaldo en PDF abre un reporte para imprimir o guardar como PDF en tu PC. No incluye contraseñas ni códigos de acceso.': 'The PDF backup opens a report you can print or save as a PDF on your PC. It does not include passwords or access codes.',
@@ -2003,6 +2049,10 @@
             '🔐 Usuario del Administrador Principal': '🔐 Main Administrator Username',
             '🔑 Cambiar Contraseña': '🔑 Change Password',
             '🔑 Cambiar Contraseña del Admin': '🔑 Change Admin Password',
+            '💰 Cuenta del Cliente': '💰 Client Account',
+            'Elige un cliente para ver su cuenta: su saldo, sus pagos pendientes y los ya realizados.': 'Choose a client to see their account: balance, pending payments and payments already made.',
+            'Elige un cliente': 'Choose a client',
+            'Buscar por nombre…': 'Search by name…',
             '🧾 Historial de pagos manuales (adelantos / pagos directos / extras)': '🧾 Manual payment history (advances / direct payments / extras)',
         } : {
             // === TÍTULOS PRINCIPALES ===
@@ -2222,7 +2272,7 @@
             'These actions cannot be undone. Settings (company name and % deductions) are preserved.': 'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.',
             '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.': '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.',
             '📊 Summary by client — how much each client owes': '📊 Resumen por cliente — cuánto debe cada cliente',
-            'Charged = scheduled services + manual extras. Paid = services marked paid + advances and direct payments. Balance Due = charged − paid. If a manual payment is for a service already marked paid, mark the service as paid instead of recording it twice.': 'Cargado = servicios programados + extras manuales. Pagado = servicios marcados pagados + adelantos y pagos directos. Debe = cargado − pagado. Si un pago manual corresponde a un servicio ya marcado pagado, marca el servicio como pagado en vez de registrarlo dos veces.',
+            'Only completed work is charged: a charge appears when the administrator records the completed job. Scheduled dates without a completed job are not charged yet. An advance or direct payment counts as money received; an extra service counts as a new charge.': 'Se cobra solo el trabajo ya hecho: el cargo aparece cuando el administrador registra la jornada completada. Las fechas programadas sin jornada completada no se cobran todavía. Un adelanto o pago directo es dinero recibido; un servicio extra es un cargo nuevo.',
             'Save a backup before deleting data.': 'Guarda una copia de seguridad antes de borrar datos.',
             'View only — hours are entered by the administrator.': 'Solo consulta — las horas las registra el administrador.',
             'The PDF backup opens a report you can print or save as a PDF on your PC. It does not include passwords or access codes.': 'El respaldo en PDF abre un reporte para imprimir o guardar como PDF en tu PC. No incluye contraseñas ni códigos de acceso.',
@@ -2290,6 +2340,10 @@
             '🔐 Main Administrator Username': '🔐 Usuario del Administrador Principal',
             '🔑 Change Password': '🔑 Cambiar Contraseña',
             '🔑 Change Admin Password': '🔑 Cambiar Contraseña del Admin',
+            '💰 Client Account': '💰 Cuenta del Cliente',
+            'Choose a client to see their account: balance, pending payments and payments already made.': 'Elige un cliente para ver su cuenta: su saldo, sus pagos pendientes y los ya realizados.',
+            'Choose a client': 'Elige un cliente',
+            'Search by name…': 'Buscar por nombre…',
             '🧾 Manual payment history (advances / direct payments / extras)': '🧾 Historial de pagos manuales (adelantos / pagos directos / extras)',
         };
         
@@ -3281,11 +3335,6 @@ function renderListaAdmins() {
             selCli.innerHTML = data.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
             document.getElementById('pagoClienteFecha').value = new Date().toISOString().slice(0,10);
         }
-                const filtro = document.getElementById('filtroClientePagos');
-        if (filtro) {
-            const txtTodos = idiomaActual === 'en' ? '-- All clients --' : '-- Todos los clientes --';
-            filtro.innerHTML = `<option value="">${txtTodos}</option>` + data.clientes.map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
-        }
     }
 
     // ============================================================
@@ -3659,155 +3708,277 @@ function renderListaAdmins() {
     // ============================================================
     // Cargos de servicio (reales + automaticos). Lo usan la pantalla de
     // pagos y el respaldo en PDF, para que ambos muestren lo mismo.
+    // Cargos de servicio. NUEVA REGLA: solo se cobra el trabajo ya hecho.
+    // Un cargo aparece cuando existe una jornada COMPLETADA (con entrada y
+    // salida) para ese cliente y esa fecha. Las fechas programadas sin
+    // jornada completada NO generan cargo. Las fechas futuras tampoco.
+    // Los registros ya guardados en pagosServicios (pagados o pendientes)
+    // se conservan tal cual. Las fechas canceladas no generan cargo y los
+    // cargos automaticos pendientes de una fecha cancelada no se cuentan
+    // (el trabajo ya pagado de una fecha cancelada se conserva: cancelar
+    // no borra trabajo pagado). Lo usan la pantalla de pagos y el respaldo
+    // en PDF, para que ambos muestren lo mismo.
     function generarCargosServicio(data) {
         let pagos = [...data.pagosServicios];
         const eliminadosAuto = datosGlobales.pagosAutoEliminados || [];
+        const hoy = new Date();
+        const hoyStr = hoy.toISOString().slice(0,10);
+        const inicio = new Date(hoy);
+        inicio.setDate(hoy.getDate() - 56);
+        const inicioStr = inicio.toISOString().slice(0,10);
+
+        // Quitar de la vista los cargos automaticos pendientes de fechas
+        // canceladas (el trabajo pagado de una fecha cancelada se conserva).
+        pagos = pagos.filter(p => !(p.auto && p.estado === 'pendiente' && diaEstaCancelado(p.clienteId, p.fecha)));
 
         data.clientes.forEach(c => {
             if (!c.costo || c.costo <= 0) return;
-            const hoy = new Date();
-            const fechas = [];
-            // Cargos según los días y la frecuencia reales del cliente (semanal /
-            // quincenal / mensual), en los últimos 56 días. Antes se inventaban
-            // 8 cargos semanales aunque el cliente fuera quincenal o mensual.
-            for (let i = 0; i <= 56; i++) {
-                const f = new Date(hoy);
-                f.setDate(hoy.getDate() - i);
-                const fechaStr = f.toISOString().slice(0,10);
-                if (clienteTrabajaEnFecha(c, fechaStr)) fechas.push(fechaStr);
-            }
-            // Si el cliente no tiene días configurados, mantener el comportamiento
-            // anterior (8 cargos semanales) para no perder su historial.
-            if (fechas.length === 0) {
-                for (let i = 0; i < 8; i++) {
-                    const f = new Date(hoy);
-                    f.setDate(hoy.getDate() - i * 7);
-                    fechas.push(f.toISOString().slice(0,10));
-                }
-            }
-            fechas.slice(0, 24).forEach(fechaStr => {
-                const idAuto = 'auto_' + c.id + '_' + fechaStr;
+            (data.jornadas || []).forEach(j => {
+                if (j.clienteId !== c.id) return;
+                if (j.estado !== 'completado' || !j.horaEntrada || !j.horaSalida) return;
+                if (j.fecha < inicioStr || j.fecha > hoyStr) return;
+                if (diaEstaCancelado(c.id, j.fecha)) return;
+                const idAuto = 'auto_' + c.id + '_' + j.fecha;
                 if (eliminadosAuto.includes(idAuto)) return;
-                const existe = pagos.find(p => p.clienteId === c.id && p.fecha === fechaStr);
-                if (!existe) {
-                    pagos.push({
-                        id: idAuto,
-                        clienteId: c.id,
-                        fecha: fechaStr,
-                        monto: c.costo,
-                        estado: 'pendiente',
-                        fechaPago: null,
-                        metodo: null,
-                        auto: true
-                    });
-                }
+                if (pagos.find(p => p.clienteId === c.id && p.fecha === j.fecha)) return;
+                pagos.push({
+                    id: idAuto,
+                    clienteId: c.id,
+                    fecha: j.fecha,
+                    monto: c.costo,
+                    estado: 'pendiente',
+                    fechaPago: null,
+                    metodo: null,
+                    auto: true
+                });
             });
         });
         return pagos;
     }
 
+    function jornadaCompletadaPara(data, clienteId, fechaStr) {
+        return (data.jornadas || []).some(j => j.clienteId === clienteId && j.fecha === fechaStr && j.estado === 'completado' && j.horaEntrada && j.horaSalida);
+    }
+
+    function fechaISO(d) { return d.toISOString().slice(0,10); }
+
+    // Fechas programadas de un cliente en un rango. clienteTrabajaEnFecha
+    // ya excluye las fechas canceladas.
+    function obtenerFechasProgramadas(cliente, desdeStr, hastaStr) {
+        const fechas = [];
+        const d = new Date(desdeStr + 'T00:00:00');
+        const hasta = new Date(hastaStr + 'T00:00:00');
+        while (d <= hasta) {
+            const f = fechaISO(d);
+            if (clienteTrabajaEnFecha(cliente, f)) fechas.push(f);
+            d.setDate(d.getDate() + 1);
+        }
+        return fechas;
+    }
+
+    function obtenerFechasCanceladas(cliente, desdeStr, hastaStr) {
+        const fechas = [];
+        const d = new Date(desdeStr + 'T00:00:00');
+        const hasta = new Date(hastaStr + 'T00:00:00');
+        const inicio = cliente.fechaInicio || '2026-01-01';
+        while (d <= hasta) {
+            const f = fechaISO(d);
+            if (f >= inicio && (cliente.dias || []).includes(nombreDiaKey(f)) && diaEstaCancelado(cliente.id, f)) fechas.push(f);
+            d.setDate(d.getDate() + 1);
+        }
+        return fechas;
+    }
+
+    // Cuenta completa de un cliente, con la misma logica en la pantalla y
+    // en el resumen por cliente: cargado = servicios + extras manuales;
+    // pagado = servicios pagados + adelantos y pagos directos;
+    // debe = cargado - pagado.
+    function calcularCuentaCliente(data, cliente, pagos) {
+        const hoy = new Date();
+        const hoyStr = fechaISO(hoy);
+        const hace56 = new Date(hoy); hace56.setDate(hoy.getDate() - 56);
+        const en14 = new Date(hoy); en14.setDate(hoy.getDate() + 14);
+        const serv = pagos.filter(p => p.clienteId === cliente.id);
+        const manuales = (data.pagosClientes || []).filter(p => p.clienteId === cliente.id);
+        const cargadoServ = serv.reduce((s, p) => s + (p.monto || 0), 0);
+        const cargadoExtra = manuales.filter(p => p.concepto === 'extra').reduce((s, p) => s + (p.monto || 0), 0);
+        const pagadoServ = serv.filter(p => p.estado === 'pagado').reduce((s, p) => s + (p.monto || 0), 0);
+        const pagadoManual = manuales.filter(p => p.concepto !== 'extra').reduce((s, p) => s + (p.monto || 0), 0);
+        const cargado = cargadoServ + cargadoExtra;
+        const pagado = pagadoServ + pagadoManual;
+        const nPagados = serv.filter(p => p.estado === 'pagado').length;
+        const nPend = serv.filter(p => p.estado === 'pendiente').length;
+        const nVenc = serv.filter(p => p.estado === 'pendiente' && p.fecha < hoyStr).length;
+        const fechasPago = [...serv.filter(p => p.estado === 'pagado').map(p => p.fechaPago || p.fecha), ...manuales.filter(p => p.concepto !== 'extra').map(p => p.fecha)].sort();
+        const ultimoPago = fechasPago.length ? fechasPago[fechasPago.length - 1] : null;
+        const programadas = obtenerFechasProgramadas(cliente, fechaISO(hace56), fechaISO(en14));
+        const sinHacer = programadas.filter(f => !jornadaCompletadaPara(data, cliente.id, f));
+        const canceladas = obtenerFechasCanceladas(cliente, fechaISO(hace56), fechaISO(en14));
+        const proximas = programadas.filter(f => f >= hoyStr);
+        return {
+            cliente, serv, manuales, cargado, pagado, debe: cargado - pagado,
+            nPagados, nPend, nVenc, ultimoPago, sinHacer, canceladas,
+            proximaFecha: proximas.length ? proximas[0] : null
+        };
+    }
+
+    let clienteCuentaSeleccionado = '';
     function renderPagosClientes() {
         const data = getData();
-        const filtroCli = document.getElementById('filtroClientePagos').value;
-        const filtroEstado = document.getElementById('filtroEstadoPagos').value;
-        
-        let pagos = generarCargosServicio(data);
+        const sel = document.getElementById('selectorCuentaCliente');
+        const busq = document.getElementById('buscarCuentaCliente');
+        const q = busq ? (busq.value || '').toLowerCase().trim() : '';
+        // Reconstruir el selector con la busqueda, sin perder la seleccion.
+        if (sel) {
+            const actual = clienteCuentaSeleccionado || sel.value;
+            const opciones = data.clientes.filter(c => !q || (c.nombre || '').toLowerCase().includes(q));
+            sel.innerHTML = opciones.map(c => `<option value="${escHtml(c.id)}">${escHtml(c.nombre)}</option>`).join('');
+            if (opciones.some(c => c.id === actual)) { sel.value = actual; clienteCuentaSeleccionado = actual; }
+            else if (opciones.length) { sel.value = opciones[0].id; clienteCuentaSeleccionado = opciones[0].id; }
+            else { clienteCuentaSeleccionado = ''; }
+        }
+        const clienteId = clienteCuentaSeleccionado;
+        const pagos = generarCargosServicio(data);
+        // Resumen de todos los clientes (vista rapida).
+        renderResumenPagosPorCliente(pagos, '');
+        // Detalle de la cuenta del cliente elegido.
+        renderCuentaCliente(clienteId, pagos);
+        // Pagos manuales del cliente elegido.
+        renderPagosManuales(clienteId);
+        // El formulario de pago manual apunta al cliente elegido.
+        const selPago = document.getElementById('pagoClienteSelect');
+        if (selPago && clienteId) selPago.value = clienteId;
+    }
 
-        pagos.sort((a, b) => b.fecha.localeCompare(a.fecha));
-        
-        let filtrados = pagos;
-        if (filtroCli) filtrados = filtrados.filter(p => p.clienteId === filtroCli);
-        if (filtroEstado) filtrados = filtrados.filter(p => p.estado === filtroEstado);
-        
-        const totalPagado = pagos.filter(p => p.estado === 'pagado').reduce((s, p) => s + p.monto, 0);
-        const totalPendiente = pagos.filter(p => p.estado === 'pendiente').reduce((s, p) => s + p.monto, 0);
-        const hoyStr = new Date().toISOString().slice(0,10);
-        const totalVencido = pagos.filter(p => p.estado === 'pendiente' && p.fecha < hoyStr).reduce((s, p) => s + p.monto, 0);
-        
-                const txtPagado = idiomaActual === 'en' ? '✅ Total Paid' : '✅ Total Pagado';
-        const txtPendiente = idiomaActual === 'en' ? '⏳ Total Pending' : '⏳ Total Pendiente';
-        const txtVencido = idiomaActual === 'en' ? '⚠️ Overdue' : '⚠️ Vencido';
-        
-        document.getElementById('cuentasResumen').innerHTML = `
-            <div class="cuenta-card pagado"><div class="monto">$${totalPagado.toFixed(2)}</div><div class="label">${txtPagado}</div></div>
-            <div class="cuenta-card pendiente"><div class="monto">$${totalPendiente.toFixed(2)}</div><div class="label">${txtPendiente}</div></div>
-            <div class="cuenta-card vencido"><div class="monto">$${totalVencido.toFixed(2)}</div><div class="label">${txtVencido}</div></div>
-        `;
-
-        renderResumenPagosPorCliente(pagos, filtroCli);
-        
-        const totalPaginas = Math.max(1, Math.ceil(filtrados.length / PAGOS_POR_PAGINA));
-        if (paginaPagosActual > totalPaginas) paginaPagosActual = totalPaginas;
-        if (paginaPagosActual < 1) paginaPagosActual = 1;
-        
-        const inicio = (paginaPagosActual - 1) * PAGOS_POR_PAGINA;
-        const fin = inicio + PAGOS_POR_PAGINA;
-        const paginaPagos = filtrados.slice(inicio, fin);
-        
-        const tbody = document.getElementById('tablaPagosClientes');
-        if (filtrados.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:#4a5568;">No hay pagos registrados.</td></tr>';
-            document.getElementById('paginacionPagos').innerHTML = '';
+    // Vista de cuenta de un cliente: saldo, pendientes, pagados,
+    // programadas sin hacer y fechas canceladas.
+    function renderCuentaCliente(clienteId, pagos) {
+        const cont = document.getElementById('detalleCuentaCliente');
+        if (!cont) return;
+        const data = getData();
+        if (!data.clientes.length) {
+            cont.innerHTML = `<div class="cuenta-cliente"><p>${t('cuenta_sin_clientes')}</p></div>`;
             return;
         }
-        
-        tbody.innerHTML = paginaPagos.map(p => {
-            const cli = data.clientes.find(c => c.id === p.clienteId);
-            const vencido = p.estado === 'pendiente' && p.fecha < hoyStr;
-            return `<tr>
-                <td><strong>${cli ? cli.nombre : 'N/A'}</strong></td>
-                <td><span class="badge badge-primary">${cli ? (cli.servicio || 'regular') : '—'}</span></td>
-                <td><input type="date" class="input-fecha" value="${p.fecha}" onchange="editarPagoServicio('${p.id}', 'fecha', this.value)"></td>
-                <td><input type="number" class="input-monto" step="0.01" value="${p.monto}" onchange="editarPagoServicio('${p.id}', 'monto', this.value)"></td>
-                <td>
-                    <select class="input-fecha" onchange="editarPagoServicio('${p.id}', 'estado', this.value)" style="${p.estado === 'pagado' ? 'background:#d4edda;' : (vencido ? 'background:#f8d7da;' : 'background:#fff3cd;')}">
-                        <option value="pendiente" ${p.estado === 'pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
-                        <option value="pagado" ${p.estado === 'pagado' ? 'selected' : ''}>✅ Pagado</option>
-                    </select>
-                </td>
-                <td><input type="date" class="input-fecha" value="${p.fechaPago || ''}" onchange="editarPagoServicio('${p.id}', 'fechaPago', this.value)" ${p.estado === 'pendiente' ? 'disabled' : ''}></td>
-                <td>
-                    <select class="input-fecha" onchange="editarPagoServicio('${p.id}', 'metodo', this.value)" ${p.estado === 'pendiente' ? 'disabled' : ''}>
-                        <option value="">--</option>
-                        <option value="efectivo" ${p.metodo === 'efectivo' ? 'selected' : ''}>💵 Efectivo</option>
-                        <option value="cheque" ${p.metodo === 'cheque' ? 'selected' : ''}>📄 Cheque</option>
-                        <option value="transferencia" ${p.metodo === 'transferencia' ? 'selected' : ''}>🏦 Transferencia</option>
-                        <option value="tarjeta" ${p.metodo === 'tarjeta' ? 'selected' : ''}>💳 Tarjeta</option>
-                    </select>
-                </td>
-                <td><button class="btn btn-danger btn-sm" onclick="eliminarPagoServicio('${p.id}')">🗑️</button></td>
-            </tr>`;
-        }).join('');
-        
-               const txtPrimera = idiomaActual === 'en' ? '« First' : '« Primera';
-        const txtAnterior = idiomaActual === 'en' ? '‹ Previous' : '‹ Anterior';
-        const txtSiguiente = idiomaActual === 'en' ? 'Next ›' : 'Siguiente ›';
-        const txtUltima = idiomaActual === 'en' ? 'Last »' : 'Última »';
-        const txtPagina = idiomaActual === 'en' ? 'Page' : 'Página';
-        const txtDe = idiomaActual === 'en' ? 'of' : 'de';
-        const txtRegistros = idiomaActual === 'en' ? 'records' : 'registros';
-        
-        let pagHtml = '';
-        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(1)">${txtPrimera}</button>`;
-        pagHtml += `<button ${paginaPagosActual === 1 ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual - 1})">${txtAnterior}</button>`;
-        
-        let inicioRango = Math.max(1, paginaPagosActual - 2);
-        let finRango = Math.min(totalPaginas, paginaPagosActual + 2);
-        
-        for (let i = inicioRango; i <= finRango; i++) {
-            pagHtml += `<button class="${i === paginaPagosActual ? 'active' : ''}" onclick="cambiarPaginaPagos(${i})">${i}</button>`;
-        }
-        
-        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${paginaPagosActual + 1})">${txtSiguiente}</button>`;
-        pagHtml += `<button ${paginaPagosActual === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPagos(${totalPaginas})">${txtUltima}</button>`;
-        pagHtml += `<span class="info">${txtPagina} ${paginaPagosActual} ${txtDe} ${totalPaginas} · ${filtrados.length} ${txtRegistros}</span>`;
-        
-        document.getElementById('paginacionPagos').innerHTML = pagHtml;
+        const cliente = data.clientes.find(c => c.id === clienteId) || data.clientes[0];
+        if (!cliente) { cont.innerHTML = `<div class="cuenta-cliente"><p>${t('cuenta_selecciona')}</p></div>`; return; }
+        const cuenta = calcularCuentaCliente(data, cliente, pagos);
+        const hoyStr = new Date().toISOString().slice(0,10);
+        const debeClase = cuenta.debe > 0 ? 'saldo-debe' : 'saldo-cero';
+        const frecTxt = cliente.frecuencia === 'quincenal' ? t('cli_frec_quincenal') : cliente.frecuencia === 'mensual' ? t('cli_frec_mensual') : t('cli_frec_semanal');
+        const servTxt = { regular: t('serv_regular'), profunda: t('serv_profunda'), especial: t('serv_especial'), construccion: t('serv_construccion') }[cliente.servicio] || cliente.servicio || '—';
+        const pendientes = cuenta.serv.filter(p => p.estado === 'pendiente').sort((x, y) => (y.fecha || '').localeCompare(x.fecha || ''));
+        const pagados = cuenta.serv.filter(p => p.estado === 'pagado').sort((x, y) => (y.fechaPago || y.fecha || '').localeCompare(x.fechaPago || x.fecha || ''));
+        const manualesPagados = cuenta.manuales.filter(p => p.concepto !== 'extra').sort((x, y) => (y.fecha || '').localeCompare(x.fecha || ''));
+        const extras = cuenta.manuales.filter(p => p.concepto === 'extra').sort((x, y) => (y.fecha || '').localeCompare(x.fecha || ''));
+
+        const filaPendiente = p => `<li class="pago-item">
+            <div class="info"><strong>${formatoFecha(p.fecha)} · ${nombreDia(p.fecha)}</strong><br><span>${servTxt} — ${t('cuenta_trabajo_hecho')}</span></div>
+            <span class="monto">$${(p.monto || 0).toFixed(2)}</span>
+            <div class="acciones">
+                <select id="metodo_${p.id}" class="input-fecha" aria-label="${t('cuenta_metodo')}">
+                    <option value="efectivo">💵 ${t('respaldo_efectivo')}</option>
+                    <option value="cheque">📄 ${t('respaldo_cheque')}</option>
+                    <option value="transferencia">🏦 ${t('respaldo_transferencia')}</option>
+                    <option value="tarjeta">💳 ${t('respaldo_tarjeta')}</option>
+                </select>
+                <button class="btn btn-primary btn-sm" onclick="marcarPagoComoPagado('${p.id}')">${t('cuenta_marcar_pagado')}</button>
+                <button class="btn btn-danger btn-sm" onclick="cancelarFechaCuenta('${cliente.id}', '${p.fecha}')">${t('cuenta_cancelar_fecha')}</button>
+            </div>
+        </li>`;
+        const filaExtra = x => `<li class="pago-item">
+            <div class="info"><strong>${formatoFecha(x.fecha)} · ${nombreDia(x.fecha)}</strong><br><span>${t('cuenta_extra')}${x.notas ? ' — ' + escHtml(x.notas) : ''}</span></div>
+            <span class="monto">$${(x.monto || 0).toFixed(2)}</span>
+            <div class="acciones"><button class="btn btn-danger btn-sm" onclick="eliminarPagoManual('${x.id}')">🗑️</button></div>
+        </li>`;
+        const filaPagado = p => `<li class="pago-item">
+            <div class="info"><strong>${formatoFecha(p.fechaPago || p.fecha)} · ${nombreDia(p.fechaPago || p.fecha)}</strong><br><span>${servTxt} — ${etiquetaMetodo(p.metodo)}</span></div>
+            <span class="monto">$${(p.monto || 0).toFixed(2)}</span>
+            <div class="acciones"><button class="btn btn-secondary btn-sm" onclick="marcarPagoServicio('${p.id}', 'pendiente')">${t('cuenta_deshacer')}</button></div>
+        </li>`;
+        const filaManualPagado = m => `<li class="pago-item">
+            <div class="info"><strong>${formatoFecha(m.fecha)}</strong><br><span>${etiquetaConceptoPago(m.concepto)}${m.notas ? ' — ' + escHtml(m.notas) : ''}</span></div>
+            <span class="monto">$${(m.monto || 0).toFixed(2)}</span>
+            <div class="acciones"><button class="btn btn-danger btn-sm" onclick="eliminarPagoManual('${m.id}')">🗑️</button></div>
+        </li>`;
+        const filaSinHacer = f => `<li class="pago-item">
+            <div class="info"><strong>${formatoFecha(f)} · ${nombreDia(f)}</strong><br><span>${f < hoyStr ? t('cuenta_sin_hacer') : t('cuenta_programada')}</span></div>
+            <div class="acciones"><button class="btn btn-danger btn-sm" onclick="cancelarFechaCuenta('${cliente.id}', '${f}')">${t('cuenta_cancelar_fecha')}</button></div>
+        </li>`;
+        const filaCancelada = f => `<li class="pago-item cancelado">
+            <div class="info"><strong>${formatoFecha(f)} · ${nombreDia(f)}</strong><br><span>${t('estado_cancelado')}</span></div>
+            <div class="acciones"><button class="btn btn-secondary btn-sm" onclick="restaurarFechaCuenta('${cliente.id}', '${f}')">${t('cuenta_restaurar_fecha')}</button></div>
+        </li>`;
+
+        const listaPendientes = pendientes.length || extras.length
+            ? pendientes.map(filaPendiente).join('') + extras.map(filaExtra).join('')
+            : `<li class="pago-item"><div class="info">${t('cuenta_sin_pendientes')}</div></li>`;
+        const listaPagados = (pagados.length || manualesPagados.length)
+            ? pagados.map(filaPagado).join('') + manualesPagados.map(filaManualPagado).join('')
+            : `<li class="pago-item"><div class="info">${t('cuenta_sin_pagados')}</div></li>`;
+        const listaSinHacer = cuenta.sinHacer.length
+            ? cuenta.sinHacer.map(filaSinHacer).join('')
+            : `<li class="pago-item"><div class="info">${t('cuenta_sin_programadas')}</div></li>`;
+        const listaCanceladas = cuenta.canceladas.length
+            ? cuenta.canceladas.map(filaCancelada).join('')
+            : `<li class="pago-item"><div class="info">${t('cuenta_sin_canceladas')}</div></li>`;
+
+        cont.innerHTML = `<div class="cuenta-cliente">
+            <h3>${escHtml(cliente.nombre)}</h3>
+            <div class="sub">${servTxt} · ${frecTxt} · ${t('cuenta_costo_visita')}: $${(cliente.costo || 0).toFixed(2)} · ${t('cuenta_proxima')}: ${cuenta.proximaFecha ? formatoFecha(cuenta.proximaFecha) + ' · ' + nombreDia(cuenta.proximaFecha) : '—'}</div>
+            <div class="cuentas-resumen">
+                <div class="cuenta-card pagado"><div class="monto">$${cuenta.cargado.toFixed(2)}</div><div class="label">${t('resumen_cargado')}</div></div>
+                <div class="cuenta-card pagado"><div class="monto">$${cuenta.pagado.toFixed(2)}</div><div class="label">${t('resumen_pagado')}</div></div>
+                <div class="cuenta-card ${cuenta.debe > 0 ? 'vencido' : 'pagado'}"><div class="monto ${debeClase}">$${cuenta.debe.toFixed(2)}</div><div class="label">${t('resumen_debe')}</div></div>
+            </div>
+            <p style="color:#4a5568; font-size:0.9rem; margin-bottom:14px;">${t('cuenta_pendientes')}: ${cuenta.nPend} · ${t('cuenta_pagados')}: ${cuenta.nPagados} · ${t('resumen_vencidos')}: ${cuenta.nVenc} · ${t('resumen_ultimo_pago')}: ${cuenta.ultimoPago ? formatoFecha(cuenta.ultimoPago) : '—'}</p>
+            <p class="nota-admin">💡 ${t('cuenta_regla')}</p>
+            <h4>${t('cuenta_pendientes')}</h4>
+            <ul class="pago-lista">${listaPendientes}</ul>
+            <h4>${t('cuenta_pagados')}</h4>
+            <ul class="pago-lista">${listaPagados}</ul>
+            <h4>${t('cuenta_programadas')}</h4>
+            <ul class="pago-lista">${listaSinHacer}</ul>
+            <h4>${t('cuenta_canceladas')}</h4>
+            <ul class="pago-lista">${listaCanceladas}</ul>
+        </div>`;
     }
-    
-    function cambiarPaginaPagos(pagina) {
-        paginaPagosActual = pagina;
-        renderPagosClientes();
+
+    // Marcar un servicio como pagado (con el metodo elegido en la fila).
+    function marcarPagoComoPagado(id) {
+        const sel = document.getElementById('metodo_' + id);
+        const metodo = sel ? sel.value : 'efectivo';
+        editarPagoServicio(id, 'estado', 'pagado');
+        const data = getData();
+        const p = data.pagosServicios.find(x => x.id === id);
+        if (p) { p.metodo = metodo; saveData('pagosServicios', data.pagosServicios); }
+    }
+
+    // Cambiar el estado de un servicio (usado para deshacer un pago).
+    function marcarPagoServicio(id, estado) {
+        editarPagoServicio(id, 'estado', estado);
+        if (estado === 'pendiente') {
+            const data = getData();
+            const p = data.pagosServicios.find(x => x.id === id);
+            if (p) { p.fechaPago = null; p.metodo = null; saveData('pagosServicios', data.pagosServicios); }
+        }
+    }
+
+    // Cancelar una fecha desde la cuenta del cliente: se guarda en la
+    // lista de cancelaciones que ya existe, asi no genera cargo y no
+    // aparece en la agenda. No borra jornadas ni trabajo ya pagado.
+    function cancelarFechaCuenta(clienteId, fecha) {
+        if (!confirm(t('cuenta_confirmar_cancelar'))) return;
+        const data = getData();
+        if (!data.cancelaciones.find(c => c.clienteId === clienteId && c.fecha === fecha)) {
+            data.cancelaciones.push({ id: generateId(), clienteId, fecha, registro: new Date().toISOString() });
+            saveData('cancelaciones', data.cancelaciones);
+        }
+        alert(t('msg_dia_cancelado'));
+    }
+
+    function restaurarFechaCuenta(clienteId, fecha) {
+        reactivarDia(clienteId, fecha);
     }
 
     // Resumen por cliente: cuánto debe cada uno, con historial de pagos manuales.
@@ -3815,44 +3986,32 @@ function renderListaAdmins() {
     // se suman a lo pagado; los extras manuales son cargos nuevos y se suman a lo
     // cargado. Si un pago manual corresponde a un servicio ya marcado pagado, no
     // lo registres dos veces: marca el servicio como pagado.
+    // Resumen por cliente: cuánto debe cada uno, con historial de pagos manuales.
+    // Usa calcularCuentaCliente, la misma logica que la vista de cuenta.
     function renderResumenPagosPorCliente(pagos, filtroCli) {
         const data = getData();
-        const hoyStr = new Date().toISOString().slice(0,10);
         const clientes = filtroCli ? data.clientes.filter(c => c.id === filtroCli) : data.clientes;
         const tbody = document.getElementById('tablaResumenCliente');
         if (tbody) {
             if (clientes.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:#4a5568;">No hay clientes.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:#4a5568;">' + t('cuenta_sin_clientes') + '</td></tr>';
             } else {
                 let totCargado = 0, totPagado = 0, totDebe = 0;
                 tbody.innerHTML = clientes.map(c => {
-                    const serv = pagos.filter(p => p.clienteId === c.id);
-                    const manuales = (data.pagosClientes || []).filter(p => p.clienteId === c.id);
-                    const cargadoServ = serv.reduce((s, p) => s + (p.monto || 0), 0);
-                    const cargadoExtra = manuales.filter(p => p.concepto === 'extra').reduce((s, p) => s + (p.monto || 0), 0);
-                    const pagadoServ = serv.filter(p => p.estado === 'pagado').reduce((s, p) => s + (p.monto || 0), 0);
-                    const pagadoManual = manuales.filter(p => p.concepto !== 'extra').reduce((s, p) => s + (p.monto || 0), 0);
-                    const cargado = cargadoServ + cargadoExtra;
-                    const pagado = pagadoServ + pagadoManual;
-                    const debe = cargado - pagado;
-                    totCargado += cargado; totPagado += pagado; totDebe += debe;
-                    const nPagados = serv.filter(p => p.estado === 'pagado').length;
-                    const nPend = serv.filter(p => p.estado === 'pendiente').length;
-                    const nVenc = serv.filter(p => p.estado === 'pendiente' && p.fecha < hoyStr).length;
-                    const fechasPago = [...serv.filter(p => p.estado === 'pagado').map(p => p.fechaPago || p.fecha), ...manuales.filter(p => p.concepto !== 'extra').map(p => p.fecha)].sort();
-                    const ultimoPago = fechasPago.length ? formatoFecha(fechasPago[fechasPago.length - 1]) : '—';
-                    const debeHtml = debe > 0
-                        ? `<strong style="color:#b22234;">$${debe.toFixed(2)}</strong>`
-                        : `<strong style="color:#0d7a3e;">$${debe.toFixed(2)}</strong>`;
+                    const r = calcularCuentaCliente(data, c, pagos);
+                    totCargado += r.cargado; totPagado += r.pagado; totDebe += r.debe;
+                    const debeHtml = r.debe > 0
+                        ? `<strong style="color:#b22234;">$${r.debe.toFixed(2)}</strong>`
+                        : `<strong style="color:#0d7a3e;">$${r.debe.toFixed(2)}</strong>`;
                     return `<tr>
                         <td><strong>${c.nombre}</strong></td>
-                        <td>$${cargado.toFixed(2)}</td>
-                        <td>$${pagado.toFixed(2)}</td>
+                        <td>$${r.cargado.toFixed(2)}</td>
+                        <td>$${r.pagado.toFixed(2)}</td>
                         <td>${debeHtml}</td>
-                        <td>${nPagados}</td>
-                        <td>${nPend}</td>
-                        <td>${nVenc}</td>
-                        <td>${ultimoPago}</td>
+                        <td>${r.nPagados}</td>
+                        <td>${r.nPend}</td>
+                        <td>${r.nVenc}</td>
+                        <td>${r.ultimoPago ? formatoFecha(r.ultimoPago) : '—'}</td>
                     </tr>`;
                 }).join('') + `<tr class="resumen-total"><td>TOTAL</td><td>$${totCargado.toFixed(2)}</td><td>$${totPagado.toFixed(2)}</td><td>$${totDebe.toFixed(2)}</td><td colspan="4"></td></tr>`;
             }
