@@ -324,8 +324,8 @@
         <p class="login-subtitulo" style="margin-bottom: 20px;">Selecciona tu rol</p>
         <div class="selector-rol">
             <button class="btn btn-primary" onclick="seleccionarRol('admin')">👤 Admin</button>
-            <button class="btn btn-success" onclick="seleccionarRol('empleado')">🧹 Empleado</button>
         </div>
+        <p class="login-subtitulo" style="margin-top:15px; font-size:0.85rem;">Solo el administrador entra al sistema. Los empleados no tienen acceso.</p>
         <div class="login-info">
             <div><strong>📅 Agenda</strong>Clientes y trabajos del día, semana y mes.</div>
             <div><strong>💰 Pagos y boletas</strong>Cuánto debe cada cliente y boletas quincenales.</div>
@@ -342,16 +342,6 @@
     <div id="adminError" style="color:red; margin-top:10px; display:none;">❌ Usuario o contraseña incorrectos</div>
 </div>
 
-    <!-- LOGIN EMPLEADO -->
-    <div id="loginEmpleado" class="login-container hidden">
-        <h2>🧹 Acceso Empleado</h2>
-        <div class="form-group"><label>Usuario</label><input type="text" id="empLoginUser"></div>
-        <div class="form-group"><label>Contraseña</label><input type="password" id="empLoginPass"></div>
-        <button class="btn btn-primary" onclick="loginEmpleado()">🔐 Entrar</button>
-        <button class="btn btn-secondary" onclick="volverInicio()">⬅️ Volver</button>
-        <div id="empleadoError" style="color:red; margin-top:10px; display:none;">❌ Usuario/contraseña incorrectos</div>
-        <p class="login-subtitulo" style="margin-top:15px; font-size:0.85rem;">👁️ Solo consulta: aquí ves tus trabajos y tu historial. Las horas las registra el administrador.</p>
-    </div>
 
     <!-- ========== DASHBOARD ADMIN ========== -->
     <div id="adminDashboard" class="admin-dashboard hidden">
@@ -458,8 +448,6 @@
     <div class="form-group"><label id="lblEmpEmail">Email</label><input type="email" id="empEmail"></div>
     <div class="form-group"><label id="lblEmpTarifa">Tarifa/h ($) *</label><input type="number" id="empTarifa" step="0.01" required></div>
     <div class="form-group"><label id="lblEmpCargo">Cargo *</label><input type="text" id="empCargo" required></div>
-    <div class="form-group"><label id="lblEmpUsuario">Usuario *</label><input type="text" id="empUsuario" required></div>
-    <div class="form-group"><label id="lblEmpPassword">Contraseña *</label><input type="text" id="empPassword" required></div>
     <div class="form-group"><label id="lblEmpEstado">Estado</label><select id="empEstado"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select></div>
 </div>
                 <div class="form-actions">
@@ -477,7 +465,7 @@
             </div>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th>Nombre</th><th>Teléfono</th><th>Tarifa/h</th><th>Cargo</th><th>Usuario</th><th>Estado</th><th>Adelantos</th><th>Acciones</th></tr></thead>
+                    <thead><tr><th>Nombre</th><th>Teléfono</th><th>Tarifa/h</th><th>Cargo</th><th>Estado</th><th>Adelantos</th><th>Acciones</th></tr></thead>
                     <tbody id="tablaEmpleados"></tbody>
                 </table>
             </div>
@@ -959,7 +947,7 @@
             
             // Login principal
             'acceso_sistema': '🔐 Acceso al Sistema',
-            'selecciona_rol': 'Selecciona tu rol',
+            'selecciona_rol': 'Solo el administrador entra al sistema',
             'rol_admin': '👤 Admin',
             'rol_empleado': '🧹 Empleado',
             
@@ -1300,7 +1288,7 @@
             
             // Login principal
             'acceso_sistema': '🔐 System Access',
-            'selecciona_rol': 'Select your role',
+            'selecciona_rol': 'Only the administrator signs in',
             'rol_admin': '👤 Admin',
             'rol_empleado': '🧹 Employee',
             
@@ -1683,7 +1671,7 @@
             const errorDiv = document.getElementById('adminError'); if (errorDiv) errorDiv.textContent = t('error_admin');
         }
         const loginEmp = document.getElementById('loginEmpleado');
-        if (loginEmp) {
+        if (loginEmp) { // panel eliminado; se mantiene por seguridad si existiera
             const h2 = loginEmp.querySelector('h2'); if (h2) h2.textContent = t('acceso_empleado');
             const labels = loginEmp.querySelectorAll('label');
             if (labels[0]) labels[0].textContent = t('usuario');
@@ -2669,9 +2657,10 @@
     // ROLES Y LOGIN
     // ============================================================
     function seleccionarRol(rol) {
+        // Los empleados ya no entran al sistema: solo Admin.
+        if (rol === 'empleado') { alert(idiomaActual === 'en' ? 'Employee login is disabled. Only the administrator signs in.' : 'El acceso de empleados está desactivado. Solo entra el administrador.'); return; }
         document.getElementById('modoSeleccion').style.display = 'none';
         document.getElementById('loginAdmin').classList.toggle('hidden', rol !== 'admin');
-        document.getElementById('loginEmpleado').classList.toggle('hidden', rol !== 'empleado');
         rolActual = rol;
                    setTimeout(() => {
                 actualizarDisplayAdmin();
@@ -2685,11 +2674,11 @@
     
     document.getElementById('modoSeleccion').style.display = 'block';
     document.getElementById('loginAdmin').classList.add('hidden');
-    document.getElementById('loginEmpleado').classList.add('hidden');
+    const _le = document.getElementById('loginEmpleado'); if (_le) _le.classList.add('hidden');
     document.getElementById('adminDashboard').classList.add('hidden');
     document.getElementById('empleadoDashboard').classList.add('hidden');
     document.getElementById('adminError').style.display = 'none';
-    document.getElementById('empleadoError').style.display = 'none';
+    const _ee = document.getElementById('empleadoError'); if (_ee) _ee.style.display = 'none';
     rolActual = null;
     empleadoActual = null;
 }
@@ -2739,6 +2728,9 @@
     }
 }
     function loginEmpleado() {
+    // Acceso de empleados desactivado: solo el administrador entra al sistema.
+    alert(idiomaActual === 'en' ? 'Employee login is disabled. Only the administrator signs in.' : 'El acceso de empleados está desactivado. Solo entra el administrador.');
+    return;
     const user = document.getElementById('empLoginUser').value.trim();
     const pass = document.getElementById('empLoginPass').value;
     const data = getData();
@@ -2753,7 +2745,7 @@
         }));
         
         empleadoActual = emp;
-        document.getElementById('loginEmpleado').classList.add('hidden');
+        const _le = document.getElementById('loginEmpleado'); if (_le) _le.classList.add('hidden');
         document.getElementById('empleadoDashboard').classList.remove('hidden');
         document.getElementById('empleadoError').style.display = 'none';
         document.getElementById('empNombreDisplay').textContent = emp.nombre;
@@ -2770,10 +2762,12 @@
     document.getElementById('adminPass').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); loginAdmin(); }
     });
-    document.getElementById('empLoginUser').addEventListener('keypress', function(e) {
+    const _elu = document.getElementById('empLoginUser');
+    if (_elu) _elu.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); document.getElementById('empLoginPass').focus(); }
     });
-    document.getElementById('empLoginPass').addEventListener('keypress', function(e) {
+    const _elp = document.getElementById('empLoginPass');
+    if (_elp) _elp.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') { e.preventDefault(); loginEmpleado(); }
     });
 
@@ -2821,7 +2815,6 @@
             <td>${e.telefono}</td>
             <td>$${e.tarifa}/h</td>
             <td>${e.cargo}</td>
-            <td>${e.usuario}</td>
             <td><span class="badge ${e.estado === 'activo' ? 'badge-success' : 'badge-danger'}">${estadoTexto}</span></td>
             <td>$${totalAdelantos.toFixed(2)}</td>
             <td>
@@ -3891,8 +3884,10 @@ function renderListaAdmins() {
             email: document.getElementById('empEmail').value,
             tarifa: parseFloat(document.getElementById('empTarifa').value),
             cargo: document.getElementById('empCargo').value,
-            usuario: document.getElementById('empUsuario').value,
-            password: document.getElementById('empPassword').value,
+            // Sin usuario/contraseña: los empleados ya no entran al sistema.
+            // Se conservan los valores viejos al editar, solo por compatibilidad.
+            usuario: id ? (data.empleados.find(e => e.id === id) || {}).usuario || '' : '',
+            password: id ? (data.empleados.find(e => e.id === id) || {}).password || '' : '',
             estado: document.getElementById('empEstado').value
         };
         if (id) {
@@ -3917,8 +3912,6 @@ function renderListaAdmins() {
         document.getElementById('empEmail').value = emp.email || '';
         document.getElementById('empTarifa').value = emp.tarifa;
         document.getElementById('empCargo').value = emp.cargo;
-        document.getElementById('empUsuario').value = emp.usuario;
-        document.getElementById('empPassword').value = emp.password;
         document.getElementById('empEstado').value = emp.estado;
         const tituloEmp = document.getElementById('empleadoFormTitulo');
         if (tituloEmp) tituloEmp.innerHTML = t('cli_editar') + ': ' + emp.nombre;
@@ -5138,12 +5131,15 @@ function renderListaAdmins() {
             // Restaurar sesión admin
             document.getElementById('modoSeleccion').style.display = 'none';
             document.getElementById('loginAdmin').classList.add('hidden');
-            document.getElementById('loginEmpleado').classList.add('hidden');
+            const _le = document.getElementById('loginEmpleado'); if (_le) _le.classList.add('hidden');
             document.getElementById('adminDashboard').classList.remove('hidden');
             document.getElementById('empleadoDashboard').classList.add('hidden');
             renderAll();
             console.log('✅ Sesión admin restaurada');
         } else if (datos.tipo === 'empleado') {
+            // Sesiones viejas de empleado: ya no hay acceso de empleados, se borra la sesión.
+            localStorage.removeItem('clean_sesion');
+            return;
             // Restaurar sesión empleado
             const data = getData();
             const emp = data.empleados.find(e => e.id === datos.empleadoId && e.estado === 'activo');
@@ -5152,7 +5148,7 @@ function renderListaAdmins() {
                 empleadoActual = emp;
                 document.getElementById('modoSeleccion').style.display = 'none';
                 document.getElementById('loginAdmin').classList.add('hidden');
-                document.getElementById('loginEmpleado').classList.add('hidden');
+                const _le = document.getElementById('loginEmpleado'); if (_le) _le.classList.add('hidden');
                 document.getElementById('adminDashboard').classList.add('hidden');
                 document.getElementById('empleadoDashboard').classList.remove('hidden');
                 document.getElementById('empNombreDisplay').textContent = emp.nombre;
