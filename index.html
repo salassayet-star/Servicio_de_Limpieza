@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -151,6 +151,35 @@
             .mes-dia { min-height: 70px; padding: 4px; }
         }
         @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr; } }
+        /* ---- Mejoras visuales: legibilidad, móvil y modo oscuro ---- */
+        .table-wrapper { -webkit-overflow-scrolling: touch; border-radius: 8px; }
+        .table-wrapper table { min-width: 720px; }
+        .table-wrapper thead th { position: sticky; top: 0; background: #f7fafc; z-index: 1; }
+        .login-subtitulo { color: #4a5568; }
+        .login-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; text-align: left; }
+        .login-info div { background: #f7fafc; border-radius: 8px; padding: 10px 12px; font-size: 0.8rem; color: #2d3748; }
+        .login-info strong { display: block; color: #1a4a7a; margin-bottom: 2px; }
+        .resumen-total { background: #f7fafc; font-weight: 700; }
+        .resumen-total td { border-top: 2px solid #1a4a7a; }
+        .nota-admin { background: #e3f2fd; border-left: 4px solid #1a4a7a; padding: 10px 14px; border-radius: 6px; font-size: 0.9rem; color: #1a4a7a; margin-bottom: 15px; }
+        .jornada-preview { background: #e8f5e9; border-radius: 8px; padding: 10px 14px; font-weight: 700; color: #0d7a3e; margin-top: 10px; }
+        @media (max-width: 768px) {
+            .btn { min-height: 44px; padding: 10px 18px; }
+            .btn-sm { min-height: 38px; padding: 8px 14px; font-size: 0.85rem; }
+            .tab-btn { min-height: 44px; padding: 10px 16px; font-size: 0.9rem; }
+            .form-group input, .form-group select, .form-group textarea { font-size: 16px; }
+            .form-actions .btn { flex: 1; justify-content: center; }
+            .login-info { grid-template-columns: 1fr; }
+            .selector-rol { flex-direction: column; }
+            .selector-rol .btn { min-height: 48px; }
+            .table-wrapper table { font-size: 0.85rem; }
+            .input-hora, .input-fecha, .input-monto { min-height: 38px; font-size: 16px; }
+        }
+        @media (max-width: 480px) {
+            .container { padding: 12px; }
+            .tab-content { padding: 16px; }
+            .login-container { padding: 25px 18px; }
+        }
                 /* MODO OSCURO */
         body.modo-oscuro {
             background: #1a202c;
@@ -228,6 +257,44 @@
         body.modo-oscuro .trabajo-info p {
             color: #cbd5e0;
         }
+        /* Contraste en modo oscuro: los textos grises inline (#4a5568) no se leían */
+        body.modo-oscuro .login-subtitulo,
+        body.modo-oscuro .login-container p,
+        body.modo-oscuro .sin-trabajos,
+        body.modo-oscuro .sin-trabajos p,
+        body.modo-oscuro .cuenta-card .label,
+        body.modo-oscuro .login-info div,
+        body.modo-oscuro .login-info strong {
+            color: #cbd5e0;
+        }
+        body.modo-oscuro .login-info div { background: #1a202c; }
+        body.modo-oscuro .login-info strong { color: #63b3ed; }
+        body.modo-oscuro [style*="color: #4a5568"],
+        body.modo-oscuro [style*="color:#4a5568"] {
+            color: #cbd5e0 !important;
+        }
+        body.modo-oscuro .table-wrapper thead th { background: #1a202c; }
+        body.modo-oscuro .nota-admin { background: #1a365d; color: #bee3f8; border-left-color: #63b3ed; }
+        body.modo-oscuro .jornada-preview { background: #1a365d; color: #9ae6b4; }
+        body.modo-oscuro .resumen-total td { border-top-color: #63b3ed; }
+        body.modo-oscuro .codigo-acceso { background: #2d3748; color: #e2e8f0; }
+        body.modo-oscuro .codigo-acceso strong { color: #f6c445; }
+        #seccionRespaldoPDF { display: none; }
+        .respaldo-titulo { font-size: 1.3rem; color: #1a4a7a; margin-bottom: 4px; }
+        .respaldo-subtitulo { color: #4a5568; font-size: 0.9rem; margin-bottom: 12px; }
+        .respaldo-seccion { margin-top: 18px; }
+        .respaldo-seccion h3 { color: #1a4a7a; border-bottom: 2px solid #1a4a7a; padding-bottom: 4px; margin-bottom: 8px; }
+        .respaldo-tabla { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 8px 0; }
+        .respaldo-tabla th, .respaldo-tabla td { border: 1px solid #999; padding: 5px 7px; text-align: left; }
+        .respaldo-tabla th { background: #e8eef5; }
+        .respaldo-tabla tr { page-break-inside: avoid; }
+        @media print {
+            body * { visibility: hidden; }
+            #seccionRespaldoPDF, #seccionRespaldoPDF * { visibility: visible; }
+            #seccionRespaldoPDF { display: block !important; position: absolute; left: 0; top: 0; width: 100%; padding: 10px; color: #000; background: #fff; }
+            #seccionRespaldoPDF h2, #seccionRespaldoPDF h3 { page-break-after: avoid; }
+            #seccionRespaldoPDF table { page-break-inside: auto; }
+        }
     </style>
 </head>
 <body>
@@ -254,10 +321,15 @@
     <!-- SELECCIÓN DE ROL -->
     <div id="modoSeleccion" class="login-container">
         <h2>🔐 Acceso al Sistema</h2>
-        <p style="margin-bottom: 20px; color: #4a5568;">Selecciona tu rol</p>
+        <p class="login-subtitulo" style="margin-bottom: 20px;">Selecciona tu rol</p>
         <div class="selector-rol">
             <button class="btn btn-primary" onclick="seleccionarRol('admin')">👤 Admin</button>
             <button class="btn btn-success" onclick="seleccionarRol('empleado')">🧹 Empleado</button>
+        </div>
+        <div class="login-info">
+            <div><strong>📅 Agenda</strong>Clientes y trabajos del día, semana y mes.</div>
+            <div><strong>💰 Pagos y boletas</strong>Cuánto debe cada cliente y boletas quincenales.</div>
+            <div><strong>✍️ Registro manual</strong>El administrador registra las horas de los empleados.</div>
         </div>
     </div>
 
@@ -278,6 +350,7 @@
         <button class="btn btn-primary" onclick="loginEmpleado()">🔐 Entrar</button>
         <button class="btn btn-secondary" onclick="volverInicio()">⬅️ Volver</button>
         <div id="empleadoError" style="color:red; margin-top:10px; display:none;">❌ Usuario/contraseña incorrectos</div>
+        <p class="login-subtitulo" style="margin-top:15px; font-size:0.85rem;">👁️ Solo consulta: aquí ves tus trabajos y tu historial. Las horas las registra el administrador.</p>
     </div>
 
     <!-- ========== DASHBOARD ADMIN ========== -->
@@ -376,6 +449,9 @@
             <h2 id="tituloEmpleados">👤 Gestión de Empleados</h2>
            <form id="formEmpleado" onsubmit="guardarEmpleado(event)">
                 <input type="hidden" id="empEditId">
+                <div id="empleadoFormTitulo" style="background:#e3f2fd; padding:10px 15px; border-radius:8px; margin-bottom:15px; color:#1a4a7a; font-weight:600;">
+                    ➕ Nuevo Empleado
+                </div>
     <div class="form-grid">
     <div class="form-group"><label id="lblEmpNombre">Nombre *</label><input type="text" id="empNombre" required></div>
     <div class="form-group"><label id="lblEmpTelefono">Teléfono *</label><input type="tel" id="empTelefono" required></div>
@@ -386,6 +462,10 @@
     <div class="form-group"><label id="lblEmpPassword">Contraseña *</label><input type="text" id="empPassword" required></div>
     <div class="form-group"><label id="lblEmpEstado">Estado</label><select id="empEstado"><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select></div>
 </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="btnGuardarEmpleado">💾 Guardar Empleado</button>
+                    <button type="button" class="btn btn-secondary" onclick="limpiarFormEmpleado()">🔄 Limpiar / Nuevo</button>
+                </div>
             </form>
             <div style="margin:15px 0;"><h4>💰 Adelantos a Empleados</h4>
                 <div class="form-grid">
@@ -418,7 +498,7 @@
     <div class="form-group"><label id="lblCliDireccion">Dirección *</label><input type="text" id="cliDireccion" required></div>
     <div class="form-group"><label id="lblCliTelefono">Teléfono *</label><input type="tel" id="cliTelefono" required></div>
     <div class="form-group"><label id="lblCliEmail">Email</label><input type="email" id="cliEmail"></div>
-    <div class="form-group"><label id="lblCliServicio">Tipo de Servicio Regular</label>
+    <div class="form-group"><label id="lblCliServicio">Tipo de servicio</label>
         <select id="cliServicio"><option value="regular">Regular</option><option value="profunda">Profunda</option><option value="construccion">Construcción</option><option value="especial">Especial</option></select>
     </div>
     <div class="form-group"><label id="lblCliCosto">Costo del Servicio ($)</label><input type="number" id="cliCosto" step="0.01"></div>
@@ -527,6 +607,20 @@
 
             <div class="cuentas-resumen" id="cuentasResumen"></div>
 
+            <h4 style="margin-top:10px;">📊 Resumen por cliente — cuánto debe cada cliente</h4>
+            <p style="color:#4a5568; margin-bottom:10px; font-size:0.85rem;">Cargado = servicios programados + extras manuales. Pagado = servicios marcados pagados + adelantos y pagos directos. Debe = cargado − pagado. Si un pago manual corresponde a un servicio ya marcado pagado, marca el servicio como pagado en vez de registrarlo dos veces.</p>
+            <div class="table-wrapper"><table>
+                <thead><tr><th>Cliente</th><th>Cargado</th><th>Pagado</th><th>Debe</th><th>Pagados</th><th>Pendientes</th><th>Vencidos</th><th>Último pago</th></tr></thead>
+                <tbody id="tablaResumenCliente"></tbody>
+            </table></div>
+
+            <h4 style="margin-top:20px;">🧾 Historial de pagos manuales (adelantos / pagos directos / extras)</h4>
+            <p style="color:#4a5568; margin-bottom:10px; font-size:0.85rem;">Estos pagos se registraban pero no se veían en ningún lado. Aquí aparecen todos, con su concepto y notas.</p>
+            <div class="table-wrapper"><table>
+                <thead><tr><th>Cliente</th><th>Fecha</th><th>Concepto</th><th>Monto</th><th>Notas</th><th>Acciones</th></tr></thead>
+                <tbody id="tablaPagosManuales"></tbody>
+            </table></div>
+
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -565,8 +659,26 @@
        <!-- TAB JORNADAS -->
         <div class="tab-content" id="tab-admin-jornadas">
             <h2 id="tituloJornadas">📋 Monitoreo de Jornadas</h2>
-            <p style="color:#4a5568; margin-bottom:15px;">Los empleados marcan entrada/salida con <strong>geolocalización</strong>. Puedes modificar las horas aquí.</p>
-            <button class="btn btn-success" onclick="exportarExcelJornadas()">📊 Exportar Excel</button>
+            <div class="nota-admin">✍️ <strong>Registro manual:</strong> el administrador registra las horas y los lugares de trabajo. Los empleados solo consultan su agenda e historial; ya no registran horas ellos mismos.</div>
+            <form id="formJornada" onsubmit="guardarJornadaManual(event)">
+                <input type="hidden" id="jorEditId">
+                <div id="jornadaFormTitulo" style="background:#e3f2fd; padding:10px 15px; border-radius:8px; margin-bottom:15px; color:#1a4a7a; font-weight:600;">➕ Nueva Jornada (registro manual)</div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Empleado *</label><select id="jorEmpleado" required onchange="actualizarPreviewJornada()"></select></div>
+                    <div class="form-group"><label>Cliente *</label><select id="jorCliente" required></select></div>
+                    <div class="form-group"><label>Fecha *</label><input type="date" id="jorFecha" required></div>
+                    <div class="form-group"><label>Entrada</label><input type="time" id="jorEntrada" onchange="actualizarPreviewJornada()"></div>
+                    <div class="form-group"><label>Salida</label><input type="time" id="jorSalida" onchange="actualizarPreviewJornada()"></div>
+                </div>
+                <div class="jornada-preview" id="jornadaPreview">⏱️ Horas: — · Total: —</div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="btnGuardarJornada">💾 Guardar Jornada</button>
+                    <button type="button" class="btn btn-secondary" onclick="limpiarFormJornada()">🔄 Limpiar / Nuevo</button>
+                </div>
+            </form>
+            <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-success" onclick="exportarExcelJornadas()">📊 Exportar Excel</button>
+            </div>
             <div class="table-wrapper">
                 <table>
                     <thead><tr><th>Empleado</th><th>Cliente</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Horas</th><th>Total</th><th>Geo</th><th>Estado</th><th>Acciones</th></tr></thead>
@@ -579,9 +691,10 @@
         <div class="tab-content" id="tab-admin-boletas">
             <h2>📄 Boletas de Pago</h2>
             <p style="color:#4a5568; margin-bottom:15px;"><strong>Solo el administrador</strong> genera boletas. Descuentos <strong>solo</strong> cuando el pago es con cheque.</p>
+            <p style="color:#4a5568; margin-bottom:15px;">📅 <strong>Pago quincenal:</strong> los periodos son del 1 al 15 y del 16 a fin de mes. Elige cualquier fecha dentro de la quincena.</p>
             <div class="form-grid">
                 <div class="form-group"><label>Empleado</label><select id="boletaEmpleado" onchange="cargarDatosBoleta()"></select></div>
-               <div class="form-group"><label>Semana (elige cualquier fecha)</label><input type="date" id="boletaSemana" onchange="cargarDatosBoleta()"></div>
+               <div class="form-group"><label id="lblBoletaPeriodo">Periodo quincenal (elige cualquier fecha)</label><input type="date" id="boletaSemana" onchange="cargarDatosBoleta()"><small>Quincenas: 1–15 y 16–fin de mes. Las boletas antiguas semanales se siguen viendo.</small></div>
                 <div class="form-group"><label>Tipo de Pago</label>
                     <select id="boletaTipoPago" onchange="cargarDatosBoleta()">
                         <option value="efectivo">💵 Efectivo (sin descuentos)</option>
@@ -601,7 +714,7 @@
             <h3>📋 Boletas Generadas</h3>
             <div class="table-wrapper">
                 <table>
-                    <thead><tr><th>Empleado</th><th>Semana</th><th>Horas</th><th>Bruto</th><th>Descuentos</th><th>Neto</th><th>Pago</th></tr></thead>
+                    <thead><tr><th>Empleado</th><th>Periodo</th><th>Horas</th><th>Bruto</th><th>Descuentos</th><th>Neto</th><th>Pago</th><th>Acciones</th></tr></thead>
                     <tbody id="tablaBoletas"></tbody>
                 </table>
             </div>
@@ -704,6 +817,24 @@
                 
                 <button type="submit" class="btn btn-primary">💾 Guardar Configuración</button>
             </form> 
+           <div style="margin-top:15px; padding:15px; background:#f7fafc; border-radius:8px; margin-bottom:15px;">
+                <h4 style="color:#1a4a7a; margin-bottom:10px;">🗄️ Gestión de Datos</h4>
+                <p style="font-size:0.85rem; color:#4a5568; margin-bottom:10px;">Guarda una copia de seguridad antes de borrar datos.</p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button type="button" class="btn btn-info" onclick="exportarBackup()">💾 Backup local</button>
+                    <button type="button" class="btn btn-secondary" onclick="importarBackup()">📂 Restaurar local</button>
+                    <button type="button" class="btn btn-success" onclick="generarRespaldoPDF()">📄 Respaldo en PDF</button>
+                </div>
+                <p style="font-size:0.85rem; color:#4a5568; margin-top:8px;">El respaldo en PDF abre un reporte para imprimir o guardar como PDF en tu PC. No incluye contraseñas ni códigos de acceso.</p>
+                <input type="file" id="backupInput" accept=".json" style="display:none" onchange="cargarBackup(event)">
+                <h4 style="color:#b22234; margin:20px 0 10px;">⚠️ Zona de Peligro</h4>
+                <p style="font-size:0.85rem; color:#4a5568; margin-bottom:10px;">Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva. Para borrar un solo registro usa el botón 🗑️ de su fila.</p>
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                    <button type="button" class="btn btn-warning" onclick="borrarBoletas()">🗑️ Borrar solo Boletas</button>
+                    <button type="button" class="btn btn-warning" onclick="borrarJornadas()">🗑️ Borrar solo Jornadas</button>
+                    <button type="button" class="btn btn-danger" onclick="borrarTodosLosDatos()">🚨 Borrar TODOS los Datos</button>
+                </div>
+           </div>
            <div style="margin-top:15px; padding:12px; background:#e3f2fd; border-radius:8px; font-size:0.85rem; color:#1a4a7a;" id="syncInfoConfig">
                 ☁️ <strong>Sincronización activa:</strong> Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.
             </div>
@@ -715,6 +846,7 @@
     <div id="empleadoDashboard" class="empleado-dashboard hidden">
         <div style="margin-bottom:20px;">
             <h2>🧹 Bienvenido, <span id="empNombreDisplay"></span></h2>
+            <p style="color:#4a5568;">👁️ Solo consulta — las horas las registra el administrador.</p>
         </div>
 
         <div class="tabs">
@@ -725,7 +857,7 @@
 
         <div class="tab-content active" id="tab-emp-trabajos-hoy">
             <h3 id="tituloEmpHoy">📅 Clientes para hoy <span id="fechaHoyDisplay" style="color:#4a5568; font-weight:400; font-size:0.9rem;"></span></h3>
-            <p style="color:#4a5568; margin-bottom:15px;">Elige un cliente para comenzar a trabajar.</p>
+            <p style="color:#4a5568; margin-bottom:15px;">Aquí ves tus clientes de hoy. Las horas las registra el administrador.</p>
             <div id="trabajosDisponiblesHoy"></div>
         </div>
 
@@ -741,6 +873,11 @@
     </div>
 
 </div>
+
+<footer style="text-align:center; color:#718096; font-size:0.8rem; padding:20px 0 30px;">Sistema de gestión de limpieza · Los datos se guardan en la nube (Firebase)</footer>
+
+    <!-- REPORTE DE RESPALDO EN PDF (solo se ve al imprimir) -->
+    <div id="seccionRespaldoPDF" aria-hidden="true"></div>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay">
@@ -763,17 +900,25 @@
         appId: "1:543877980176:web:81a42b0a68f4fd2734ea95"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    try {
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-    window.firebaseDB = db;
-    window.firebaseDoc = doc;
-    window.firebaseGetDoc = getDoc;
-    window.firebaseSetDoc = setDoc;
-    window.firebaseOnSnapshot = onSnapshot;
+        window.firebaseDB = db;
+        window.firebaseDoc = doc;
+        window.firebaseGetDoc = getDoc;
+        window.firebaseSetDoc = setDoc;
+        window.firebaseOnSnapshot = onSnapshot;
 
-    console.log('🔥 Firebase inicializado correctamente');
-    window.dispatchEvent(new Event('firebaseReady'));
+        console.log('🔥 Firebase inicializado correctamente');
+        window.dispatchEvent(new Event('firebaseReady'));
+    } catch (e) {
+        console.error('❌ Firebase no se pudo iniciar:', e);
+        // No dejar la pantalla en "Sincronizando..." para siempre
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) overlay.classList.add('hidden');
+        window.dispatchEvent(new Event('firebaseReady'));
+    }
 </script>
 
 <script>
@@ -795,6 +940,7 @@
         pagosClientes: [],
         adelantosEmpleados: [],
         pagosServicios: [],
+        pagosAutoEliminados: [],
         cancelaciones: []
     };
     // ============================================================
@@ -806,7 +952,7 @@
             'sync_ok': '☁️ Conectado',
             'sync_syncing': '⏳ Guardando...',
             'sync_error': '⚠️ Sin conexión',
-            'btn_idioma': '🌐 Español',
+            'btn_idioma': '🌐 English',
             'btn_modo': '🌙 Modo',
             'btn_salir': '🚪 Salir',
             'app_nombre': 'CleanManager',
@@ -844,7 +990,7 @@
             'tab_clientes': '🏢 Clientes',
             'tab_jornadas': '📋 Jornadas',
             'tab_boletas': '📄 Boletas',
-            'tab_config': '⚙️ Config',
+            'tab_config': '⚙️ Configuración',
             
             // Tabs empleado
             'tab_emp_hoy': '📅 Trabajos de Hoy',
@@ -854,6 +1000,12 @@
             // Botones comunes
             'btn_guardar': '💾 Guardar',
             'btn_guardar_cliente': '💾 Guardar',
+            'btn_guardar_empleado': '💾 Guardar Empleado',
+            'btn_actualizar_empleado': '💾 Actualizar Empleado',
+            'boleta_periodo': 'Periodo quincenal',
+            'boleta_periodo_label': 'Periodo quincenal (elige cualquier fecha)',
+            'boleta_sin_jornadas_quincena': '⚠️ No hay jornadas completadas en esta quincena',
+            'msg_selecciona_empleado_periodo': '⚠️ Selecciona empleado y periodo quincenal',
             'btn_actualizar_cliente': '💾 Actualizar Cliente',
             'btn_limpiar': '🔄 Limpiar',
             'btn_limpiar_nuevo': '🔄 Limpiar / Nuevo',
@@ -869,6 +1021,7 @@
             'btn_export_pdf': '📄 PDF',
             'btn_generar_boleta': '✅ Generar',
             'btn_backup': '💾 Backup local',
+            'btn_respaldo_pdf': '📄 Respaldo en PDF',
             'btn_restaurar': '📂 Restaurar local',
             'btn_borrar_boletas': '🗑️ Borrar solo Boletas',
             'btn_borrar_jornadas': '🗑️ Borrar solo Jornadas',
@@ -896,6 +1049,112 @@
             'msg_cheque_con_desc': '📄 PAGO CON CHEQUE — CON DESCUENTOS DE LEY',
             'msg_sin_descuentos': '✅ Sin descuentos<br><small>(Pago en efectivo)</small>',
             'msg_total_pagar': '💰 TOTAL A PAGAR',
+            'msg_completa_campos': '⚠️ Completa todos los campos',
+            'msg_adelanto_registrado': '✅ Adelanto registrado',
+            'msg_pago_registrado': '✅ Pago registrado',
+            'msg_eliminar_adelanto': '¿Eliminar este adelanto?',
+            'msg_eliminar_registro_pago': '¿Eliminar este registro de pago?',
+            'msg_eliminar_pago_manual': '¿Eliminar este pago manual?',
+            'msg_eliminar_boleta': '¿Eliminar esta boleta? Esta acción no se puede deshacer.',
+            'msg_jornada_guardada': '✅ Jornada guardada',
+            'msg_elige_empleado_cliente_fecha': '⚠️ Elige empleado, cliente y fecha',
+            'msg_primero_vista_previa': '⚠️ Primero genera la vista previa',
+            'msg_backup_restaurado': '✅ Backup restaurado y sincronizado con Firebase',
+            'msg_error_archivo': '❌ Error en el archivo',
+            'msg_eliminar_admin': '¿Eliminar este administrador?',
+            'msg_admin_eliminado': '✅ Administrador eliminado',
+            'msg_usuario_existe': '⚠️ Ese usuario ya existe',
+            'msg_pass_min4': '⚠️ La contraseña debe tener al menos 4 caracteres',
+            'msg_campos_obligatorios': '⚠️ Todos los campos son obligatorios',
+            'msg_pass_cambiada': '✅ Contraseña cambiada correctamente',
+            'msg_pass_no_coinciden': '⚠️ Las contraseñas nuevas no coinciden',
+            'msg_pass_nueva_min4': '⚠️ La nueva contraseña debe tener al menos 4 caracteres',
+            'msg_pass_actual_incorrecta': '⚠️ La contraseña actual no es correcta',
+            'msg_usuario_min3': '⚠️ El usuario debe tener al menos 3 caracteres',
+            'msg_horas_admin': '✍️ Las horas las registra el administrador. Aquí solo puedes consultar tus trabajos e historial.',
+            'msg_entrada_geo': '✅ Entrada registrada con geolocalización',
+            'msg_entrada_sin_geo': '✅ Entrada registrada (sin geo)',
+            'msg_salida_geo': '✅ Salida registrada con geolocalización',
+            'msg_salida_sin_geo': '✅ Salida registrada (sin geo)',
+            'msg_primero_entrada': '⚠️ Primero marca la entrada',
+            'msg_sin_geo': '⚠️ Sin soporte de geolocalización',
+            'msg_trabajo_tomado': '✅ Trabajo tomado. Ahora marca tu entrada cuando llegues.',
+            'msg_cliente_tomado': '⚠️ Este cliente ya fue tomado por otro empleado',
+            'msg_cambiar_usuario_1': '¿Cambiar el usuario del admin a',
+            'msg_cambiar_usuario_2': 'Deberás usar este usuario para iniciar sesión.',
+            'msg_jornada_nueva': '➕ Nueva Jornada (registro manual)',
+            'msg_jornada_editando': '✏️ Editando jornada',
+            'emp_nuevo': '➕ Nuevo Empleado',
+            'btn_guardar_jornada': '💾 Guardar Jornada',
+            'btn_actualizar_jornada': '💾 Actualizar Jornada',
+            'jornada_preview_vacia': 'Horas: — · Total: —',
+            'resumen_cargado': 'Cargado',
+            'resumen_debe': 'Debe',
+            'resumen_vencidos': 'Vencidos',
+            'resumen_ultimo_pago': 'Último pago',
+            'resumen_pagado': 'Pagado',
+            'respaldo_total_label': 'Total',
+            'respaldo_titulo': '📄 Respaldo de Datos',
+            'respaldo_fecha': 'Fecha del respaldo:',
+            'respaldo_resumen': 'Resumen:',
+            'respaldo_empleados_txt': 'empleados',
+            'respaldo_clientes_txt': 'clientes',
+            'respaldo_jornadas_txt': 'jornadas',
+            'respaldo_boletas_txt': 'boletas',
+            'respaldo_total_cargado': 'Total cargado a clientes:',
+            'respaldo_total_pagado': 'Total pagado:',
+            'respaldo_total_cobrar': 'Total por cobrar:',
+            'respaldo_sec_empleados': '1. Empleados',
+            'respaldo_sec_clientes': '2. Clientes y saldo',
+            'respaldo_sec_pagos': '3. Pagos por cliente',
+            'respaldo_sec_jornadas': '4. Jornadas — registro manual',
+            'respaldo_sec_boletas': '5. Boletas quincenales',
+            'respaldo_sin_empleados': 'Sin empleados registrados.',
+            'respaldo_sin_clientes': 'Sin clientes registrados.',
+            'respaldo_sin_pagos': 'Sin pagos registrados.',
+            'respaldo_sin_jornadas': 'Sin jornadas registradas.',
+            'respaldo_sin_boletas': 'Sin boletas generadas.',
+            'respaldo_nota': 'Este reporte es una copia de consulta. Para restaurar los datos usa el archivo JSON de “Backup local”. Por seguridad, este reporte no incluye contraseñas, usuarios de empleados, EIN ni códigos de acceso de clientes.',
+            'respaldo_jornadas_mas': 'en total, se muestran las 30 más recientes',
+            'respaldo_servicio': 'Servicio',
+            'respaldo_frecuencia': 'Frecuencia',
+            'respaldo_tipo': 'Tipo',
+            'respaldo_estado': 'Estado',
+            'respaldo_fecha_pago': 'Fecha de pago',
+            'respaldo_metodo_notas': 'Método / Notas',
+            'respaldo_registrado': 'Registrado',
+            'respaldo_entrada': 'Entrada',
+            'respaldo_salida': 'Salida',
+            'respaldo_eliminado': 'Eliminado',
+            'respaldo_bruto': 'Bruto',
+            'respaldo_descuentos': 'Descuentos',
+            'respaldo_pago': 'Pago',
+            'respaldo_nombre': 'Nombre',
+            'respaldo_telefono': 'Teléfono',
+            'respaldo_email': 'Email',
+            'respaldo_cargo': 'Cargo',
+            'respaldo_tarifa_hora': 'Tarifa/h',
+            'respaldo_efectivo': 'Efectivo',
+            'respaldo_cheque': 'Cheque',
+            'respaldo_transferencia': 'Transferencia',
+            'respaldo_tarjeta': 'Tarjeta',
+            'respaldo_adelanto': 'Adelanto',
+            'respaldo_extra': 'Servicio extra',
+            'respaldo_pago_directo': 'Pago directo',
+            'respaldo_frec_semanal': 'Semanal',
+            'respaldo_frec_quincenal': 'Quincenal',
+            'respaldo_frec_mensual': 'Mensual',
+            'msg_error_firebase': 'Error al conectar con Firebase. Verifica tu conexión a internet.',
+            'msg_boletas_eliminadas': '✅ Boletas eliminadas. Todo lo demás se conservó.',
+            'msg_jornadas_eliminadas': '✅ Jornadas eliminadas. Todo lo demás se conservó.',
+            'msg_datos_eliminados': '✅ Todos los datos han sido eliminados.\n\n⚙️ La configuración se conservó.',
+            'msg_usuario_valido': '⚠️ Escribe un usuario válido',
+            'msg_borrar_boletas': '⚠️ ¿Borrar TODAS las boletas generadas?\n\nSe conservan empleados, clientes, jornadas y configuración.',
+            'msg_borrar_jornadas': '⚠️ ¿Borrar TODAS las jornadas (registros de entrada/salida)?\n\nSe conservan empleados, clientes, boletas y configuración.',
+            'msg_borrar_jornadas_final': '⚠️ ÚLTIMA CONFIRMACIÓN: ¿Seguro? Las horas trabajadas se perderán.',
+            'msg_borrar_todo': '⚠️ ¿Borrar TODOS los datos (empleados, clientes, jornadas, boletas)?\n\n✅ La configuración (nombre empresa y % descuentos) SE CONSERVARÁ.\n\nEsta acción no se puede deshacer.',
+            'msg_borrar_todo_final': '⚠️ ÚLTIMA CONFIRMACIÓN: ¿Estás seguro de borrar todo?',
+            'msg_cerrar_sesion': '¿Cerrar sesión?',
             
             // Boletas
             'boleta_titulo': 'BOLETA DE PAGO',
@@ -905,7 +1164,7 @@
             'boleta_detalle_horas': '📋 Detalle de Horas',
             'boleta_descuentos': '📊 Descuentos de Ley',
             'boleta_descuentos_simple': '📊 Descuentos',
-            'boleta_semana_label': 'Semana (elige cualquier fecha)',
+            'boleta_semana_label': 'Periodo quincenal (elige cualquier fecha)',
             'boleta_fecha': 'Fecha',
             'boleta_cliente': 'Cliente',
             'boleta_horas': 'Horas',
@@ -939,7 +1198,7 @@
             'cli_direccion': 'Dirección',
             'cli_telefono': 'Teléfono',
             'cli_email': 'Email',
-            'cli_servicio': 'Tipo de Servicio Regular',
+            'cli_servicio': 'Tipo de servicio',
             'cli_costo': 'Costo del Servicio ($)',
             'cli_dias': '📆 Días de servicio',
             'cli_frecuencia': '🔄 Frecuencia del servicio',
@@ -1034,7 +1293,7 @@
             'sync_ok': '☁️ Connected',
             'sync_syncing': '⏳ Saving...',
             'sync_error': '⚠️ No connection',
-            'btn_idioma': '🌐 English',
+            'btn_idioma': '🌐 Español',
             'btn_modo': '🌙 Mode',
             'btn_salir': '🚪 Exit',
             'app_nombre': 'CleanManager',
@@ -1082,6 +1341,12 @@
             // Botones comunes
             'btn_guardar': '💾 Save',
             'btn_guardar_cliente': '💾 Save',
+            'btn_guardar_empleado': '💾 Save Employee',
+            'btn_actualizar_empleado': '💾 Update Employee',
+            'boleta_periodo': 'Biweekly period',
+            'boleta_periodo_label': 'Biweekly period (pick any date)',
+            'boleta_sin_jornadas_quincena': '⚠️ No completed jobs in this biweekly period',
+            'msg_selecciona_empleado_periodo': '⚠️ Select employee and biweekly period',
             'btn_actualizar_cliente': '💾 Update Client',
             'btn_limpiar': '🔄 Clear',
             'btn_limpiar_nuevo': '🔄 Clear / New',
@@ -1097,6 +1362,7 @@
             'btn_export_pdf': '📄 PDF',
             'btn_generar_boleta': '✅ Generate',
             'btn_backup': '💾 Local Backup',
+            'btn_respaldo_pdf': '📄 PDF Backup',
             'btn_restaurar': '📂 Restore Local',
             'btn_borrar_boletas': '🗑️ Delete Paystubs Only',
             'btn_borrar_jornadas': '🗑️ Delete Jobs Only',
@@ -1113,10 +1379,10 @@
             'msg_config_guardada': '✅ Settings saved',
             'msg_eliminar_empleado': 'Delete this employee?',
             'msg_eliminar_cliente': 'Delete this client?',
-            'msg_eliminar_jornada': 'Delete this job?',
+            'msg_eliminar_jornada': 'Delete this work record?',
             'msg_sin_clientes': 'No clients registered. Add one above.',
             'msg_sin_historial': 'No history.',
-            'msg_sin_trabajos': 'No active jobs.',
+            'msg_sin_trabajos': 'You have no active jobs.',
             'msg_no_clientes_hoy': '📭 No clients scheduled for today',
             'msg_selecciona_dias': '⚠️ You must select at least one service day',
             'msg_selecciona_empleado_semana': '⚠️ Select employee and week',
@@ -1124,6 +1390,112 @@
             'msg_cheque_con_desc': '📄 CHECK PAYMENT — WITH LEGAL DEDUCTIONS',
             'msg_sin_descuentos': '✅ No deductions<br><small>(Cash payment)</small>',
             'msg_total_pagar': '💰 TOTAL TO PAY',
+            'msg_completa_campos': '⚠️ Fill in all fields',
+            'msg_adelanto_registrado': '✅ Advance registered',
+            'msg_pago_registrado': '✅ Payment registered',
+            'msg_eliminar_adelanto': 'Delete this advance?',
+            'msg_eliminar_registro_pago': 'Delete this payment record?',
+            'msg_eliminar_pago_manual': 'Delete this manual payment?',
+            'msg_eliminar_boleta': 'Delete this paystub? This cannot be undone.',
+            'msg_jornada_guardada': '✅ Job saved',
+            'msg_elige_empleado_cliente_fecha': '⚠️ Choose an employee, a client, and a date',
+            'msg_primero_vista_previa': '⚠️ Generate the preview first',
+            'msg_backup_restaurado': '✅ Backup restored and synced with Firebase',
+            'msg_error_archivo': '❌ Error in the file',
+            'msg_eliminar_admin': 'Delete this administrator?',
+            'msg_admin_eliminado': '✅ Administrator deleted',
+            'msg_usuario_existe': '⚠️ That username already exists',
+            'msg_pass_min4': '⚠️ The password must be at least 4 characters',
+            'msg_campos_obligatorios': '⚠️ All fields are required',
+            'msg_pass_cambiada': '✅ Password changed successfully',
+            'msg_pass_no_coinciden': '⚠️ The new passwords do not match',
+            'msg_pass_nueva_min4': '⚠️ The new password must be at least 4 characters',
+            'msg_pass_actual_incorrecta': '⚠️ The current password is not correct',
+            'msg_usuario_min3': '⚠️ The username must be at least 3 characters',
+            'msg_horas_admin': '✍️ Hours are entered by the administrator. Here you can only view your jobs and history.',
+            'msg_entrada_geo': '✅ Check-in recorded with geolocation',
+            'msg_entrada_sin_geo': '✅ Check-in recorded (no location)',
+            'msg_salida_geo': '✅ Check-out recorded with geolocation',
+            'msg_salida_sin_geo': '✅ Check-out recorded (no location)',
+            'msg_primero_entrada': '⚠️ Check in first',
+            'msg_sin_geo': '⚠️ Geolocation not supported',
+            'msg_trabajo_tomado': '✅ Job taken. Check in when you arrive.',
+            'msg_cliente_tomado': '⚠️ This client was already taken by another employee',
+            'msg_cambiar_usuario_1': 'Change the admin username to',
+            'msg_cambiar_usuario_2': 'You will need to use this username to log in.',
+            'msg_jornada_nueva': '➕ New Job (manual entry)',
+            'msg_jornada_editando': '✏️ Editing job',
+            'emp_nuevo': '➕ New Employee',
+            'btn_guardar_jornada': '💾 Save Job',
+            'btn_actualizar_jornada': '💾 Update Job',
+            'jornada_preview_vacia': 'Hours: — · Total: —',
+            'resumen_cargado': 'Charged',
+            'resumen_debe': 'Balance Due',
+            'resumen_vencidos': 'Overdue',
+            'resumen_ultimo_pago': 'Last payment',
+            'resumen_pagado': 'Paid',
+            'respaldo_total_label': 'Total',
+            'respaldo_titulo': '📄 Data Backup',
+            'respaldo_fecha': 'Backup date:',
+            'respaldo_resumen': 'Summary:',
+            'respaldo_empleados_txt': 'employees',
+            'respaldo_clientes_txt': 'clients',
+            'respaldo_jornadas_txt': 'jobs',
+            'respaldo_boletas_txt': 'paystubs',
+            'respaldo_total_cargado': 'Total charged to clients:',
+            'respaldo_total_pagado': 'Total paid:',
+            'respaldo_total_cobrar': 'Total outstanding:',
+            'respaldo_sec_empleados': '1. Employees',
+            'respaldo_sec_clientes': '2. Clients and balances',
+            'respaldo_sec_pagos': '3. Payments by client',
+            'respaldo_sec_jornadas': '4. Jobs — manual entry',
+            'respaldo_sec_boletas': '5. Biweekly paystubs',
+            'respaldo_sin_empleados': 'No employees registered.',
+            'respaldo_sin_clientes': 'No clients registered.',
+            'respaldo_sin_pagos': 'No payments registered.',
+            'respaldo_sin_jornadas': 'No jobs registered.',
+            'respaldo_sin_boletas': 'No paystubs generated.',
+            'respaldo_nota': 'This report is a reference copy. To restore the data, use the “Local Backup” JSON file. For security, this report does not include passwords, employee usernames, EIN, or client access codes.',
+            'respaldo_jornadas_mas': 'in total, showing the 30 most recent',
+            'respaldo_servicio': 'Service',
+            'respaldo_frecuencia': 'Frequency',
+            'respaldo_tipo': 'Type',
+            'respaldo_estado': 'Status',
+            'respaldo_fecha_pago': 'Payment date',
+            'respaldo_metodo_notas': 'Method / Notes',
+            'respaldo_registrado': 'Registered',
+            'respaldo_entrada': 'Check-in',
+            'respaldo_salida': 'Check-out',
+            'respaldo_eliminado': 'Deleted',
+            'respaldo_bruto': 'Gross',
+            'respaldo_descuentos': 'Deductions',
+            'respaldo_pago': 'Payment',
+            'respaldo_nombre': 'Name',
+            'respaldo_telefono': 'Phone',
+            'respaldo_email': 'Email',
+            'respaldo_cargo': 'Position',
+            'respaldo_tarifa_hora': 'Rate/h',
+            'respaldo_efectivo': 'Cash',
+            'respaldo_cheque': 'Check',
+            'respaldo_transferencia': 'Transfer',
+            'respaldo_tarjeta': 'Card',
+            'respaldo_adelanto': 'Advance',
+            'respaldo_extra': 'Extra service',
+            'respaldo_pago_directo': 'Direct payment',
+            'respaldo_frec_semanal': 'Weekly',
+            'respaldo_frec_quincenal': 'Biweekly',
+            'respaldo_frec_mensual': 'Monthly',
+            'msg_error_firebase': 'Could not connect to Firebase. Check your internet connection.',
+            'msg_boletas_eliminadas': '✅ Paystubs deleted. Everything else was kept.',
+            'msg_jornadas_eliminadas': '✅ Jobs deleted. Everything else was kept.',
+            'msg_datos_eliminados': '✅ All data has been deleted.\n\n⚙️ Settings were kept.',
+            'msg_usuario_valido': '⚠️ Enter a valid username',
+            'msg_borrar_boletas': '⚠️ Delete ALL generated paystubs?\n\nEmployees, clients, jobs, and settings will be kept.',
+            'msg_borrar_jornadas': '⚠️ Delete ALL jobs (clock-in/out records)?\n\nEmployees, clients, paystubs, and settings will be kept.',
+            'msg_borrar_jornadas_final': '⚠️ FINAL CONFIRMATION: Are you sure? Worked hours will be lost.',
+            'msg_borrar_todo': '⚠️ Delete ALL data (employees, clients, jobs, paystubs)?\n\n✅ Settings (company name and deduction %) WILL BE KEPT.\n\nThis cannot be undone.',
+            'msg_borrar_todo_final': '⚠️ FINAL CONFIRMATION: Are you sure you want to delete everything?',
+            'msg_cerrar_sesion': 'Log out?',
             
             // Boletas
             'boleta_titulo': 'PAYSTUB',
@@ -1133,7 +1505,7 @@
             'boleta_detalle_horas': '📋 Hours Detail',
             'boleta_descuentos': '📊 Legal Deductions',
             'boleta_descuentos_simple': '📊 Deductions',
-            'boleta_semana_label': 'Week (pick any date)',
+            'boleta_semana_label': 'Biweekly period (pick any date)',
             'boleta_fecha': 'Date',
             'boleta_cliente': 'Client',
             'boleta_horas': 'Hours',
@@ -1167,7 +1539,7 @@
             'cli_direccion': 'Address',
             'cli_telefono': 'Phone',
             'cli_email': 'Email',
-            'cli_servicio': 'Regular Service Type',
+            'cli_servicio': 'Service type',
             'cli_costo': 'Service Cost ($)',
             'cli_dias': '📆 Service days',
             'cli_frecuencia': '🔄 Service frequency',
@@ -1178,7 +1550,7 @@
             'cli_codigo': '🔢 Code / Number',
             'cli_instrucciones': '📝 Special entry instructions',
             'cli_frec_semanal': '📅 Weekly (every week)',
-            'cli_frec_quincenal': '📅 Bi-weekly (every other week)',
+            'cli_frec_quincenal': '📅 Biweekly (every other week)',
             'cli_frec_mensual': '📅 Monthly (once a month)',
             'cli_semana_impar': 'ODD week (1, 3, 5, 7...)',
             'cli_semana_par': 'EVEN week (2, 4, 6, 8...)',
@@ -1226,7 +1598,7 @@
             'agenda_clientes_hoy': '🏢 Clients today:',
             'agenda_completados': '✅ Completed:',
             'agenda_proceso': '🔄 In progress:',
-            'agenda_sin_tomar': '⏳ Not taken',
+            'agenda_sin_tomar': '⏳ Not started',
             'agenda_sin_asignar': 'Unassigned',
             
             // Semana
@@ -1257,8 +1629,8 @@
         }
     };
 
-    // Idioma actual (español por defecto)
-    let idiomaActual = localStorage.getItem('clean_idioma') || 'es';
+    // Idioma actual (inglés por defecto)
+    let idiomaActual = localStorage.getItem('clean_idioma_v2') || 'en';
 
     // Función para obtener traducción
     function t(key) {
@@ -1270,7 +1642,7 @@
     // Función para cambiar idioma
     function cambiarIdioma() {
         idiomaActual = idiomaActual === 'es' ? 'en' : 'es';
-        localStorage.setItem('clean_idioma', idiomaActual);
+        localStorage.setItem('clean_idioma_v2', idiomaActual);
         aplicarIdioma();
     }
 
@@ -1279,6 +1651,7 @@
         // === BOTONES DEL HEADER ===
         const btnIdioma = document.getElementById('btnIdioma');
         if (btnIdioma) btnIdioma.textContent = t('btn_idioma');
+        document.documentElement.lang = idiomaActual;
         const btnSalir = document.getElementById('btnSalir');
         if (btnSalir) btnSalir.textContent = t('btn_salir');
         const btnModo = document.getElementById('btnModo');
@@ -1348,8 +1721,6 @@
             // === DESCRIPCIONES ===
             'Edita cualquier cliente con el botón ✏️ si solicitan cambios.': 'Edit any client with the ✏️ button if they request changes.',
             'Los empleados marcan entrada/salida con geolocalización. Puedes modificar las horas aquí.': 'Employees clock in/out with geolocation. You can modify hours here.',
-            'Solo el administrador genera boletas. Descuentos solo cuando el pago es con cheque.': 'Only admin generates paystubs. Deductions only when paid by check.',
-            'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.': 'Scheduled days for each client. Click any day to activate/cancel.',
             'Clientes que tocan según sus días y frecuencia programados.': 'Clients scheduled according to their days and frequency.',
             'Calendario mensual con todos los clientes programados por día.': 'Monthly calendar with all scheduled clients per day.',
             'Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.': 'Edit dates, amounts, and mark payments as completed. Pagination of 10 per page.',
@@ -1368,7 +1739,7 @@
             'Activo': 'Active',
             'Inactivo': 'Inactive',
             'Dirección *': 'Address *',
-            'Tipo de Servicio Regular': 'Regular Service Type',
+            'Tipo de servicio': 'Service type',
             'Costo del Servicio ($)': 'Service Cost ($)',
             'Regular': 'Regular',
             'Profunda': 'Deep Clean',
@@ -1377,14 +1748,14 @@
             '📆 Días de servicio': '📆 Service days',
             '🔄 Frecuencia del servicio': '🔄 Service frequency',
             '📅 Semanal (todas las semanas)': '📅 Weekly (every week)',
-            '📅 Quincenal (semana sí, semana no)': '📅 Bi-weekly (every other week)',
+            '📅 Quincenal (semana sí, semana no)': '📅 Biweekly (every other week)',
             '📅 Mensual (una vez al mes)': '📅 Monthly (once a month)',
             '📆 Fecha de inicio del servicio': '📆 Service start date',
             'Desde cuándo se cuenta el ciclo': 'When the cycle starts',
             '📌 ¿Qué semana le toca?': '📌 Which week?',
             'Semana IMPAR (1, 3, 5, 7...)': 'ODD week (1, 3, 5, 7...)',
             'Semana PAR (2, 4, 6, 8...)': 'EVEN week (2, 4, 6, 8...)',
-            'Para frecuencias quincenales': 'For bi-weekly frequencies',
+            'Para frecuencias quincenales': 'For biweekly frequencies',
             '📌 Información': '📌 Information',
             '🔑 Tipo de Código de Acceso': '🔑 Access Code Type',
             '-- Sin código --': '-- No code --',
@@ -1400,6 +1771,11 @@
             '🔄 Limpiar': '🔄 Clear',
             '🔄 Limpiar / Nuevo': '🔄 Clear / New',
             '➕ Nuevo Cliente': '➕ New Client',
+            '➕ Nuevo Empleado': '➕ New Employee',
+            '💾 Guardar Empleado': '💾 Save Employee',
+            '💾 Actualizar Empleado': '💾 Update Employee',
+            'Periodo quincenal (elige cualquier fecha)': 'Biweekly period (pick any date)',
+            'Periodo quincenal': 'Biweekly period',
             '📋 Clientes Registrados': '📋 Registered Clients',
             
             // === COLUMNAS DE TABLAS ===
@@ -1486,6 +1862,7 @@
             'Total descuentos': 'Total deductions',
             '🗄️ Gestión de Datos': '🗄️ Data Management',
             '💾 Backup local': '💾 Local Backup',
+            '📄 Respaldo en PDF': '📄 PDF Backup',
             '📂 Restaurar local': '📂 Restore Local',
             '⚠️ Zona de Peligro': '⚠️ Danger Zone',
             '🗑️ Borrar solo Boletas': '🗑️ Delete Paystubs Only',
@@ -1500,7 +1877,7 @@
             '🏢 Clientes hoy:': '🏢 Clients today:',
             '✅ Completados:': '✅ Completed:',
             '🔄 En proceso:': '🔄 In progress:',
-            '⏳ Sin tomar': '⏳ Not taken',
+            '⏳ Sin tomar': '⏳ Not started',
             'Sin asignar': 'Unassigned',
             '❌ Cancelar': '❌ Cancel',
             '✅ Reactivar': '✅ Reactivate',
@@ -1527,7 +1904,7 @@
             'Elige un cliente para comenzar a trabajar.': 'Choose a client to start working.',
             '📋 Mis Trabajos Activos': '📋 My Active Jobs',
             '📋 Mis trabajos activos': '📋 My Active Jobs',
-            'No tienes trabajos activos.': 'No active jobs.',
+            'No tienes trabajos activos.': 'You have no active jobs.',
             '📜 Historial': '📜 History',
             '📜 Mi Historial': '📜 My History',
             'No hay historial.': 'No history.',
@@ -1537,7 +1914,6 @@
                        '✅ Completado': '✅ Completed',
             
             // === TEXTOS DINÁMICOS QUE FALTABAN ===
-            'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.': 'Scheduled days for each client. Click any day to activate/cancel.',
             'Cliente': 'Client',
             'Días:': 'Days:',
             'Trabajos:': 'Jobs:',
@@ -1551,10 +1927,79 @@
             'de': 'of',
             'registros': 'records',
             'Los empleados marcan entrada/salida con geolocalización. Puedes modificar las horas aquí.': 'Employees clock in/out with geolocation. You can modify hours here.',
-            'Solo el administrador genera boletas. Descuentos solo cuando el pago es con cheque.': 'Only admin generates paystubs. Deductions only when paid by check.',
             'Total descuentos': 'Total deductions',
             'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.': 'These actions cannot be undone. Settings (company name and % deductions) are preserved.',
-            '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.': '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.'
+            '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.': '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.',
+            '📊 Resumen por cliente — cuánto debe cada cliente': '📊 Summary by client — how much each client owes',
+            'Cargado = servicios programados + extras manuales. Pagado = servicios marcados pagados + adelantos y pagos directos. Debe = cargado − pagado. Si un pago manual corresponde a un servicio ya marcado pagado, marca el servicio como pagado en vez de registrarlo dos veces.': 'Charged = scheduled services + manual extras. Paid = services marked paid + advances and direct payments. Balance Due = charged − paid. If a manual payment is for a service already marked paid, mark the service as paid instead of recording it twice.',
+            'Guarda una copia de seguridad antes de borrar datos.': 'Save a backup before deleting data.',
+            'Solo consulta — las horas las registra el administrador.': 'View only — hours are entered by the administrator.',
+            'El respaldo en PDF abre un reporte para imprimir o guardar como PDF en tu PC. No incluye contraseñas ni códigos de acceso.': 'The PDF backup opens a report you can print or save as a PDF on your PC. It does not include passwords or access codes.',
+            '⏱️ Horas: — · Total: —': '⏱️ Hours: — · Total: —',
+            'Sin pagos manuales registrados.': 'No manual payments registered.',
+            '🧹 Bienvenido,': '🧹 Welcome,',
+            '➕ Nueva Jornada (registro manual)': '➕ New Job (manual entry)',
+            '✏️ Editando jornada': '✏️ Editing job',
+            '💾 Guardar Jornada': '💾 Save Job',
+            '💾 Actualizar Jornada': '💾 Update Job',
+            '💾 Actualizar Cliente': '💾 Update Client',
+            'Cargado': 'Charged',
+            'Debe': 'Balance Due',
+            'Vencidos': 'Overdue',
+            'Último pago': 'Last payment',
+            '✍️ Registro manual': '✍️ Manual entry',
+            'Registro manual:': 'Manual entry:',
+            'el administrador registra las horas y los lugares de trabajo. Los empleados solo consultan su agenda e historial; ya no registran horas ellos mismos.': 'the administrator records hours and job locations. Employees only view their schedule and history; they no longer record hours themselves.',
+            'Solo el administrador': 'Only the administrator',
+            'genera boletas. Descuentos': 'generates paystubs. Deductions',
+            'solo': 'only',
+            'cuando el pago es con cheque.': 'when paid by check.',
+            'Días programados de cada cliente. Haz clic en cualquier día para': 'Scheduled days for each client. Click any day to',
+            'activar/cancelar': 'activate/cancel',
+            'Se limpiará el': 'The',
+            'primer día del mes': 'first day of the month',
+            'que coincida con los días marcados arriba.': 'that matches the days checked above will be cleared.',
+            'Pago quincenal:': 'Biweekly pay:',
+            'los periodos son del 1 al 15 y del 16 a fin de mes. Elige cualquier fecha dentro de la quincena.': 'periods are 1–15 and 16–end of month. Pick any date within the pay period.',
+            'Aquí ves tus clientes de hoy. Las horas las registra el administrador.': 'Here you can see your clients for today. Hours are entered by the administrator.',
+            'Cargando datos desde Firebase': 'Loading data from Firebase',
+            'Cliente *': 'Client *',
+            'Empleado *': 'Employee *',
+            'Fecha *': 'Date *',
+            'Clientes y trabajos del día, semana y mes.': 'Clients and jobs for the day, week, and month.',
+            'Confirmar Nueva Contraseña': 'Confirm New Password',
+            'Contraseña actual': 'Current password',
+            'Contraseña actual (para confirmar)': 'Current password (to confirm)',
+            'Cuánto debe cada cliente y boletas quincenales.': 'How much each client owes and biweekly paystubs.',
+            'Código Postal': 'ZIP Code',
+            'Ej: Si marcaste "Martes", se limpiará el primer martes de cada mes.': 'Ex: If you checked "Tuesday", the first Tuesday of each month will be cleared.',
+            'El administrador registra las horas de los empleados.': 'The administrator records employee hours.',
+            'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva. Para borrar un solo registro usa el botón 🗑️ de su fila.': 'These actions cannot be undone. Settings (company name and deduction %) are preserved. To delete a single record, use the 🗑️ button in its row.',
+            'Estos pagos se registraban pero no se veían en ningún lado. Aquí aparecen todos, con su concepto y notas.': 'These payments were recorded but not shown anywhere. Here they all appear, with their concept and notes.',
+            'Nombre de la Empresa': 'Company Name',
+            'Nueva Contraseña': 'New Password',
+            'Nuevo Usuario': 'New Username',
+            'Quincenas: 1–15 y 16–fin de mes. Las boletas antiguas semanales se siguen viendo.': 'Pay periods: 1–15 and 16–end of month. Old weekly paystubs are still shown.',
+            'Si cambias la contraseña, guárdala bien. La necesitarás para entrar.': 'If you change your password, save it somewhere safe. You will need it to log in.',
+            'Sistema de gestión de limpieza · Los datos se guardan en la nube (Firebase)': 'Cleaning management system · Data is saved in the cloud (Firebase)',
+            '☁️ Sincronizando con la nube...': '☁️ Syncing with the cloud...',
+            '⚠️ Al cambiar el usuario, deberás usar el nuevo para iniciar sesión.': '⚠️ After changing your username, you must use the new one to log in.',
+            '✅ Confirmar Cambio': '✅ Confirm Change',
+            '✏️ Cambiar Usuario': '✏️ Change Username',
+            '❌ Usuario o contraseña incorrectos': '❌ Wrong username or password',
+            '🏢 Datos de la Empresa': '🏢 Company Information',
+            '👁️ Solo consulta — las horas las registra el administrador.': '👁️ View only — hours are entered by the administrator.',
+            '👁️ Solo consulta: aquí ves tus trabajos y tu historial. Las horas las registra el administrador.': '👁️ View only: here you can see your jobs and history. Hours are entered by the administrator.',
+            '👤 Usuario actual:': '👤 Current user:',
+            '💰 Pagos y boletas': '💰 Payments and paystubs',
+            '💾 Guardar Configuración': '💾 Save Settings',
+            '📅 Clientes para hoy': '📅 Clients for today',
+            '📋 Descuentos de Ley': '📋 Legal Deductions',
+            '🔄 Limpiar / Nuevo': '🔄 Clear / New',
+            '🔐 Usuario del Administrador Principal': '🔐 Main Administrator Username',
+            '🔑 Cambiar Contraseña': '🔑 Change Password',
+            '🔑 Cambiar Contraseña del Admin': '🔑 Change Admin Password',
+            '🧾 Historial de pagos manuales (adelantos / pagos directos / extras)': '🧾 Manual payment history (advances / direct payments / extras)',
         } : {
             // === TÍTULOS PRINCIPALES ===
             '👤 Employee Management': '👤 Gestión de Empleados',
@@ -1566,8 +2011,6 @@
             // === DESCRIPCIONES ===
             'Edit any client with the ✏️ button if they request changes.': 'Edita cualquier cliente con el botón ✏️ si solicitan cambios.',
             'Employees clock in/out with geolocation. You can modify hours here.': 'Los empleados marcan entrada/salida con geolocalización. Puedes modificar las horas aquí.',
-            'Only admin generates paystubs. Deductions only when paid by check.': 'Solo el administrador genera boletas. Descuentos solo cuando el pago es con cheque.',
-            'Scheduled days for each client. Click any day to activate/cancel.': 'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.',
             'Clients scheduled according to their days and frequency.': 'Clientes que tocan según sus días y frecuencia programados.',
             'Monthly calendar with all scheduled clients per day.': 'Calendario mensual con todos los clientes programados por día.',
             'Edit dates, amounts, and mark payments as completed. Pagination of 10 per page.': 'Edita fechas, montos y marca pagos como realizados. Paginación de 10 en 10.',
@@ -1585,7 +2028,7 @@
             'Active': 'Activo',
             'Inactive': 'Inactivo',
             'Address *': 'Dirección *',
-            'Regular Service Type': 'Tipo de Servicio Regular',
+            'Service type': 'Tipo de servicio',
             'Service Cost ($)': 'Costo del Servicio ($)',
             'Deep Clean': 'Profunda',
             'Construction': 'Construcción',
@@ -1593,14 +2036,14 @@
             '📆 Service days': '📆 Días de servicio',
             '🔄 Service frequency': '🔄 Frecuencia del servicio',
             '📅 Weekly (every week)': '📅 Semanal (todas las semanas)',
-            '📅 Bi-weekly (every other week)': '📅 Quincenal (semana sí, semana no)',
+            '📅 Biweekly (every other week)': '📅 Quincenal (semana sí, semana no)',
             '📅 Monthly (once a month)': '📅 Mensual (una vez al mes)',
             '📆 Service start date': '📆 Fecha de inicio del servicio',
             'When the cycle starts': 'Desde cuándo se cuenta el ciclo',
             '📌 Which week?': '📌 ¿Qué semana le toca?',
             'ODD week (1, 3, 5, 7...)': 'Semana IMPAR (1, 3, 5, 7...)',
             'EVEN week (2, 4, 6, 8...)': 'Semana PAR (2, 4, 6, 8...)',
-            'For bi-weekly frequencies': 'Para frecuencias quincenales',
+            'For biweekly frequencies': 'Para frecuencias quincenales',
             '📌 Information': '📌 Información',
             '🔑 Access Code Type': '🔑 Tipo de Código de Acceso',
             '-- No code --': '-- Sin código --',
@@ -1616,6 +2059,11 @@
             '🔄 Clear': '🔄 Limpiar',
             '🔄 Clear / New': '🔄 Limpiar / Nuevo',
             '➕ New Client': '➕ Nuevo Cliente',
+            '➕ New Employee': '➕ Nuevo Empleado',
+            '💾 Save Employee': '💾 Guardar Empleado',
+            '💾 Update Employee': '💾 Actualizar Empleado',
+            'Biweekly period (pick any date)': 'Periodo quincenal (elige cualquier fecha)',
+            'Biweekly period': 'Periodo quincenal',
             '📋 Registered Clients': '📋 Clientes Registrados',
             
             // === COLUMNAS DE TABLAS ===
@@ -1700,6 +2148,7 @@
             'Total deductions': 'Total descuentos',
             '🗄️ Data Management': '🗄️ Gestión de Datos',
             '💾 Local Backup': '💾 Backup local',
+            '📄 PDF Backup': '📄 Respaldo en PDF',
             '📂 Restore Local': '📂 Restaurar local',
             '⚠️ Danger Zone': '⚠️ Zona de Peligro',
             '🗑️ Delete Paystubs Only': '🗑️ Borrar solo Boletas',
@@ -1714,7 +2163,7 @@
             '🏢 Clients today:': '🏢 Clientes hoy:',
             '✅ Completed:': '✅ Completados:',
             '🔄 In progress:': '🔄 En proceso:',
-            '⏳ Not taken': '⏳ Sin tomar',
+            '⏳ Not started': '⏳ Sin tomar',
             'Unassigned': 'Sin asignar',
             '❌ Cancel': '❌ Cancelar',
             '✅ Reactivate': '✅ Reactivar',
@@ -1740,7 +2189,7 @@
             "Today's Clients": 'Clientes para hoy',
             'Choose a client to start working.': 'Elige un cliente para comenzar a trabajar.',
             '📋 My Active Jobs': '📋 Mis Trabajos Activos',
-            'No active jobs.': 'No tienes trabajos activos.',
+            'You have no active jobs.': 'No tienes trabajos activos.',
             '📜 History': '📜 Historial',
             '📜 My History': '📜 Mi Historial',
             'No history.': 'No hay historial.',
@@ -1750,7 +2199,6 @@
                         '✅ Completed': '✅ Completado',
             
             // === TEXTOS DINÁMICOS QUE FALTABAN ===
-            'Scheduled days for each client. Click any day to activate/cancel.': 'Días programados de cada cliente. Haz clic en cualquier día para activar/cancelar.',
             'Client': 'Cliente',
             'Days:': 'Días:',
             'Jobs:': 'Trabajos:',
@@ -1764,10 +2212,79 @@
             'of': 'de',
             'records': 'registros',
             'Employees clock in/out with geolocation. You can modify hours here.': 'Los empleados marcan entrada/salida con geolocalización. Puedes modificar las horas aquí.',
-            'Only admin generates paystubs. Deductions only when paid by check.': 'Solo el administrador genera boletas. Descuentos solo cuando el pago es con cheque.',
             'Total deductions': 'Total descuentos',
             'These actions cannot be undone. Settings (company name and % deductions) are preserved.': 'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva.',
-            '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.': '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.'
+            '☁️ Sync active: All changes are automatically saved to the cloud (Firebase) and synced across all devices.': '☁️ Sincronización activa: Todos los cambios se guardan automáticamente en la nube (Firebase) y se sincronizan en todos los dispositivos.',
+            '📊 Summary by client — how much each client owes': '📊 Resumen por cliente — cuánto debe cada cliente',
+            'Charged = scheduled services + manual extras. Paid = services marked paid + advances and direct payments. Balance Due = charged − paid. If a manual payment is for a service already marked paid, mark the service as paid instead of recording it twice.': 'Cargado = servicios programados + extras manuales. Pagado = servicios marcados pagados + adelantos y pagos directos. Debe = cargado − pagado. Si un pago manual corresponde a un servicio ya marcado pagado, marca el servicio como pagado en vez de registrarlo dos veces.',
+            'Save a backup before deleting data.': 'Guarda una copia de seguridad antes de borrar datos.',
+            'View only — hours are entered by the administrator.': 'Solo consulta — las horas las registra el administrador.',
+            'The PDF backup opens a report you can print or save as a PDF on your PC. It does not include passwords or access codes.': 'El respaldo en PDF abre un reporte para imprimir o guardar como PDF en tu PC. No incluye contraseñas ni códigos de acceso.',
+            '⏱️ Hours: — · Total: —': '⏱️ Horas: — · Total: —',
+            'No manual payments registered.': 'Sin pagos manuales registrados.',
+            '🧹 Welcome,': '🧹 Bienvenido,',
+            '➕ New Job (manual entry)': '➕ Nueva Jornada (registro manual)',
+            '✏️ Editing job': '✏️ Editando jornada',
+            '💾 Save Job': '💾 Guardar Jornada',
+            '💾 Update Job': '💾 Actualizar Jornada',
+            '💾 Update Client': '💾 Actualizar Cliente',
+            'Charged': 'Cargado',
+            'Balance Due': 'Debe',
+            'Overdue': 'Vencidos',
+            'Last payment': 'Último pago',
+            '✍️ Manual entry': '✍️ Registro manual',
+            'Manual entry:': 'Registro manual:',
+            'the administrator records hours and job locations. Employees only view their schedule and history; they no longer record hours themselves.': 'el administrador registra las horas y los lugares de trabajo. Los empleados solo consultan su agenda e historial; ya no registran horas ellos mismos.',
+            'Only the administrator': 'Solo el administrador',
+            'generates paystubs. Deductions': 'genera boletas. Descuentos',
+            'only': 'solo',
+            'when paid by check.': 'cuando el pago es con cheque.',
+            'Scheduled days for each client. Click any day to': 'Días programados de cada cliente. Haz clic en cualquier día para',
+            'activate/cancel': 'activar/cancelar',
+            'The': 'Se limpiará el',
+            'first day of the month': 'primer día del mes',
+            'that matches the days checked above will be cleared.': 'que coincida con los días marcados arriba.',
+            'Biweekly pay:': 'Pago quincenal:',
+            'periods are 1–15 and 16–end of month. Pick any date within the pay period.': 'los periodos son del 1 al 15 y del 16 a fin de mes. Elige cualquier fecha dentro de la quincena.',
+            'Here you can see your clients for today. Hours are entered by the administrator.': 'Aquí ves tus clientes de hoy. Las horas las registra el administrador.',
+            'Loading data from Firebase': 'Cargando datos desde Firebase',
+            'Client *': 'Cliente *',
+            'Employee *': 'Empleado *',
+            'Date *': 'Fecha *',
+            'Clients and jobs for the day, week, and month.': 'Clientes y trabajos del día, semana y mes.',
+            'Confirm New Password': 'Confirmar Nueva Contraseña',
+            'Current password': 'Contraseña actual',
+            'Current password (to confirm)': 'Contraseña actual (para confirmar)',
+            'How much each client owes and biweekly paystubs.': 'Cuánto debe cada cliente y boletas quincenales.',
+            'ZIP Code': 'Código Postal',
+            'Ex: If you checked "Tuesday", the first Tuesday of each month will be cleared.': 'Ej: Si marcaste "Martes", se limpiará el primer martes de cada mes.',
+            'The administrator records employee hours.': 'El administrador registra las horas de los empleados.',
+            'These actions cannot be undone. Settings (company name and deduction %) are preserved. To delete a single record, use the 🗑️ button in its row.': 'Estas acciones no se pueden deshacer. La configuración (nombre empresa y % descuentos) se conserva. Para borrar un solo registro usa el botón 🗑️ de su fila.',
+            'These payments were recorded but not shown anywhere. Here they all appear, with their concept and notes.': 'Estos pagos se registraban pero no se veían en ningún lado. Aquí aparecen todos, con su concepto y notas.',
+            'Company Name': 'Nombre de la Empresa',
+            'New Password': 'Nueva Contraseña',
+            'New Username': 'Nuevo Usuario',
+            'Pay periods: 1–15 and 16–end of month. Old weekly paystubs are still shown.': 'Quincenas: 1–15 y 16–fin de mes. Las boletas antiguas semanales se siguen viendo.',
+            'If you change your password, save it somewhere safe. You will need it to log in.': 'Si cambias la contraseña, guárdala bien. La necesitarás para entrar.',
+            'Cleaning management system · Data is saved in the cloud (Firebase)': 'Sistema de gestión de limpieza · Los datos se guardan en la nube (Firebase)',
+            '☁️ Syncing with the cloud...': '☁️ Sincronizando con la nube...',
+            '⚠️ After changing your username, you must use the new one to log in.': '⚠️ Al cambiar el usuario, deberás usar el nuevo para iniciar sesión.',
+            '✅ Confirm Change': '✅ Confirmar Cambio',
+            '✏️ Change Username': '✏️ Cambiar Usuario',
+            '❌ Wrong username or password': '❌ Usuario o contraseña incorrectos',
+            '🏢 Company Information': '🏢 Datos de la Empresa',
+            '👁️ View only — hours are entered by the administrator.': '👁️ Solo consulta — las horas las registra el administrador.',
+            '👁️ View only: here you can see your jobs and history. Hours are entered by the administrator.': '👁️ Solo consulta: aquí ves tus trabajos y tu historial. Las horas las registra el administrador.',
+            '👤 Current user:': '👤 Usuario actual:',
+            '💰 Payments and paystubs': '💰 Pagos y boletas',
+            '💾 Save Settings': '💾 Guardar Configuración',
+            '📅 Clients for today': '📅 Clientes para hoy',
+            '📋 Legal Deductions': '📋 Descuentos de Ley',
+            '🔄 Clear / New': '🔄 Limpiar / Nuevo',
+            '🔐 Main Administrator Username': '🔐 Usuario del Administrador Principal',
+            '🔑 Change Password': '🔑 Cambiar Contraseña',
+            '🔑 Change Admin Password': '🔑 Cambiar Contraseña del Admin',
+            '🧾 Manual payment history (advances / direct payments / extras)': '🧾 Historial de pagos manuales (adelantos / pagos directos / extras)',
         };
         
         // Recorrer TODO el DOM y traducir los textos exactos
@@ -1873,6 +2390,7 @@
             renderClientes(getData());
             renderJornadas(getData());
             renderBoletas(getData());
+            if (typeof actualizarPreviewJornada === 'function') actualizarPreviewJornada();
             // También renderizar paneles del empleado si está logueado
             if (empleadoActual) {
                 cargarTrabajosHoy();
@@ -1888,6 +2406,19 @@
     // ============================================================
     // FIREBASE - SINCRONIZACIÓN
     // ============================================================
+    // Seguridad: si Firebase no responde en 8 segundos (por ejemplo,
+    // al abrir el archivo directo desde el teléfono), quitar la
+    // pantalla de "Sincronizando..." y mostrar el acceso de todas formas.
+    // Los datos se cargan desde Firebase cuando la conexión lo permite.
+    setTimeout(() => {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay && !overlay.classList.contains('hidden')) {
+            console.warn('⏱️ Firebase no respondió a tiempo - mostrando acceso sin esperar');
+            overlay.classList.add('hidden');
+            try { renderAll(); } catch (e) { console.error(e); }
+        }
+    }, 8000);
+
     window.addEventListener('firebaseReady', async () => {
         console.log('🔥 Iniciando sincronización con Firebase...');
         await cargarDatosDesdeFirebase();
@@ -1939,7 +2470,7 @@
             
         } catch (error) {
             console.error('❌ Error al cargar datos:', error);
-            alert('Error al conectar con Firebase. Verifica tu conexión a internet.');
+            alert(t('msg_error_firebase'));
             document.getElementById('loadingOverlay').classList.add('hidden');
         }
     }
@@ -1991,25 +2522,25 @@
     }
 
     async function borrarBoletas() {
-        if (!confirm('⚠️ ¿Borrar TODAS las boletas generadas?\n\nSe conservan empleados, clientes, jornadas y configuración.')) return;
+        if (!confirm(t('msg_borrar_boletas'))) return;
         datosGlobales.boletas = [];
         await guardarEnFirebase();
-        alert('✅ Boletas eliminadas. Todo lo demás se conservó.');
+        alert(t('msg_boletas_eliminadas'));
         renderAll();
     }
 
     async function borrarJornadas() {
-        if (!confirm('⚠️ ¿Borrar TODAS las jornadas (registros de entrada/salida)?\n\nSe conservan empleados, clientes, boletas y configuración.')) return;
-        if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN: ¿Seguro? Las horas trabajadas se perderán.')) return;
+        if (!confirm(t('msg_borrar_jornadas'))) return;
+        if (!confirm(t('msg_borrar_jornadas_final'))) return;
         datosGlobales.jornadas = [];
         await guardarEnFirebase();
-        alert('✅ Jornadas eliminadas. Todo lo demás se conservó.');
+        alert(t('msg_jornadas_eliminadas'));
         renderAll();
     }
 
     async function borrarTodosLosDatos() {
-        if (!confirm('⚠️ ¿Borrar TODOS los datos (empleados, clientes, jornadas, boletas)?\n\n✅ La configuración (nombre empresa y % descuentos) SE CONSERVARÁ.\n\nEsta acción no se puede deshacer.')) return;
-        if (!confirm('⚠️ ÚLTIMA CONFIRMACIÓN: ¿Estás seguro de borrar todo?')) return;
+        if (!confirm(t('msg_borrar_todo'))) return;
+        if (!confirm(t('msg_borrar_todo_final'))) return;
         
         const configActual = datosGlobales.config || { FICA: 6.2, Medicare: 1.45, SUI: 2.95, FUTA: 0.6, empresa: 'Mi Empresa' };
         
@@ -2022,11 +2553,12 @@
             pagosClientes: [],
             adelantosEmpleados: [],
             pagosServicios: [],
+            pagosAutoEliminados: [],
             cancelaciones: []
         };
         
         await guardarEnFirebase();
-        alert('✅ Todos los datos han sido eliminados.\n\n⚙️ La configuración se conservó.');
+        alert(t('msg_datos_eliminados'));
         location.reload();
     }
 
@@ -2163,7 +2695,7 @@
 }
 
     function cerrarSesion() {
-    if (confirm('¿Cerrar sesión?')) {
+    if (confirm(t('msg_cerrar_sesion'))) {
         // ⚠️ BORRAR SESIÓN
         localStorage.removeItem('clean_sesion');
         volverInicio();
@@ -2266,6 +2798,7 @@
         renderJornadas(data);
         renderStats(data);
         renderSelectsBoleta(data);
+        cargarSelectsJornadas(data);
         renderBoletas(data);
         renderResumenDescuentos(data);
         cargarDatosBoleta();
@@ -2367,7 +2900,10 @@
                 <td>$${total.toFixed(2)}</td>
                 <td><span class="geo-badge">${geo}</span></td>
                 <td><span class="badge ${j.estado === 'completado' ? 'badge-success' : 'badge-warning'}">${j.estado}</span></td>
-                <td><button class="btn btn-danger btn-sm" onclick="eliminarJornada('${j.id}')">🗑️</button></td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editarJornadaManual('${j.id}')">✏️</button>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarJornada('${j.id}')">🗑️</button>
+                </td>
             </tr>`;
         }).join('');
     }
@@ -2408,30 +2944,30 @@ function cambiarUsuarioAdmin() {
     const passConfirm = document.getElementById('cfgAdminConfirmPass').value;
     
     if (!nuevoUser) {
-        alert('⚠️ Escribe un usuario válido');
+        alert(t('msg_usuario_valido'));
         return;
     }
     
     if (nuevoUser.length < 3) {
-        alert('⚠️ El usuario debe tener al menos 3 caracteres');
+        alert(t('msg_usuario_min3'));
         return;
     }
     
     // Verificar contraseña actual
     const config = datosGlobales.config || {};
     if (passConfirm !== config.adminPass) {
-        alert('⚠️ La contraseña actual no es correcta');
+        alert(t('msg_pass_actual_incorrecta'));
         return;
     }
     
     // Verificar que el usuario no exista
     const admins = config.admins || [];
     if (nuevoUser === config.adminUser || admins.some(a => a.user === nuevoUser)) {
-        alert('⚠️ Ese usuario ya existe');
+        alert(t('msg_usuario_existe'));
         return;
     }
     
-    if (!confirm('¿Cambiar el usuario del admin a "' + nuevoUser + '"?\n\nDeberás usar este usuario para iniciar sesión.')) {
+    if (!confirm(t('msg_cambiar_usuario_1') + ' "' + nuevoUser + '"?\n\n' + t('msg_cambiar_usuario_2'))) {
         return;
     }
     
@@ -2454,24 +2990,24 @@ function cambiarPasswordAdmin() {
     const passConfirm = document.getElementById('cfgAdminPassConfirm').value;
     
     if (!passActual || !passNueva || !passConfirm) {
-        alert('⚠️ Todos los campos son obligatorios');
+        alert(t('msg_campos_obligatorios'));
         return;
     }
     
     // Verificar contraseña actual
     const config = datosGlobales.config || {};
     if (passActual !== config.adminPass) {
-        alert('⚠️ La contraseña actual no es correcta');
+        alert(t('msg_pass_actual_incorrecta'));
         return;
     }
     
     if (passNueva.length < 4) {
-        alert('⚠️ La nueva contraseña debe tener al menos 4 caracteres');
+        alert(t('msg_pass_nueva_min4'));
         return;
     }
     
     if (passNueva !== passConfirm) {
-        alert('⚠️ Las contraseñas nuevas no coinciden');
+        alert(t('msg_pass_no_coinciden'));
         return;
     }
     
@@ -2484,7 +3020,7 @@ function cambiarPasswordAdmin() {
     document.getElementById('cfgAdminPassNueva').value = '';
     document.getElementById('cfgAdminPassConfirm').value = '';
     
-    alert('✅ Contraseña cambiada correctamente');
+    alert(t('msg_pass_cambiada'));
 } 
    function agregarAdmin() {
     const nombre = document.getElementById('nuevoAdminNombre').value.trim();
@@ -2492,12 +3028,12 @@ function cambiarPasswordAdmin() {
     const pass = document.getElementById('nuevoAdminPass').value;
     
     if (!nombre || !user || !pass) {
-        alert('⚠️ Todos los campos son obligatorios');
+        alert(t('msg_campos_obligatorios'));
         return;
     }
     
     if (pass.length < 4) {
-        alert('⚠️ La contraseña debe tener al menos 4 caracteres');
+        alert(t('msg_pass_min4'));
         return;
     }
     
@@ -2508,7 +3044,7 @@ function cambiarPasswordAdmin() {
     // Verificar que el usuario no exista
     const userPrincipal = config.adminUser || 'admin';
     if (user === userPrincipal || admins.some(a => a.user === user)) {
-        alert('⚠️ Ese usuario ya existe');
+        alert(t('msg_usuario_existe'));
         return;
     }
     
@@ -2543,7 +3079,7 @@ function cambiarPasswordAdmin() {
 }
 
 function eliminarAdmin(id) {
-    if (!confirm('¿Eliminar este administrador?')) return;
+    if (!confirm(t('msg_eliminar_admin'))) return;
     
     const config = datosGlobales.config || {};
     const admins = config.admins || [];
@@ -2553,7 +3089,7 @@ function eliminarAdmin(id) {
     
     guardarEnFirebase();
     renderListaAdmins();
-    alert('✅ Administrador eliminado');
+    alert(t('msg_admin_eliminado'));
 }
 
 function renderListaAdmins() {
@@ -2652,16 +3188,28 @@ function renderListaAdmins() {
         if (!tbody) return;
         tbody.innerHTML = data.boletas.map(b => {
             const emp = data.empleados.find(e => e.id === b.empleadoId);
+            const periodoTxt = b.periodoEtiqueta || (b.semanaInicio && b.semanaFin ? formatoFecha(b.semanaInicio) + ' al ' + formatoFecha(b.semanaFin) : (b.semana || '—'));
+            const periodoBadge = b.periodo === 'quincena'
+                ? ' <span class="badge badge-success">Quincenal</span>'
+                : ' <span class="badge badge-secondary">Semanal (antigua)</span>';
             return `<tr>
                 <td>${emp ? emp.nombre : 'Eliminado'}</td>
-                <td>${b.semana}</td>
+                <td>${periodoTxt}${periodoBadge}</td>
                 <td>${b.totalHoras.toFixed(2)}h</td>
                 <td>$${b.totalBruto.toFixed(2)}</td>
                 <td>$${(b.descuento || 0).toFixed(2)}</td>
                 <td>$${b.totalNeto.toFixed(2)}</td>
                 <td><span class="badge ${b.tipoPago === 'cheque' ? 'badge-warning' : 'badge-success'}">${b.tipoPago === 'cheque' ? '📄 Cheque' : '💵 Efectivo'}</span></td>
+                <td><button class="btn btn-danger btn-sm" onclick="eliminarBoleta('${b.id}')">🗑️</button></td>
             </tr>`;
         }).join('');
+    }
+
+    function eliminarBoleta(id) {
+        if (!confirm(t('msg_eliminar_boleta'))) return;
+        const data = getData();
+        data.boletas = data.boletas.filter(b => b.id !== id);
+        saveData('boletas', data.boletas);
     }
 
     function cargarSelectsAdelantosPagos(data) {
@@ -2688,7 +3236,7 @@ function renderListaAdmins() {
     // ============================================================
     function renderAgendaDiaria() {
     const data = getData();
-    const fechaInput = document.getElementById('agendaFecha');
+    const fechaInput = document.getElementById('agendaFecha') || document.getElementById('semanaFecha');
     if (!fechaInput) return;
     if (!fechaInput.value) {
         fechaInput.value = new Date().toISOString().slice(0,10);
@@ -2795,7 +3343,8 @@ function renderListaAdmins() {
         alert(t('msg_dia_reactivado'));    }
 
     function cambiarDia(delta) {
-        const input = document.getElementById('agendaFecha');
+        const input = document.getElementById('agendaFecha') || document.getElementById('semanaFecha');
+        if (!input || !input.value) return;
         const fecha = new Date(input.value + 'T00:00:00');
         fecha.setDate(fecha.getDate() + delta);
         input.value = fecha.toISOString().slice(0,10);
@@ -2803,7 +3352,8 @@ function renderListaAdmins() {
     }
 
     function irHoy() {
-        document.getElementById('agendaFecha').value = new Date().toISOString().slice(0,10);
+        const agendaFechaInput = document.getElementById('agendaFecha') || document.getElementById('semanaFecha');
+    if (agendaFechaInput) agendaFechaInput.value = new Date().toISOString().slice(0,10);
         renderAgendaDiaria();
     }
 
@@ -3050,27 +3600,41 @@ function renderListaAdmins() {
     // ============================================================
     // PAGOS POR SERVICIOS
     // ============================================================
-    function renderPagosClientes() {
-        const data = getData();
-        const filtroCli = document.getElementById('filtroClientePagos').value;
-        const filtroEstado = document.getElementById('filtroEstadoPagos').value;
-        
+    // Cargos de servicio (reales + automaticos). Lo usan la pantalla de
+    // pagos y el respaldo en PDF, para que ambos muestren lo mismo.
+    function generarCargosServicio(data) {
         let pagos = [...data.pagosServicios];
-        
+        const eliminadosAuto = datosGlobales.pagosAutoEliminados || [];
+
         data.clientes.forEach(c => {
             if (!c.costo || c.costo <= 0) return;
-            const numPagos = 8;
             const hoy = new Date();
-            for (let i = 0; i < numPagos; i++) {
-                const diasAtras = i * 7;
-                const fechaPago = new Date(hoy);
-                fechaPago.setDate(hoy.getDate() - diasAtras);
-                const fechaStr = fechaPago.toISOString().slice(0,10);
-                
+            const fechas = [];
+            // Cargos según los días y la frecuencia reales del cliente (semanal /
+            // quincenal / mensual), en los últimos 56 días. Antes se inventaban
+            // 8 cargos semanales aunque el cliente fuera quincenal o mensual.
+            for (let i = 0; i <= 56; i++) {
+                const f = new Date(hoy);
+                f.setDate(hoy.getDate() - i);
+                const fechaStr = f.toISOString().slice(0,10);
+                if (clienteTrabajaEnFecha(c, fechaStr)) fechas.push(fechaStr);
+            }
+            // Si el cliente no tiene días configurados, mantener el comportamiento
+            // anterior (8 cargos semanales) para no perder su historial.
+            if (fechas.length === 0) {
+                for (let i = 0; i < 8; i++) {
+                    const f = new Date(hoy);
+                    f.setDate(hoy.getDate() - i * 7);
+                    fechas.push(f.toISOString().slice(0,10));
+                }
+            }
+            fechas.slice(0, 24).forEach(fechaStr => {
+                const idAuto = 'auto_' + c.id + '_' + fechaStr;
+                if (eliminadosAuto.includes(idAuto)) return;
                 const existe = pagos.find(p => p.clienteId === c.id && p.fecha === fechaStr);
                 if (!existe) {
                     pagos.push({
-                        id: 'auto_' + c.id + '_' + fechaStr,
+                        id: idAuto,
                         clienteId: c.id,
                         fecha: fechaStr,
                         monto: c.costo,
@@ -3080,9 +3644,18 @@ function renderListaAdmins() {
                         auto: true
                     });
                 }
-            }
+            });
         });
+        return pagos;
+    }
+
+    function renderPagosClientes() {
+        const data = getData();
+        const filtroCli = document.getElementById('filtroClientePagos').value;
+        const filtroEstado = document.getElementById('filtroEstadoPagos').value;
         
+        let pagos = generarCargosServicio(data);
+
         pagos.sort((a, b) => b.fecha.localeCompare(a.fecha));
         
         let filtrados = pagos;
@@ -3103,6 +3676,8 @@ function renderListaAdmins() {
             <div class="cuenta-card pendiente"><div class="monto">$${totalPendiente.toFixed(2)}</div><div class="label">${txtPendiente}</div></div>
             <div class="cuenta-card vencido"><div class="monto">$${totalVencido.toFixed(2)}</div><div class="label">${txtVencido}</div></div>
         `;
+
+        renderResumenPagosPorCliente(pagos, filtroCli);
         
         const totalPaginas = Math.max(1, Math.ceil(filtrados.length / PAGOS_POR_PAGINA));
         if (paginaPagosActual > totalPaginas) paginaPagosActual = totalPaginas;
@@ -3178,13 +3753,94 @@ function renderListaAdmins() {
         renderPagosClientes();
     }
 
+    // Resumen por cliente: cuánto debe cada uno, con historial de pagos manuales.
+    // Supuesto: los pagos manuales (adelanto / pago directo) son dinero recibido y
+    // se suman a lo pagado; los extras manuales son cargos nuevos y se suman a lo
+    // cargado. Si un pago manual corresponde a un servicio ya marcado pagado, no
+    // lo registres dos veces: marca el servicio como pagado.
+    function renderResumenPagosPorCliente(pagos, filtroCli) {
+        const data = getData();
+        const hoyStr = new Date().toISOString().slice(0,10);
+        const clientes = filtroCli ? data.clientes.filter(c => c.id === filtroCli) : data.clientes;
+        const tbody = document.getElementById('tablaResumenCliente');
+        if (tbody) {
+            if (clientes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:#4a5568;">No hay clientes.</td></tr>';
+            } else {
+                let totCargado = 0, totPagado = 0, totDebe = 0;
+                tbody.innerHTML = clientes.map(c => {
+                    const serv = pagos.filter(p => p.clienteId === c.id);
+                    const manuales = (data.pagosClientes || []).filter(p => p.clienteId === c.id);
+                    const cargadoServ = serv.reduce((s, p) => s + (p.monto || 0), 0);
+                    const cargadoExtra = manuales.filter(p => p.concepto === 'extra').reduce((s, p) => s + (p.monto || 0), 0);
+                    const pagadoServ = serv.filter(p => p.estado === 'pagado').reduce((s, p) => s + (p.monto || 0), 0);
+                    const pagadoManual = manuales.filter(p => p.concepto !== 'extra').reduce((s, p) => s + (p.monto || 0), 0);
+                    const cargado = cargadoServ + cargadoExtra;
+                    const pagado = pagadoServ + pagadoManual;
+                    const debe = cargado - pagado;
+                    totCargado += cargado; totPagado += pagado; totDebe += debe;
+                    const nPagados = serv.filter(p => p.estado === 'pagado').length;
+                    const nPend = serv.filter(p => p.estado === 'pendiente').length;
+                    const nVenc = serv.filter(p => p.estado === 'pendiente' && p.fecha < hoyStr).length;
+                    const fechasPago = [...serv.filter(p => p.estado === 'pagado').map(p => p.fechaPago || p.fecha), ...manuales.filter(p => p.concepto !== 'extra').map(p => p.fecha)].sort();
+                    const ultimoPago = fechasPago.length ? formatoFecha(fechasPago[fechasPago.length - 1]) : '—';
+                    const debeHtml = debe > 0
+                        ? `<strong style="color:#b22234;">$${debe.toFixed(2)}</strong>`
+                        : `<strong style="color:#0d7a3e;">$${debe.toFixed(2)}</strong>`;
+                    return `<tr>
+                        <td><strong>${c.nombre}</strong></td>
+                        <td>$${cargado.toFixed(2)}</td>
+                        <td>$${pagado.toFixed(2)}</td>
+                        <td>${debeHtml}</td>
+                        <td>${nPagados}</td>
+                        <td>${nPend}</td>
+                        <td>${nVenc}</td>
+                        <td>${ultimoPago}</td>
+                    </tr>`;
+                }).join('') + `<tr class="resumen-total"><td>TOTAL</td><td>$${totCargado.toFixed(2)}</td><td>$${totPagado.toFixed(2)}</td><td>$${totDebe.toFixed(2)}</td><td colspan="4"></td></tr>`;
+            }
+        }
+        renderPagosManuales(filtroCli);
+    }
+
+    function renderPagosManuales(filtroCli) {
+        const data = getData();
+        const tbody = document.getElementById('tablaPagosManuales');
+        if (!tbody) return;
+        let manuales = [...(data.pagosClientes || [])].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+        if (filtroCli) manuales = manuales.filter(p => p.clienteId === filtroCli);
+        if (manuales.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#4a5568;">Sin pagos manuales registrados.</td></tr>';
+            return;
+        }
+        tbody.innerHTML = manuales.map(p => {
+            const cli = data.clientes.find(c => c.id === p.clienteId);
+            const concepto = p.concepto === 'adelanto' ? '💰 Adelanto' : p.concepto === 'extra' ? '➕ Servicio extra' : '✅ Pago directo';
+            return `<tr>
+                <td><strong>${cli ? cli.nombre : 'N/A'}</strong></td>
+                <td>${p.fecha ? formatoFecha(p.fecha) : '—'}</td>
+                <td>${concepto}</td>
+                <td>$${(p.monto || 0).toFixed(2)}</td>
+                <td>${p.notas || '—'}</td>
+                <td><button class="btn btn-danger btn-sm" onclick="eliminarPagoManual('${p.id}')">🗑️</button></td>
+            </tr>`;
+        }).join('');
+    }
+
+    function eliminarPagoManual(id) {
+        if (!confirm(t('msg_eliminar_pago_manual'))) return;
+        const data = getData();
+        data.pagosClientes = (data.pagosClientes || []).filter(p => p.id !== id);
+        saveData('pagosClientes', data.pagosClientes);
+    }
+
     function editarPagoServicio(id, campo, valor) {
         const data = getData();
         let pago = data.pagosServicios.find(p => p.id === id);
         if (!pago) {
             const cli = data.clientes.find(c => id.includes(c.id));
             if (!cli) return;
-            const fechaAuto = id.split('_').slice(-3).join('-');
+            const fechaAuto = id.substring(id.lastIndexOf('_') + 1);
             pago = {
                 id: id,
                 clienteId: cli.id,
@@ -3209,10 +3865,17 @@ function renderListaAdmins() {
     }
 
     function eliminarPagoServicio(id) {
-        if (!confirm('¿Eliminar este registro de pago?')) return;
+        if (!confirm(t('msg_eliminar_registro_pago'))) return;
         const data = getData();
         data.pagosServicios = data.pagosServicios.filter(p => p.id !== id);
         saveData('pagosServicios', data.pagosServicios);
+        // Los cargos automáticos no viven en Firebase: si no se guarda su
+        // eliminación, reaparecen al recargar. Se guarda su id en una lista.
+        if (id.indexOf('auto_') === 0) {
+            if (!datosGlobales.pagosAutoEliminados) datosGlobales.pagosAutoEliminados = [];
+            if (!datosGlobales.pagosAutoEliminados.includes(id)) datosGlobales.pagosAutoEliminados.push(id);
+            saveData('pagosAutoEliminados', datosGlobales.pagosAutoEliminados);
+        }
     }
 
     // ============================================================
@@ -3257,6 +3920,13 @@ function renderListaAdmins() {
         document.getElementById('empUsuario').value = emp.usuario;
         document.getElementById('empPassword').value = emp.password;
         document.getElementById('empEstado').value = emp.estado;
+        const tituloEmp = document.getElementById('empleadoFormTitulo');
+        if (tituloEmp) tituloEmp.innerHTML = t('cli_editar') + ': ' + emp.nombre;
+        const btnEmp = document.getElementById('btnGuardarEmpleado');
+        if (btnEmp) btnEmp.textContent = t('btn_actualizar_empleado');
+        const tabEmp = document.querySelector('.tab-btn[data-tab="admin-empleados"]');
+        if (tabEmp) tabEmp.click();
+        document.getElementById('formEmpleado').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function eliminarEmpleado(id) {
@@ -3269,6 +3939,10 @@ function renderListaAdmins() {
     function limpiarFormEmpleado() {
         document.getElementById('empEditId').value = '';
         document.getElementById('formEmpleado').reset();
+        const tituloEmp = document.getElementById('empleadoFormTitulo');
+        if (tituloEmp) tituloEmp.innerHTML = t('emp_nuevo');
+        const btnEmp = document.getElementById('btnGuardarEmpleado');
+        if (btnEmp) btnEmp.textContent = t('btn_guardar_empleado');
     }
 
     // ============================================================
@@ -3279,12 +3953,12 @@ function renderListaAdmins() {
         const empleadoId = document.getElementById('adelantoEmpleadoSelect').value;
         const monto = parseFloat(document.getElementById('adelantoEmpleadoMonto').value);
         const fecha = document.getElementById('adelantoEmpleadoFecha').value;
-        if (!empleadoId || !monto || !fecha) { alert('⚠️ Completa todos los campos'); return; }
+        if (!empleadoId || !monto || !fecha) { alert(t('msg_completa_campos')); return; }
         const adelanto = { id: generateId(), empleadoId, monto, fecha, registro: new Date().toISOString() };
         data.adelantosEmpleados.push(adelanto);
         saveData('adelantosEmpleados', data.adelantosEmpleados);
         document.getElementById('adelantoEmpleadoMonto').value = '';
-        alert('✅ Adelanto registrado');
+        alert(t('msg_adelanto_registrado'));
     }
 
     function verAdelantosEmpleado(id) {
@@ -3294,14 +3968,22 @@ function renderListaAdmins() {
         let html = `<h3>💰 Adelantos de ${emp ? emp.nombre : ''}</h3>`;
         if (adelantos.length === 0) { html += '<p>Sin adelantos registrados</p>'; }
         else {
-            html += `<table><tr><th>Fecha</th><th>Monto</th></tr>`;
-            adelantos.forEach(a => { html += `<tr><td>${formatoFecha(a.fecha)}</td><td>$${a.monto.toFixed(2)}</td></tr>`; });
+            html += `<table><tr><th>Fecha</th><th>Monto</th><th>Acciones</th></tr>`;
+            adelantos.forEach(a => { html += `<tr><td>${formatoFecha(a.fecha)}</td><td>$${a.monto.toFixed(2)}</td><td><button class="btn btn-danger btn-sm" onclick="eliminarAdelantoEmpleado('${a.id}', '${id}')">🗑️</button></td></tr>`; });
             html += `</table>`;
             const total = adelantos.reduce((s, a) => s + a.monto, 0);
             html += `<p><strong>Total adelantos:</strong> $${total.toFixed(2)}</p>`;
         }
         document.getElementById('modalContent').innerHTML = html;
         document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    function eliminarAdelantoEmpleado(adelantoId, empleadoId) {
+        if (!confirm(t('msg_eliminar_adelanto'))) return;
+        const data = getData();
+        data.adelantosEmpleados = data.adelantosEmpleados.filter(a => a.id !== adelantoId);
+        saveData('adelantosEmpleados', data.adelantosEmpleados);
+        verAdelantosEmpleado(empleadoId);
     }
 
     // ============================================================
@@ -3379,8 +4061,8 @@ function renderListaAdmins() {
         });
         
         actualizarCamposFrecuencia();
-        document.getElementById('clienteFormTitulo').innerHTML = `✏️ Editando: ${cli.nombre}`;
-        document.getElementById('btnGuardarCliente').textContent = '💾 Actualizar Cliente';
+        document.getElementById('clienteFormTitulo').innerHTML = t('cli_editar') + ': ' + cli.nombre;
+        document.getElementById('btnGuardarCliente').textContent = t('btn_actualizar_cliente');
         document.querySelector('.tab-btn[data-tab="admin-clientes"]').click();
         document.getElementById('formCliente').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -3398,8 +4080,8 @@ function renderListaAdmins() {
         document.querySelectorAll('#diasGrid .dia-check').forEach(label => label.classList.remove('activo'));
         document.getElementById('cliFechaInicio').value = new Date().toISOString().slice(0,10);
         document.getElementById('cliFrecuencia').value = 'semanal';
-        document.getElementById('clienteFormTitulo').innerHTML = '➕ Nuevo Cliente';
-        document.getElementById('btnGuardarCliente').textContent = '💾 Guardar';
+        document.getElementById('clienteFormTitulo').innerHTML = t('cli_nuevo');
+        document.getElementById('btnGuardarCliente').textContent = t('btn_guardar_cliente');
         actualizarCamposFrecuencia();
     }
 
@@ -3420,13 +4102,13 @@ function renderListaAdmins() {
         const concepto = document.getElementById('pagoClienteConcepto').value;
         const fecha = document.getElementById('pagoClienteFecha').value;
         const notas = document.getElementById('pagoClienteNotas').value;
-        if (!clienteId || !monto || !fecha) { alert('⚠️ Completa todos los campos'); return; }
+        if (!clienteId || !monto || !fecha) { alert(t('msg_completa_campos')); return; }
         const pago = { id: generateId(), clienteId, monto, concepto, fecha, notas, registro: new Date().toISOString() };
         data.pagosClientes.push(pago);
         saveData('pagosClientes', data.pagosClientes);
         document.getElementById('pagoClienteMonto').value = '';
         document.getElementById('pagoClienteNotas').value = '';
-        alert('✅ Pago registrado');
+        alert(t('msg_pago_registrado'));
     }
 
     // ============================================================
@@ -3450,6 +4132,99 @@ function renderListaAdmins() {
         let data = getData();
         data.jornadas = data.jornadas.filter(j => j.id !== id);
         saveData('jornadas', data.jornadas);
+    }
+
+    // Registro manual de jornadas: solo el administrador. Los empleados solo
+    // consultan su agenda e historial. La geolocalización es opcional y solo
+    // se muestra si ya existe en el registro; no se exige al crear jornadas.
+    function cargarSelectsJornadas(data) {
+        const selEmp = document.getElementById('jorEmpleado');
+        const empActual = selEmp ? selEmp.value : '';
+        if (selEmp) selEmp.innerHTML = data.empleados.filter(e => e.estado === 'activo')
+            .map(e => `<option value="${e.id}">${e.nombre}</option>`).join('');
+        if (selEmp && empActual) selEmp.value = empActual;
+        const selCli = document.getElementById('jorCliente');
+        const cliActual = selCli ? selCli.value : '';
+        if (selCli) selCli.innerHTML = data.clientes
+            .map(c => `<option value="${c.id}">${c.nombre}</option>`).join('');
+        if (selCli && cliActual) selCli.value = cliActual;
+        const f = document.getElementById('jorFecha');
+        if (f && !f.value) f.value = new Date().toISOString().slice(0,10);
+        actualizarPreviewJornada();
+    }
+
+    function actualizarPreviewJornada() {
+        const prev = document.getElementById('jornadaPreview');
+        if (!prev) return;
+        const data = getData();
+        const selEmp = document.getElementById('jorEmpleado');
+        const emp = selEmp ? data.empleados.find(e => e.id === selEmp.value) : null;
+        const entrada = document.getElementById('jorEntrada').value;
+        const salida = document.getElementById('jorSalida').value;
+        if (!emp || !entrada || !salida) {
+            prev.textContent = '⏱️ ' + t('jornada_preview_vacia');
+            return;
+        }
+        const horas = calcularHoras(entrada, salida);
+        prev.textContent = `⏱️ ${t('boleta_horas')}: ${horas.toFixed(2)}h · ${t('respaldo_total_label')}: $${(horas * emp.tarifa).toFixed(2)} (${emp.nombre}, $${emp.tarifa}/h)`;
+    }
+
+    function guardarJornadaManual(e) {
+        e.preventDefault();
+        const data = getData();
+        const id = document.getElementById('jorEditId').value;
+        const empleadoId = document.getElementById('jorEmpleado').value;
+        const clienteId = document.getElementById('jorCliente').value;
+        const fecha = document.getElementById('jorFecha').value;
+        const horaEntrada = document.getElementById('jorEntrada').value || null;
+        const horaSalida = document.getElementById('jorSalida').value || null;
+        if (!empleadoId || !clienteId || !fecha) { alert(t('msg_elige_empleado_cliente_fecha')); return; }
+        const cli = data.clientes.find(c => c.id === clienteId);
+        const estado = (horaEntrada && horaSalida) ? 'completado' : 'pendiente';
+        if (id) {
+            const j = data.jornadas.find(x => x.id === id);
+            if (j) {
+                j.empleadoId = empleadoId; j.clienteId = clienteId; j.fecha = fecha;
+                j.horaEntrada = horaEntrada; j.horaSalida = horaSalida;
+                j.direccion = cli ? cli.direccion : j.direccion;
+                j.estado = estado;
+            }
+        } else {
+            data.jornadas.push({
+                id: generateId(), empleadoId, clienteId, fecha,
+                horaEntrada, horaSalida,
+                direccion: cli ? cli.direccion : '',
+                estado, lat: null, lng: null, manual: true
+            });
+        }
+        saveData('jornadas', data.jornadas);
+        limpiarFormJornada();
+        alert(t('msg_jornada_guardada'));
+    }
+
+    function editarJornadaManual(id) {
+        const data = getData();
+        const j = data.jornadas.find(x => x.id === id);
+        if (!j) return;
+        document.getElementById('jorEditId').value = j.id;
+        document.getElementById('jorEmpleado').value = j.empleadoId;
+        document.getElementById('jorCliente').value = j.clienteId;
+        document.getElementById('jorFecha').value = j.fecha;
+        document.getElementById('jorEntrada').value = j.horaEntrada || '';
+        document.getElementById('jorSalida').value = j.horaSalida || '';
+        document.getElementById('jornadaFormTitulo').innerHTML = t('msg_jornada_editando');
+        document.getElementById('btnGuardarJornada').textContent = t('btn_actualizar_jornada');
+        actualizarPreviewJornada();
+        document.getElementById('formJornada').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function limpiarFormJornada() {
+        document.getElementById('jorEditId').value = '';
+        document.getElementById('formJornada').reset();
+        document.getElementById('jorFecha').value = new Date().toISOString().slice(0,10);
+        document.getElementById('jornadaFormTitulo').innerHTML = t('msg_jornada_nueva');
+        document.getElementById('btnGuardarJornada').textContent = t('btn_guardar_jornada');
+        actualizarPreviewJornada();
     }
 
     // ============================================================
@@ -3477,6 +4252,28 @@ function renderListaAdmins() {
     return { inicio: lunes.toISOString().slice(0,10), fin: domingo.toISOString().slice(0,10) };
 }
 
+    // Quincena: 1-15 y 16-fin de mes. Las boletas semanales antiguas se conservan
+    // y se siguen mostrando (ver renderBoletas: periodoEtiqueta o semana).
+    function obtenerRangoQuincena(valor) {
+        const fecha = new Date(valor + 'T00:00:00');
+        const y = fecha.getFullYear();
+        const m = fecha.getMonth();
+        const ultimoDia = new Date(y, m + 1, 0).getDate();
+        let inicio, fin;
+        if (fecha.getDate() <= 15) {
+            inicio = new Date(y, m, 1);
+            fin = new Date(y, m, 15);
+        } else {
+            inicio = new Date(y, m, 16);
+            fin = new Date(y, m, ultimoDia);
+        }
+        const iniStr = inicio.toISOString().slice(0,10);
+        const finStr = fin.toISOString().slice(0,10);
+        const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+        const etiqueta = inicio.getDate() + '–' + fin.getDate() + ' ' + meses[m] + ' ' + y;
+        return { inicio: iniStr, fin: finStr, etiqueta };
+    }
+
       function cargarDatosBoleta() {
         const data = getData();
         const empId = document.getElementById('boletaEmpleado').value;
@@ -3488,32 +4285,35 @@ function renderListaAdmins() {
             return;
         }
         
-        const { inicio, fin } = obtenerRangoSemana(semana);
+        const { inicio, fin, etiqueta } = obtenerRangoQuincena(semana);
         const emp = data.empleados.find(e => e.id === empId);
         if (!emp) return;
-        
-        const jornadas = data.jornadas.filter(j => 
-            j.empleadoId === empId && 
-            j.estado === 'completado' && 
-            j.fecha >= inicio && 
+
+        const jornadas = data.jornadas.filter(j =>
+            j.empleadoId === empId &&
+            j.estado === 'completado' &&
+            j.fecha >= inicio &&
             j.fecha <= fin
         );
-        
+
         let totalHoras = 0;
         jornadas.forEach(j => { totalHoras += calcularHoras(j.horaEntrada, j.horaSalida); });
         const bruto = totalHoras * emp.tarifa;
-        
+
         let descuento = 0;
         if (tipoPago === 'cheque') {
             descuento = calcularDescuentos(bruto, data.config);
         }
         const neto = bruto - descuento;
+        const adelantosQuincena = data.adelantosEmpleados
+            .filter(a => a.empleadoId === empId && a.fecha >= inicio && a.fecha <= fin)
+            .reduce((s, a) => s + (a.monto || 0), 0);
 
         let html = `<div class="boleta-pdf-preview">`;
         html += `<h4 style="text-align:center;">${data.config.empresa || 'Mi Empresa'}</h4>`;
         html += `<p style="text-align:center;"><strong>${t('boleta_titulo')}</strong></p>`;
         html += `<p><strong>${t('boleta_empleado')}:</strong> ${emp.nombre}</p>`;
-        html += `<p><strong>${t('boleta_semana')}:</strong> ${formatoFecha(inicio)} ${idiomaActual === 'en' ? 'to' : 'al'} ${formatoFecha(fin)}</p>`;
+        html += `<p><strong>${t('boleta_periodo')}:</strong> ${etiqueta} (${formatoFecha(inicio)} ${idiomaActual === 'en' ? 'to' : 'al'} ${formatoFecha(fin)})</p>`;
         
         if (tipoPago === 'efectivo') {
             html += `<p style="background:#d4edda; padding:8px; border-radius:6px; color:#0d7a3e;"><strong>${t('msg_efectivo_sin_desc')}</strong></p>`;
@@ -3528,7 +4328,7 @@ function renderListaAdmins() {
         html += `<tr><th>${t('boleta_fecha')}</th><th>${t('boleta_cliente')}</th><th>${t('boleta_horas')}</th><th>${t('boleta_monto')}</th></tr>`;
         
         if (jornadas.length === 0) {
-            html += `<tr><td colspan="4" style="text-align:center; padding:20px; color:#856404;">${t('boleta_sin_jornadas')}</td></tr>`;
+            html += `<tr><td colspan="4" style="text-align:center; padding:20px; color:#856404;">${t('boleta_sin_jornadas_quincena')}</td></tr>`;
         } else {
             jornadas.forEach(j => {
                 const cli = data.clientes.find(c => c.id === j.clienteId);
@@ -3560,8 +4360,12 @@ function renderListaAdmins() {
             html += `</div></div>`;
         }
         
+        if (adelantosQuincena > 0) {
+            html += `<p style="background:#fff3cd; padding:8px; border-radius:6px; color:#856404; margin-top:10px;">💰 Adelantos en esta quincena: <strong>$${adelantosQuincena.toFixed(2)}</strong> — no descontados automáticamente, revísalos antes de pagar.</p>`;
+        }
+
         html += `</div></div>`;
-        
+
         document.getElementById('boletaContenido').innerHTML = html;
         document.getElementById('boletaPreview').classList.remove('hidden');
     }
@@ -3571,8 +4375,8 @@ function renderListaAdmins() {
         const empId = document.getElementById('boletaEmpleado').value;
         const semana = document.getElementById('boletaSemana').value;
         const tipoPago = document.getElementById('boletaTipoPago').value;
-        if (!empId || !semana) { alert(t('msg_selecciona_empleado_semana')); return; }
-        const { inicio, fin } = obtenerRangoSemana(semana);
+        if (!empId || !semana) { alert(t('msg_selecciona_empleado_periodo')); return; }
+        const { inicio, fin, etiqueta } = obtenerRangoQuincena(semana);
         const emp = data.empleados.find(e => e.id === empId);
         if (!emp) return;
         const jornadas = data.jornadas.filter(j => j.empleadoId === empId && j.estado === 'completado' && j.fecha >= inicio && j.fecha <= fin);
@@ -3587,29 +4391,37 @@ function renderListaAdmins() {
         }
         const neto = bruto - descuento;
         
-        const boleta = { 
-            id: generateId(), 
-            empleadoId: empId, 
-            semana, 
-            semanaInicio: inicio, 
-            semanaFin: fin, 
-            totalHoras, 
-            totalBruto: bruto, 
-            descuento, 
-            totalNeto: neto, 
-            tipoPago, 
-            fechaGeneracion: new Date().toISOString().slice(0,10) 
+        const adelantosQuincena = data.adelantosEmpleados
+            .filter(a => a.empleadoId === empId && a.fecha >= inicio && a.fecha <= fin)
+            .reduce((s, a) => s + (a.monto || 0), 0);
+        const boleta = {
+            id: generateId(),
+            empleadoId: empId,
+            semana,
+            semanaInicio: inicio,
+            semanaFin: fin,
+            periodo: 'quincena',
+            periodoEtiqueta: etiqueta,
+            periodoInicio: inicio,
+            periodoFin: fin,
+            adelantos: adelantosQuincena,
+            totalHoras,
+            totalBruto: bruto,
+            descuento,
+            totalNeto: neto,
+            tipoPago,
+            fechaGeneracion: new Date().toISOString().slice(0,10)
         };
         data.boletas.push(boleta);
         saveData('boletas', data.boletas);
-        alert(`✅ Boleta generada\n\nTipo: ${tipoPago === 'cheque' ? '📄 Cheque' : '💵 Efectivo'}\nSubtotal: $${bruto.toFixed(2)}\nDescuentos: $${descuento.toFixed(2)}\nNeto: $${neto.toFixed(2)}`);
+        alert(`✅ Boleta generada\n\nPeriodo quincenal: ${etiqueta}\nTipo: ${tipoPago === 'cheque' ? '📄 Cheque' : '💵 Efectivo'}\nSubtotal: $${bruto.toFixed(2)}\nDescuentos: $${descuento.toFixed(2)}\nNeto: $${neto.toFixed(2)}\nAdelantos en la quincena: $${adelantosQuincena.toFixed(2)}`);
         renderBoletas(data);
         document.getElementById('boletaPreview').classList.add('hidden');
     }
 
         function exportarBoletaPDF() {
         const contenido = document.getElementById('boletaContenido').innerHTML;
-        if (!contenido) { alert('⚠️ Primero genera la vista previa'); return; }
+        if (!contenido) { alert(t('msg_primero_vista_previa')); return; }
         
         // Obtener datos del empleado y semana para el título
         const empId = document.getElementById('boletaEmpleado').value;
@@ -3801,14 +4613,15 @@ function renderListaAdmins() {
                 codigoHtml += `</div>`;
             }
             
+            // Solo consulta: las horas las registra el administrador.
             let botones = '';
             if (!tomado) {
-                botones = `<button class="btn btn-success" onclick="iniciarTrabajo('${cli.id}')">🚀 Comenzar este trabajo</button>`;
+                botones = `<span class="badge badge-primary">📌 Programado</span>`;
             } else if (miTrabajo) {
                 if (!miTrabajo.horaEntrada) {
-                    botones = `<button class="btn btn-success" onclick="marcarEntrada('${miTrabajo.id}')">✅ Marcar Entrada + Geo</button>`;
+                    botones = `<span class="badge badge-warning">⏳ Pendiente de registro</span>`;
                 } else if (!miTrabajo.horaSalida) {
-                    botones = `<button class="btn btn-danger" onclick="marcarSalida('${miTrabajo.id}')">⏹️ Marcar Salida + Geo</button>`;
+                    botones = `<span class="badge badge-warning">🔄 En proceso</span>`;
                 } else {
                     botones = `<span class="badge badge-success">✅ Completado</span>`;
                 }
@@ -3835,12 +4648,14 @@ function renderListaAdmins() {
     }
 
     function iniciarTrabajo(clienteId) {
+        alert(t('msg_horas_admin'));
+        return;
         const data = getData();
         const hoy = new Date().toISOString().slice(0,10);
         
         const tomado = data.jornadas.find(j => j.fecha === hoy && j.clienteId === clienteId);
         if (tomado) {
-            alert('⚠️ Este cliente ya fue tomado por otro empleado');
+            alert(t('msg_cliente_tomado'));
             cargarTrabajosHoy();
             return;
         }
@@ -3863,7 +4678,7 @@ function renderListaAdmins() {
         };
         data.jornadas.push(jornada);
         saveData('jornadas', data.jornadas);
-        alert('✅ Trabajo tomado. Ahora marca tu entrada cuando llegues.');
+        alert(t('msg_trabajo_tomado'));
         cargarTrabajosHoy();
         cargarTrabajosEmpleado();
     }
@@ -3891,15 +4706,16 @@ function renderListaAdmins() {
                 <p>📍 ${j.direccion}</p>
                 ${codigoHtml}
                 <p style="margin-top:8px;">⏱️ Entrada: ${j.horaEntrada || 'Pendiente'} | Salida: ${j.horaSalida || 'Pendiente'}</p>
-                ${!j.horaEntrada ? `<button class="btn btn-success btn-sm" onclick="marcarEntrada('${j.id}')">✅ Entrada + Geo</button>` : ''}
-                ${j.horaEntrada && !j.horaSalida ? `<button class="btn btn-danger btn-sm" onclick="marcarSalida('${j.id}')">⏹️ Salida + Geo</button>` : ''}
+                <p style="margin-top:8px; font-size:0.85rem; color:#4a5568;">✍️ Las horas las registra el administrador.</p>
                 ${j.direccion ? `<button class="btn btn-info btn-sm" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(j.direccion)}','_blank')">🗺️ Maps</button>` : ''}
             </div>`;
         }).join('');
     }
 
     function marcarEntrada(id) {
-        if (!navigator.geolocation) { alert('⚠️ Sin soporte de geolocalización'); return; }
+        alert(t('msg_horas_admin'));
+        return;
+        if (!navigator.geolocation) { alert(t('msg_sin_geo')); return; }
         navigator.geolocation.getCurrentPosition(
             function(pos) {
                 const data = getData();
@@ -3912,7 +4728,7 @@ function renderListaAdmins() {
                 saveData('jornadas', data.jornadas);
                 cargarTrabajosHoy();
                 cargarTrabajosEmpleado();
-                alert('✅ Entrada registrada con geolocalización');
+                alert(t('msg_entrada_geo'));
             },
             function(err) {
                 const data = getData();
@@ -3923,20 +4739,22 @@ function renderListaAdmins() {
                 saveData('jornadas', data.jornadas);
                 cargarTrabajosHoy();
                 cargarTrabajosEmpleado();
-                alert('✅ Entrada registrada (sin geo)');
+                alert(t('msg_entrada_sin_geo'));
             },
             { enableHighAccuracy: true }
         );
     }
 
     function marcarSalida(id) {
-        if (!navigator.geolocation) { alert('⚠️ Sin soporte de geolocalización'); return; }
+        alert(t('msg_horas_admin'));
+        return;
+        if (!navigator.geolocation) { alert(t('msg_sin_geo')); return; }
         navigator.geolocation.getCurrentPosition(
             function(pos) {
                 const data = getData();
                 const j = data.jornadas.find(j => j.id === id);
                 if (!j) return;
-                if (!j.horaEntrada) { alert('⚠️ Primero marca la entrada'); return; }
+                if (!j.horaEntrada) { alert(t('msg_primero_entrada')); return; }
                 const ahora = new Date();
                 j.horaSalida = String(ahora.getHours()).padStart(2, '0') + ':' + String(ahora.getMinutes()).padStart(2, '0');
                 j.lat = pos.coords.latitude;
@@ -3946,13 +4764,13 @@ function renderListaAdmins() {
                 cargarTrabajosHoy();
                 cargarTrabajosEmpleado();
                 cargarHistorialEmpleado();
-                alert('✅ Salida registrada con geolocalización');
+                alert(t('msg_salida_geo'));
             },
             function(err) {
                 const data = getData();
                 const j = data.jornadas.find(j => j.id === id);
                 if (!j) return;
-                if (!j.horaEntrada) { alert('⚠️ Primero marca la entrada'); return; }
+                if (!j.horaEntrada) { alert(t('msg_primero_entrada')); return; }
                 const ahora = new Date();
                 j.horaSalida = String(ahora.getHours()).padStart(2, '0') + ':' + String(ahora.getMinutes()).padStart(2, '0');
                 j.estado = 'completado';
@@ -3960,7 +4778,7 @@ function renderListaAdmins() {
                 cargarTrabajosHoy();
                 cargarTrabajosEmpleado();
                 cargarHistorialEmpleado();
-                alert('✅ Salida registrada (sin geo)');
+                alert(t('msg_salida_sin_geo'));
             },
             { enableHighAccuracy: true }
         );
@@ -4003,6 +4821,157 @@ function renderListaAdmins() {
         XLSX.writeFile(wb, 'jornadas.xlsx');
     }
 
+    function escHtml(txt) {
+        return String(txt == null ? '' : txt)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    // Resumen por cliente: cargado / pagado / debe. Misma logica que
+    // renderResumenPagosPorCliente, para que el reporte coincida con la pantalla.
+    function calcularResumenClienteRespaldo(cliente, pagosConAuto, data) {
+        const serv = pagosConAuto.filter(p => p.clienteId === cliente.id);
+        const manuales = (data.pagosClientes || []).filter(p => p.clienteId === cliente.id);
+        const cargadoServ = serv.reduce((s, p) => s + (p.monto || 0), 0);
+        const cargadoExtra = manuales.filter(p => p.concepto === 'extra').reduce((s, p) => s + (p.monto || 0), 0);
+        const pagadoServ = serv.filter(p => p.estado === 'pagado').reduce((s, p) => s + (p.monto || 0), 0);
+        const pagadoManual = manuales.filter(p => p.concepto !== 'extra').reduce((s, p) => s + (p.monto || 0), 0);
+        const cargado = cargadoServ + cargadoExtra;
+        const pagado = pagadoServ + pagadoManual;
+        const fechasPago = [...serv.filter(p => p.estado === 'pagado').map(p => p.fechaPago || p.fecha),
+            ...manuales.filter(p => p.concepto !== 'extra').map(p => p.fecha)].sort();
+        return { cargado, pagado, debe: cargado - pagado, ultimoPago: fechasPago.length ? fechasPago[fechasPago.length - 1] : null };
+    }
+
+    function etiquetaMetodo(m) {
+        return { efectivo: t('respaldo_efectivo'), cheque: t('respaldo_cheque'), transferencia: t('respaldo_transferencia'), tarjeta: t('respaldo_tarjeta') }[m] || (m || '—');
+    }
+
+    function etiquetaConceptoPago(c) {
+        return { adelanto: t('respaldo_adelanto'), extra: t('respaldo_extra'), pago: t('respaldo_pago_directo') }[c] || (c || t('respaldo_pago'));
+    }
+
+    // Respaldo en PDF (Admin): genera un reporte imprimible con TODOS los datos
+    // actuales y abre el dialogo de impresion. Ahi el dueno elige
+    // "Guardar como PDF" para guardarlo en su PC, o Imprimir.
+    // NO incluye contrasenas, usuarios de empleados, EIN ni codigos de acceso.
+    function generarRespaldoPDF() {
+        const data = getData();
+        const cfg = data.config || {};
+        const fechaRespaldo = new Date().toLocaleString(idiomaActual === 'en' ? 'en-US' : 'es-ES', { dateStyle: 'long', timeStyle: 'short' });
+        const empresa = escHtml(cfg.empresa || 'Mi Empresa');
+        const dirEmpresa = [cfg.direccion, cfg.ciudad, cfg.estado, cfg.zip].filter(Boolean).join(', ');
+        const pagosConAuto = generarCargosServicio(data).sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+        const manuales = [...(data.pagosClientes || [])].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+        const jornadasOrd = [...(data.jornadas || [])].sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+        const boletasOrd = [...(data.boletas || [])].sort((a, b) => (b.fechaGeneracion || b.semana || '').localeCompare(a.fechaGeneracion || b.semana || ''));
+        const dinero = n => '$' + (n || 0).toFixed(2);
+
+        let totCargado = 0, totPagado = 0, totDebe = 0;
+        const resumenClientes = (data.clientes || []).map(c => {
+            const r = calcularResumenClienteRespaldo(c, pagosConAuto, data);
+            totCargado += r.cargado; totPagado += r.pagado; totDebe += r.debe;
+            return { cliente: c, ...r };
+        });
+        const totBrutoBoletas = boletasOrd.reduce((s, b) => s + (b.totalBruto || 0), 0);
+        const totNetoBoletas = boletasOrd.reduce((s, b) => s + (b.totalNeto || 0), 0);
+        const nombreEmp = id => { const e = (data.empleados || []).find(x => x.id === id); return e ? e.nombre : t('respaldo_eliminado'); };
+        const nombreCli = id => { const c = (data.clientes || []).find(x => x.id === id); return c ? c.nombre : 'N/A'; };
+
+        let h = '';
+        h += '<h2 class="respaldo-titulo">' + t('respaldo_titulo') + ' — ' + empresa + '</h2>';
+        h += '<p class="respaldo-subtitulo">Sistema de Limpieza Profesional &nbsp;·&nbsp; ' + t('respaldo_fecha') + ' <strong>' + escHtml(fechaRespaldo) + '</strong>';
+        if (dirEmpresa) h += ' &nbsp;·&nbsp; ' + escHtml(dirEmpresa);
+        if (cfg.telefono) h += ' &nbsp;·&nbsp; Tel: ' + escHtml(cfg.telefono);
+        h += '</p>';
+        h += '<p class="respaldo-subtitulo">' + t('respaldo_resumen') + ' ' + (data.empleados || []).length + ' ' + t('respaldo_empleados_txt') + ', ' + (data.clientes || []).length + ' ' + t('respaldo_clientes_txt') + ', '
+            + (data.jornadas || []).length + ' ' + t('respaldo_jornadas_txt') + ', ' + (data.boletas || []).length + ' ' + t('respaldo_boletas_txt') + '. '
+            + t('respaldo_total_cargado') + ' <strong>' + dinero(totCargado) + '</strong> · ' + t('respaldo_total_pagado') + ' <strong>' + dinero(totPagado) + '</strong> · ' + t('respaldo_total_cobrar') + ' <strong>' + dinero(totDebe) + '</strong></p>';
+
+        // 1. Empleados (sin usuario ni contrasena)
+        h += '<div class="respaldo-seccion"><h3>' + t('respaldo_sec_empleados') + ' (' + (data.empleados || []).length + ')</h3>';
+        if (!(data.empleados || []).length) h += '<p>' + t('respaldo_sin_empleados') + '</p>';
+        else {
+            h += '<table class="respaldo-tabla"><tr><th>' + t('respaldo_nombre') + '</th><th>' + t('respaldo_telefono') + '</th><th>' + t('respaldo_email') + '</th><th>' + t('respaldo_cargo') + '</th><th>' + t('respaldo_tarifa_hora') + '</th><th>' + t('respaldo_estado') + '</th></tr>';
+            (data.empleados || []).forEach(e => {
+                h += '<tr><td>' + escHtml(e.nombre) + '</td><td>' + escHtml(e.telefono) + '</td><td>' + escHtml(e.email) + '</td><td>' + escHtml(e.cargo) + '</td><td>' + dinero(e.tarifa) + '</td><td>' + escHtml(e.estado === 'inactivo' ? t('emp_inactivo') : t('emp_activo')) + '</td></tr>';
+            });
+            h += '</table>';
+        }
+        h += '</div>';
+
+        // 2. Clientes con saldo
+        h += '<div class="respaldo-seccion"><h3>' + t('respaldo_sec_clientes') + ' (' + (data.clientes || []).length + ')</h3>';
+        if (!resumenClientes.length) h += '<p>' + t('respaldo_sin_clientes') + '</p>';
+        else {
+            h += '<table class="respaldo-tabla"><tr><th>' + t('boleta_cliente') + '</th><th>' + t('respaldo_servicio') + '</th><th>' + t('respaldo_frecuencia') + '</th><th>' + t('resumen_cargado') + '</th><th>' + t('resumen_pagado') + '</th><th>' + t('resumen_debe') + '</th><th>' + t('resumen_ultimo_pago') + '</th></tr>';
+            resumenClientes.forEach(r => {
+                h += '<tr><td><strong>' + escHtml(r.cliente.nombre) + '</strong><br>' + escHtml(r.cliente.direccion || '') + ' ' + escHtml(r.cliente.telefono || '') + '</td>'
+                    + '<td>' + escHtml(({regular: t('serv_regular'), profunda: t('serv_profunda'), especial: t('serv_especial'), construccion: t('serv_construccion')})[r.cliente.servicio] || r.cliente.servicio || 'regular') + '</td><td>' + escHtml(({semanal: t('respaldo_frec_semanal'), quincenal: t('respaldo_frec_quincenal'), mensual: t('respaldo_frec_mensual')})[r.cliente.frecuencia] || r.cliente.frecuencia || '') + '</td>'
+                    + '<td>' + dinero(r.cargado) + '</td><td>' + dinero(r.pagado) + '</td><td><strong>' + dinero(r.debe) + '</strong></td>'
+                    + '<td>' + (r.ultimoPago ? formatoFecha(r.ultimoPago) : '—') + '</td></tr>';
+            });
+            h += '<tr><td colspan="3"><strong>TOTAL</strong></td><td><strong>' + dinero(totCargado) + '</strong></td><td><strong>' + dinero(totPagado) + '</strong></td><td><strong>' + dinero(totDebe) + '</strong></td><td></td></tr></table>';
+        }
+        h += '</div>';
+
+        // 3. Pagos por cliente (servicios + manuales)
+        h += '<div class="respaldo-seccion"><h3>' + t('respaldo_sec_pagos') + '</h3>';
+        if (!pagosConAuto.length && !manuales.length) h += '<p>' + t('respaldo_sin_pagos') + '</p>';
+        else {
+            (data.clientes || []).forEach(c => {
+                const serv = pagosConAuto.filter(p => p.clienteId === c.id);
+                const man = manuales.filter(p => p.clienteId === c.id);
+                if (!serv.length && !man.length) return;
+                h += '<h4 style="margin:10px 0 4px;">' + escHtml(c.nombre) + '</h4>';
+                h += '<table class="respaldo-tabla"><tr><th>' + t('boleta_fecha') + '</th><th>' + t('respaldo_tipo') + '</th><th>' + t('boleta_monto') + '</th><th>' + t('respaldo_estado') + '</th><th>' + t('respaldo_fecha_pago') + '</th><th>' + t('respaldo_metodo_notas') + '</th></tr>';
+                serv.forEach(p => {
+                    h += '<tr><td>' + formatoFecha(p.fecha) + '</td><td>' + t('respaldo_servicio') + '</td><td>' + dinero(p.monto) + '</td><td>' + (p.estado === 'pagado' ? t('resumen_pagado') : t('estado_pendiente')) + '</td><td>' + (p.fechaPago ? formatoFecha(p.fechaPago) : '—') + '</td><td>' + etiquetaMetodo(p.metodo) + '</td></tr>';
+                });
+                man.forEach(p => {
+                    h += '<tr><td>' + formatoFecha(p.fecha) + '</td><td>' + etiquetaConceptoPago(p.concepto) + '</td><td>' + dinero(p.monto) + '</td><td>' + t('respaldo_registrado') + '</td><td>' + formatoFecha(p.fecha) + '</td><td>' + escHtml(p.notas || '') + '</td></tr>';
+                });
+                h += '</table>';
+            });
+        }
+        h += '</div>';
+
+        // 4. Jornadas manuales (recientes)
+        const jornadasRecientes = jornadasOrd.slice(0, 30);
+        h += '<div class="respaldo-seccion"><h3>' + t('respaldo_sec_jornadas') + ' (' + (data.jornadas || []).length + ' ' + t('respaldo_jornadas_mas') + ')</h3>';
+        if (!jornadasRecientes.length) h += '<p>' + t('respaldo_sin_jornadas') + '</p>';
+        else {
+            h += '<table class="respaldo-tabla"><tr><th>' + t('boleta_fecha') + '</th><th>' + t('boleta_empleado') + '</th><th>' + t('boleta_cliente') + '</th><th>' + t('respaldo_entrada') + '</th><th>' + t('respaldo_salida') + '</th><th>' + t('boleta_horas') + '</th><th>' + t('respaldo_estado') + '</th></tr>';
+            jornadasRecientes.forEach(j => {
+                h += '<tr><td>' + formatoFecha(j.fecha) + '</td><td>' + escHtml(nombreEmp(j.empleadoId)) + '</td><td>' + escHtml(nombreCli(j.clienteId)) + '</td><td>' + escHtml(j.horaEntrada || '—') + '</td><td>' + escHtml(j.horaSalida || '—') + '</td><td>' + calcularHoras(j.horaEntrada, j.horaSalida).toFixed(2) + 'h</td><td>' + escHtml(({completado: t('estado_completado'), pendiente: t('estado_pendiente'), cancelado: t('estado_cancelado')})[j.estado] || j.estado || '') + '</td></tr>';
+            });
+            h += '</table>';
+        }
+        h += '</div>';
+
+        // 5. Boletas quincenales
+        h += '<div class="respaldo-seccion"><h3>' + t('respaldo_sec_boletas') + ' (' + boletasOrd.length + ')</h3>';
+        if (!boletasOrd.length) h += '<p>' + t('respaldo_sin_boletas') + '</p>';
+        else {
+            h += '<table class="respaldo-tabla"><tr><th>' + t('boleta_empleado') + '</th><th>' + t('boleta_periodo') + '</th><th>' + t('boleta_horas') + '</th><th>' + t('respaldo_bruto') + '</th><th>' + t('respaldo_descuentos') + '</th><th>' + t('boleta_neto') + '</th><th>' + t('respaldo_pago') + '</th></tr>';
+            boletasOrd.forEach(b => {
+                const periodoTxt = b.periodoEtiqueta || (b.semanaInicio && b.semanaFin ? formatoFecha(b.semanaInicio) + (idiomaActual === 'en' ? ' to ' : ' al ') + formatoFecha(b.semanaFin) : (b.semana || '—'));
+                h += '<tr><td>' + escHtml(nombreEmp(b.empleadoId)) + '</td><td>' + escHtml(periodoTxt) + '</td><td>' + (b.totalHoras || 0).toFixed(2) + 'h</td><td>' + dinero(b.totalBruto) + '</td><td>' + dinero(b.descuento) + '</td><td>' + dinero(b.totalNeto) + '</td><td>' + (b.tipoPago === 'cheque' ? t('respaldo_cheque') : t('respaldo_efectivo')) + '</td></tr>';
+            });
+            h += '<tr><td colspan="3"><strong>TOTAL</strong></td><td><strong>' + dinero(totBrutoBoletas) + '</strong></td><td></td><td><strong>' + dinero(totNetoBoletas) + '</strong></td><td></td></tr></table>';
+        }
+        h += '</div>';
+        h += '<p style="margin-top:16px; font-size:0.8rem; color:#4a5568;">' + t('respaldo_nota') + '</p>';
+
+        const seccion = document.getElementById('seccionRespaldoPDF');
+        seccion.innerHTML = h;
+        window.print();
+    }
+
+    function cerrarRespaldoPDF() {
+        document.getElementById('seccionRespaldoPDF').innerHTML = '';
+    }
+
     function exportarBackup() {
         const data = getData();
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -4027,8 +4996,8 @@ function renderListaAdmins() {
                 });
                 guardarEnFirebase();
                 renderAll();
-                alert('✅ Backup restaurado y sincronizado con Firebase');
-            } catch { alert('❌ Error en el archivo'); }
+                alert(t('msg_backup_restaurado'));
+            } catch { alert(t('msg_error_archivo')); }
         };
         reader.readAsText(file);
         e.target.value = '';
@@ -4097,7 +5066,7 @@ function renderListaAdmins() {
     
     renderResumenDescuentos(getData());
     
-    alert('✅ Configuración guardada');
+    alert(t('msg_config_guardada'));
 }
     // ============================================================
     // UI / MODAL / TABS
@@ -4219,7 +5188,8 @@ function renderListaAdmins() {
 if (localStorage.getItem('clean_modo') === 'oscuro') {
     document.body.classList.add('modo-oscuro');
 }
-    document.getElementById('agendaFecha').value = new Date().toISOString().slice(0,10);
+    const agendaFechaInput = document.getElementById('agendaFecha') || document.getElementById('semanaFecha');
+    if (agendaFechaInput) agendaFechaInput.value = new Date().toISOString().slice(0,10);
     document.getElementById('boletaSemana').value = new Date().toISOString().slice(0,10);
     document.getElementById('semanaFecha').value = new Date().toISOString().slice(0,10);
     const hoyMes = new Date();
